@@ -258,36 +258,16 @@
       "name": "Level",
       "active": true,
       "components": {
-        "ComponentMesh": [
+        "ComponentMesh": [],
+        "ComponentMaterial": [],
+        "ComponentAudio": [
           {
-            "ƒ.ComponentMesh": {
-              "idMesh": "MeshCube|2022-10-06T13:30:33.025Z|15273",
-              "pivot": {
-                "translation": "[0, 0, 0]",
-                "rotation": "[0, 0, 0]",
-                "scaling": "[1, 1, 1]"
-              },
-              "Component": {
-                "active": true
-              }
-            }
-          }
-        ],
-        "ComponentMaterial": [
-          {
-            "ƒ.ComponentMaterial": {
-              "sortForAlpha": false,
-              "clrPrimary": "[1, 1, 1, 1]",
-              "clrSecondary": "[1, 1, 1, 1]",
-              "pivot": {
-                "translation": "[0, 0]",
-                "rotation": 0,
-                "scaling": "[1, 1]"
-              },
-              "Component": {
-                "active": true
-              },
-              "idMaterial": "Material|2022-10-06T13:30:40.738Z|67899"
+            "ƒ.ComponentAudio": {
+              "active": true,
+              "idResource": "Audio|2022-10-27T12:38:35.114Z|03458",
+              "playing": false,
+              "loop": false,
+              "volume": 1
             }
           }
         ]
@@ -9300,6 +9280,14 @@
         "name": "Images\\flage.png",
         "mipmap": "CRISP"
       }
+    }
+  },
+  "Audio|2022-10-27T12:38:35.114Z|03458": {
+    "ƒ.Audio": {
+      "url": "Audio\\SuperMarioBros.mp3",
+      "idResource": "Audio|2022-10-27T12:38:35.114Z|03458",
+      "name": "Audio\\SuperMarioBros.mp3",
+      "type": "Audio"
     }
   }
 }

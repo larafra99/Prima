@@ -45,7 +45,9 @@ var Script;
     document.addEventListener("interactiveViewportStarted", start);
     let viewport;
     let marioNode;
+    let branch;
     let marioSprite;
+    let cmpTimeAudio;
     let marioSpeed = 3.0;
     let facing = true; // true = right
     let ySpeed = 0;
@@ -53,9 +55,10 @@ var Script;
         viewport = _event.detail;
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start();
-        let branch = viewport.getBranch();
+        branch = viewport.getBranch();
         marioNode = branch.getChildrenByName("MarioPosition")[0]; // get Sprite by name
         loadSprite();
+        audio();
     }
     async function loadSprite() {
         let spriteSheet = new ƒ.TextureImage();
@@ -63,20 +66,22 @@ var Script;
         let coat = new ƒ.CoatTextured(undefined, spriteSheet);
         let walkanimation = new ƒAid.SpriteSheetAnimation("walk", coat);
         walkanimation.generateByGrid(ƒ.Rectangle.GET(0, 0, 15, 16), 3, 12, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
-        marioSprite = new ƒAid.NodeSprite("Avatar");
+        marioSprite = new ƒAid.NodeSprite("marioSprite");
         marioSprite.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4()));
         marioSprite.setAnimation(walkanimation);
         marioSprite.mtxLocal.translateY(+0.5); // mtx = Matrix 
         marioSprite.framerate = 10;
         marioNode.addChild(marioSprite);
+        let cmpAudio = branch.getComponent(ƒ.ComponentAudio);
+        //cmpAudio
+        console.log("CMPAudio", cmpAudio);
     }
-    function checkcollision() {
-        let graph = viewport.getBranch();
-        let blocks = graph.getChildrenByName("Floor")[0];
+    function checkCollision() {
+        let blocks = branch.getChildrenByName("Floor")[0];
         let pos = marioNode.mtxLocal.translation;
         for (let block of blocks.getChildren()) {
             let blockpos = block.mtxLocal.translation;
-            if (pos.x - blockpos.x < 0.5) {
+            if (Math.abs(pos.x - blockpos.x) < 0.5) {
                 if (pos.y < blockpos.x + 0.5) {
                     pos.y = blockpos.y + 0.5;
                     marioNode.mtxLocal.translation = pos;
@@ -85,23 +90,30 @@ var Script;
             }
         }
     }
+    async function audio() {
+        let audioWarning = new ƒ.Audio("Audio/smb_warning.wav");
+        cmpTimeAudio = new ƒ.ComponentAudio(audioWarning, false, false);
+        cmpTimeAudio.connect(true);
+        cmpTimeAudio.volume = 4;
+    }
     function update(_event) {
         let gravity = 5;
         let jumpForce = 3;
         let deltaTime = marioSpeed * ƒ.Loop.timeFrameGame / 1000;
         let ySpeed = 0;
         ySpeed -= gravity * deltaTime;
+        let yOffset = ySpeed * deltaTime;
         let pos = marioNode.mtxLocal.translation;
-        checkcollision();
-        if (pos.y + ySpeed > 0)
-            marioNode.mtxLocal.translateY(ySpeed);
+        if (pos.y + yOffset > 0)
+            marioNode.mtxLocal.translateY(yOffset);
         else {
             ySpeed = 0;
             pos.y = 0;
-            //marioPos.mtxLocal.translation = pos;
+            marioNode.mtxLocal.translation = pos;
         }
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
             marioNode.mtxLocal.translateX(deltaTime);
+            cmpTimeAudio.play(true);
             if (!facing) {
                 marioSprite.getComponent(ƒ.ComponentTransform).mtxLocal.rotateY(180);
                 facing = true;
@@ -122,6 +134,7 @@ var Script;
         if (marioNode.mtxLocal.translation.y <= 0) {
             marioNode.mtxLocal.translation.y = 0;
         }
+        //checkCollision();
         ƒ.Loop.timeFrameGame;
         // ƒ.Physics.simulate();  // if physics is included and used
         viewport.draw();
