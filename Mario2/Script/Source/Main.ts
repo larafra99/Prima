@@ -6,7 +6,7 @@ namespace Script {
 
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
-  let viewport: ƒ.Viewport;
+  export let viewport: ƒ.Viewport;
   let marioNode:ƒ.Node;
   let branch: ƒ.Node;
   let marioSprite: ƒAid.NodeSprite;
@@ -14,11 +14,12 @@ namespace Script {
   
   let marioSpeed: number = 3.0;
   let facing: boolean = true; // true = right
-  let ySpeed: number  = 0;
-
+  // let ySpeed: number  = 0;
 
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
+    viewport.camera.mtxPivot.translateZ(20);
+    viewport.camera.mtxPivot.rotateY(180);
     
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();
@@ -43,26 +44,31 @@ namespace Script {
     marioSprite.framerate = 10;
     marioNode.addChild(marioSprite);
 
+    let avatarInstance: Avatar= new Avatar();
+    avatarInstance.initializeAnimation(spriteSheet);
+    branch.addChild(avatarInstance);
+    avatarInstance.update;
+    
     let cmpAudio: ƒ.ComponentAudio = branch.getComponent(ƒ.ComponentAudio);
     //cmpAudio
     console.log("CMPAudio",cmpAudio);
   }
 
-  function checkCollision():void {
-    let blocks:ƒ.Node = branch.getChildrenByName("Floor")[0];
-    let pos: ƒ.Vector3 = marioNode.mtxLocal.translation;
+  // function checkCollision():void {
+  //   let blocks:ƒ.Node = branch.getChildrenByName("Floor")[0];
+  //   let pos: ƒ.Vector3 = marioNode.mtxLocal.translation;
     
-    for(let block of blocks.getChildren()){
-      let blockpos: ƒ.Vector3 = block.mtxLocal.translation;
-      if (Math.abs(pos.x - blockpos.x) < 0.5){
-        if(pos.y<blockpos.x+0.5){
-          pos.y = blockpos.y +0.5;
-          marioNode.mtxLocal.translation = pos;
-          ySpeed = 0;
-        }
-      }
-    }
-  }
+  //   for(let block of blocks.getChildren()){
+  //     let blockpos: ƒ.Vector3 = block.mtxLocal.translation;
+  //     if (Math.abs(pos.x - blockpos.x) < 0.5){
+  //       if(pos.y<blockpos.x+0.5){
+  //         pos.y = blockpos.y +0.5;
+  //         marioNode.mtxLocal.translation = pos;
+  //         ySpeed = 0;
+  //       }
+  //     }
+  //   }
+  // }
   async function audio():Promise<void>{
     let audioWarning: ƒ.Audio = new ƒ.Audio("Audio/smb_warning.wav");
 
@@ -122,8 +128,3 @@ namespace Script {
     ƒ.AudioManager.default.update();
   }
 }
-// animationsstautus let current animation für sprint 
-//sprint 
-// animation -->sprite stop 
-// mutatoren anschauen 
-// test rectangle
