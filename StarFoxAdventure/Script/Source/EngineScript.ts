@@ -1,27 +1,14 @@
 namespace Script {
   import ƒ = FudgeCore;
-  ƒ.Project.registerScriptNamespace(Script);  // Register the namespace to FUDGE for serialization
-  // class need to be named like the file
-  export class EngineScript extends ƒ.ComponentScript {
-    // Register the script as component for use in the editor via drag&drop
+  ƒ.Project.registerScriptNamespace(Script);  
+  
+  export class EngineScript extends ƒ.ComponentScript {// class need to be named like the file
     public static readonly iSubclass: number = ƒ.Component.registerSubclass(EngineScript);
-    // Properties may be mutated by users in the editor via the automatically created user interface
     public message: string = "SpaceshipMovement added to ";
 
-    private rgdBodySpaceship: ƒ.ComponentRigidbody;
-
-    public strafeThrust: number = 20;
-    public forwardthrust: number = 50;
-
-    private relativeX: ƒ.Vector3;
-    private relativeY: ƒ.Vector3;
-    private relativeZ: ƒ.Vector3;
-
-    private width: number = 0;
-    private height: number = 0;
-    private xAxis: number = 0;
-    private yAxis: number = 0;
-
+    private rigidbody: ƒ.ComponentRigidbody;
+    public power: number = 15000;
+    private cmpCrashAudio:ƒ.ComponentAudio;
 
     constructor() {
       super();
@@ -40,12 +27,13 @@ namespace Script {
     public hndEvent = (_event: Event): void => {
       switch (_event.type) {
         case ƒ.EVENT.COMPONENT_ADD:
-          ƒ.Debug.log(this.message, this.node);
-          this.rgdBodySpaceship = this.node.getComponent(ƒ.ComponentRigidbody);
+          //ƒ.Debug.log(this.message, this.node);
+          this.rigidbody = this.node.getComponent(ƒ.ComponentRigidbody);
+          this.rigidbody.addEventListener(ƒ.EVENT_PHYSICS.COLLISION_ENTER, this.hndCollision)
           // this.rgdBodySpaceship.addVelocity(new ƒ.Vector3(0, 0, 10));
           ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
-          console.log(this.node);
-          window.addEventListener("mousemove", this.handleMouse);
+          //console.log(this.node);
+          //window.addEventListener("mousemove", this.handleMouse);
           break;
         case ƒ.EVENT.COMPONENT_REMOVE:
           this.removeEventListener(ƒ.EVENT.COMPONENT_ADD, this.hndEvent);
@@ -56,66 +44,35 @@ namespace Script {
           break;
       }
     }
+
     update = (): void => {
-      this.setRelativeAxes();
 
-      if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W])) {
-        this.thrust();
-      }
+    }
+    private hndCollision= (_event: Event):void =>{
+      console.log("Bum");
 
-      if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S])) {
-        this.backwards();
-      }
-
-      if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A])) {
-        this.rollLeft();
-      }
-
-      if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D])) {
-        this.rollRight();
-      }
-
-
-      //this.rgdBodySpaceship.applyTorque(new ƒ.Vector3(0, this.xAxis * -10, 0));
-      //this.rgdBodySpaceship.applyTorque(ƒ.Vector3.SCALE(this.relativeX, this.yAxis * 1.5));
-     
+      let audioCrash: ƒ.Audio = new ƒ.Audio("Audio/smb_warning.wav");
+      this.cmpCrashAudio = new ƒ.ComponentAudio(audioCrash,false,true);
+      this.cmpCrashAudio.connect(true);
+      this.cmpCrashAudio.volume=4;
     }
 
-    handleMouse = (e: MouseEvent): void => {
-      this.width = window.innerWidth;
-      this.height = window.innerHeight;
-      let mousePositionY: number = e.clientY;
-      let mousePositionX: number = e.clientX;
-
-      this.xAxis = 2 * (mousePositionX / this.width) - 1;
-      this.yAxis = 2 * (mousePositionY / this.height) - 1;
+    public yaw(_value: number) {
+      this.rigidbody.applyTorque(new ƒ.Vector3(0, _value * -10, 0));
     }
-    setRelativeAxes(): void {
-      this.relativeZ = this.node.mtxWorld.getZ();
-      this.relativeY = this.node.mtxWorld.getY();
-      this.relativeX = this.node.mtxWorld.getX();
+    public pitch(_value: number) {
+      this.rigidbody.applyTorque(ƒ.Vector3.SCALE(this.node.mtxWorld.getX(), _value * 7.5));
     }
-
-    backwards(): void {
-      this.rgdBodySpaceship.applyForce(ƒ.Vector3.SCALE(this.relativeZ, -this.forwardthrust));
+    public roll(_value: number) {
+      this.rigidbody.applyTorque(ƒ.Vector3.SCALE(this.node.mtxWorld.getZ(), _value));
+    }
+    public backwards() {
+      this.rigidbody.applyForce(ƒ.Vector3.SCALE(this.node.mtxWorld.getZ(), -this.power));
+    }
+    public thrust() {
+      this.rigidbody.applyForce(ƒ.Vector3.SCALE(this.node.mtxWorld.getZ(), this.power));
     }
 
-    thrust(): void {
-      let scaledRotatedDirection: ƒ.Vector3 = ƒ.Vector3.SCALE(this.relativeZ, this.forwardthrust);
-      this.rgdBodySpaceship.applyForce(scaledRotatedDirection);
-    }
-
-
-    rollLeft(): void {
-      this.rgdBodySpaceship.applyTorque(ƒ.Vector3.SCALE(this.relativeZ, -1));
-    }
-
-
-    rollRight(): void {
-      this.rgdBodySpaceship.applyTorque(ƒ.Vector3.SCALE(this.relativeZ, 1))
-    }
-
-    
 //Camera
     // protected reduceMutator(_mutator: ƒ.Mutator): void {
     //   // delete properties that should not be mutated

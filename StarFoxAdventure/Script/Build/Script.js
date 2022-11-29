@@ -2,23 +2,13 @@
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
-    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
-    // class need to be named like the file
+    ƒ.Project.registerScriptNamespace(Script);
     class EngineScript extends ƒ.ComponentScript {
-        // Register the script as component for use in the editor via drag&drop
         static iSubclass = ƒ.Component.registerSubclass(EngineScript);
-        // Properties may be mutated by users in the editor via the automatically created user interface
         message = "SpaceshipMovement added to ";
-        rgdBodySpaceship;
-        strafeThrust = 20;
-        forwardthrust = 50;
-        relativeX;
-        relativeY;
-        relativeZ;
-        width = 0;
-        height = 0;
-        xAxis = 0;
-        yAxis = 0;
+        rigidbody;
+        power = 15000;
+        cmpCrashAudio;
         constructor() {
             super();
             // Don't start when running in editor
@@ -33,12 +23,13 @@ var Script;
         hndEvent = (_event) => {
             switch (_event.type) {
                 case "componentAdd" /* ƒ.EVENT.COMPONENT_ADD */:
-                    ƒ.Debug.log(this.message, this.node);
-                    this.rgdBodySpaceship = this.node.getComponent(ƒ.ComponentRigidbody);
+                    //ƒ.Debug.log(this.message, this.node);
+                    this.rigidbody = this.node.getComponent(ƒ.ComponentRigidbody);
+                    this.rigidbody.addEventListener("ColliderEnteredCollision" /* ƒ.EVENT_PHYSICS.COLLISION_ENTER */, this.hndCollision);
                     // this.rgdBodySpaceship.addVelocity(new ƒ.Vector3(0, 0, 10));
                     ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
-                    console.log(this.node);
-                    window.addEventListener("mousemove", this.handleMouse);
+                    //console.log(this.node);
+                    //window.addEventListener("mousemove", this.handleMouse);
                     break;
                 case "componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */:
                     this.removeEventListener("componentAdd" /* ƒ.EVENT.COMPONENT_ADD */, this.hndEvent);
@@ -50,47 +41,28 @@ var Script;
             }
         };
         update = () => {
-            this.setRelativeAxes();
-            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W])) {
-                this.thrust();
-            }
-            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S])) {
-                this.backwards();
-            }
-            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A])) {
-                this.rollLeft();
-            }
-            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D])) {
-                this.rollRight();
-            }
-            //this.rgdBodySpaceship.applyTorque(new ƒ.Vector3(0, this.xAxis * -10, 0));
-            //this.rgdBodySpaceship.applyTorque(ƒ.Vector3.SCALE(this.relativeX, this.yAxis * 1.5));
         };
-        handleMouse = (e) => {
-            this.width = window.innerWidth;
-            this.height = window.innerHeight;
-            let mousePositionY = e.clientY;
-            let mousePositionX = e.clientX;
-            this.xAxis = 2 * (mousePositionX / this.width) - 1;
-            this.yAxis = 2 * (mousePositionY / this.height) - 1;
+        hndCollision = (_event) => {
+            console.log("Bum");
+            let audioCrash = new ƒ.Audio("Audio/smb_warning.wav");
+            this.cmpCrashAudio = new ƒ.ComponentAudio(audioCrash, false, true);
+            this.cmpCrashAudio.connect(true);
+            this.cmpCrashAudio.volume = 4;
         };
-        setRelativeAxes() {
-            this.relativeZ = this.node.mtxWorld.getZ();
-            this.relativeY = this.node.mtxWorld.getY();
-            this.relativeX = this.node.mtxWorld.getX();
+        yaw(_value) {
+            this.rigidbody.applyTorque(new ƒ.Vector3(0, _value * -10, 0));
+        }
+        pitch(_value) {
+            this.rigidbody.applyTorque(ƒ.Vector3.SCALE(this.node.mtxWorld.getX(), _value * 7.5));
+        }
+        roll(_value) {
+            this.rigidbody.applyTorque(ƒ.Vector3.SCALE(this.node.mtxWorld.getZ(), _value));
         }
         backwards() {
-            this.rgdBodySpaceship.applyForce(ƒ.Vector3.SCALE(this.relativeZ, -this.forwardthrust));
+            this.rigidbody.applyForce(ƒ.Vector3.SCALE(this.node.mtxWorld.getZ(), -this.power));
         }
         thrust() {
-            let scaledRotatedDirection = ƒ.Vector3.SCALE(this.relativeZ, this.forwardthrust);
-            this.rgdBodySpaceship.applyForce(scaledRotatedDirection);
-        }
-        rollLeft() {
-            this.rgdBodySpaceship.applyTorque(ƒ.Vector3.SCALE(this.relativeZ, -1));
-        }
-        rollRight() {
-            this.rgdBodySpaceship.applyTorque(ƒ.Vector3.SCALE(this.relativeZ, 1));
+            this.rigidbody.applyForce(ƒ.Vector3.SCALE(this.node.mtxWorld.getZ(), this.power));
         }
     }
     Script.EngineScript = EngineScript;
@@ -101,37 +73,54 @@ var Script;
     ƒ.Debug.info("Main Program Template running!");
     let Spaceship;
     let graph;
+    let Terrain;
     let viewport;
+    let cmpEngine;
+    let vctMouse = ƒ.Vector2.ZERO();
     document.addEventListener("interactiveViewportStarted", start);
+    window.addEventListener("mousemove", hndMouse);
     function start(_event) {
         viewport = _event.detail;
         graph = viewport.getBranch();
+        viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
+        ƒ.Physics.settings.solverIterations = 300;
         //graph.addEventListener(ƒ.EVENT.RENDER_PREPARE,update)
         Spaceship = graph.getChildrenByName("Spaceship")[0];
+        cmpEngine = Spaceship.getComponent(Script.EngineScript);
+        let cmpCamera = Spaceship.getComponent(ƒ.ComponentCamera);
+        viewport.camera = cmpCamera;
+        Terrain = graph.getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);
+        //console.log("Tea", Terrain);
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
+        control();
         ƒ.Physics.simulate(); // if physics is included and used
         viewport.draw();
         ƒ.AudioManager.default.update();
-        // let rigidbody:ƒ.ComponentRigidbody= Spaceship.getComponent(ƒ.ComponentRigidbody);
-        // //rigidbody.applyTorque(ƒ.Vector3.Y(1));
-        // //rigidbody.applyLinearImpulse(ƒ.Vector3.X(20));
-        // if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP])){
-        //   rigidbody.applyForce(ƒ.Vector3.Z(2));
-        // }
-        // if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])){
-        //   rigidbody.applyForce(ƒ.Vector3.Z(-2));
-        // }
-        // if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])){
-        //   rigidbody.applyForce(ƒ.Vector3.X(2));
-        // }
-        // if (ƒ.Keyboard.isPressedOne([ ƒ.KEYBOARD_CODE.A,ƒ.KEYBOARD_CODE.ARROW_LEFT])){
-        //   rigidbody.applyForce(ƒ.Vector3.X(-2));
-        // }
+        let info = Terrain.mesh.getTerrainInfo(Spaceship.mtxLocal.translation, Terrain.mtxWorld);
+        console.log("INFO", info.distance);
     }
-    // für die drehung 
-    //this.relativeZ = this.node.mtxWorld.getZ();
+    function hndMouse(e) {
+        vctMouse.x = 2 * (e.clientX / window.innerWidth) - 1;
+        vctMouse.y = 2 * (e.clientY / window.innerHeight) - 1;
+    }
+    function control() {
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W])) {
+            cmpEngine.thrust();
+        }
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S])) {
+            cmpEngine.backwards();
+        }
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A])) {
+            cmpEngine.roll(-5);
+        }
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D])) {
+            cmpEngine.roll(5);
+        }
+        cmpEngine.pitch(vctMouse.y);
+        cmpEngine.yaw(vctMouse.x);
+    }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map

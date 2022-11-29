@@ -14,7 +14,7 @@
       "shader": "ShaderFlat",
       "coat": {
         "ƒ.CoatRemissive": {
-          "color": "[1, 1, 1, 1]",
+          "color": "[0.5058823529411764, 0.9529411764705882, 0.7803921568627451, 1]",
           "diffuse": 1,
           "specular": 0
         }
@@ -139,8 +139,8 @@
                     "friction": 0,
                     "restitution": 0.2,
                     "mass": 20.2,
-                    "dampTranslation": 1.5,
-                    "dampRotation": 0.1,
+                    "dampTranslation": 4.5,
+                    "dampRotation": 6.1,
                     "effectGravity": 0,
                     "typeBody": "DYNAMIC",
                     "typeCollider": "PYRAMID",
@@ -162,12 +162,7 @@
                   "Script.EngineScript": {
                     "active": true,
                     "message": "HI",
-                    "strafeThrust": 2000,
-                    "forwardthrust": 5000,
-                    "width": 0,
-                    "height": 0,
-                    "xAxis": 0,
-                    "yAxis": 0
+                    "power": 15000
                   }
                 }
               ],
@@ -221,7 +216,7 @@
                     "pivot": {
                       "translation": "[0, 0, 0]",
                       "rotation": "[0, 0, 0]",
-                      "scaling": "[1, 1, 1]"
+                      "scaling": "[6, 7, 8]"
                     },
                     "Component": {
                       "active": false
@@ -233,8 +228,8 @@
                 {
                   "ƒ.ComponentMaterial": {
                     "sortForAlpha": false,
-                    "clrPrimary": "[1, 1, 1, 1]",
-                    "clrSecondary": "[1, 1, 1, 1]",
+                    "clrPrimary": "[0.592156862745098, 0.047058823529411764, 0.047058823529411764, 1]",
+                    "clrSecondary": "[0.7098039215686275, 0.17254901960784313, 0.17254901960784313, 1]",
                     "pivot": {
                       "translation": "[0, 0]",
                       "rotation": 0,
@@ -243,7 +238,46 @@
                     "Component": {
                       "active": false
                     },
-                    "idMaterial": "Material|2022-11-17T13:38:45.079Z|78471"
+                    "idMaterial": "Material|2022-11-17T14:31:03.863Z|30654"
+                  }
+                }
+              ],
+              "ComponentTransform": [
+                {
+                  "ƒ.ComponentTransform": {
+                    "local": {
+                      "translation": "[0, 7, -31]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[3, 3, 3]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentRigidbody": [
+                {
+                  "ƒ.ComponentRigidbody": {
+                    "initialization": "TO_PIVOT",
+                    "friction": 0.2,
+                    "restitution": 0.2,
+                    "mass": 1,
+                    "dampTranslation": 0.1,
+                    "dampRotation": 0.1,
+                    "effectGravity": 1,
+                    "typeBody": "STATIC",
+                    "typeCollider": "CUBE",
+                    "isTrigger": false,
+                    "id": 1,
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
                   }
                 }
               ]
@@ -323,21 +357,6 @@
         "idResource": "TextureImage|2022-11-17T14:25:08.622Z|02714",
         "name": "Texture\\frontend-large.jpg",
         "mipmap": "CRISP"
-      }
-    }
-  },
-  "Material|2022-11-17T14:25:16.392Z|41972": {
-    "ƒ.Material": {
-      "name": "ShaderFlatTextured",
-      "idResource": "Material|2022-11-17T14:25:16.392Z|41972",
-      "shader": "ShaderFlatTextured",
-      "coat": {
-        "ƒ.CoatRemissiveTextured": {
-          "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2022-11-17T14:25:08.622Z|02714",
-          "diffuse": 1,
-          "specular": 0
-        }
       }
     }
   },
