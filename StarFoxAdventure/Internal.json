@@ -14,7 +14,7 @@
       "shader": "ShaderFlat",
       "coat": {
         "ƒ.CoatRemissive": {
-          "color": "[0.5058823529411764, 0.9529411764705882, 0.7803921568627451, 1]",
+          "color": "[1, 1, 1, 1]",
           "diffuse": 1,
           "specular": 0
         }
@@ -52,6 +52,32 @@
       "name": "model\\SpaceShip(2).obj",
       "type": "MeshObj",
       "url": "model\\SpaceShip(2).obj"
+    }
+  },
+  "Material|2022-11-17T14:31:03.863Z|30654": {
+    "ƒ.Material": {
+      "name": "ShaderFlatTextured",
+      "idResource": "Material|2022-11-17T14:31:03.863Z|30654",
+      "shader": "ShaderFlatTextured",
+      "coat": {
+        "ƒ.CoatRemissiveTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2022-11-17T14:31:18.064Z|26960",
+          "diffuse": 1,
+          "specular": 0
+        }
+      }
+    }
+  },
+  "TextureImage|2022-11-17T14:31:18.064Z|26960": {
+    "ƒ.TextureImage": {
+      "url": "Texture\\frontend-large.jpg",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2022-11-17T14:31:18.064Z|26960",
+        "name": "Texture\\frontend-large.jpg",
+        "mipmap": "CRISP"
+      }
     }
   },
   "Graph|2022-11-17T13:08:43.687Z|64794": {
@@ -104,7 +130,7 @@
                 {
                   "ƒ.ComponentMaterial": {
                     "sortForAlpha": false,
-                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrPrimary": "[0.7411764705882353, 0.9372549019607843, 0.8627450980392157, 1]",
                     "clrSecondary": "[1, 1, 1, 1]",
                     "pivot": {
                       "translation": "[0, 0]",
@@ -181,12 +207,42 @@
                     "direction": "diagonal",
                     "aspect": 1.4043583535108959,
                     "pivot": {
-                      "translation": "[0, 0, -14]",
+                      "translation": "[0, 0, -44]",
                       "rotation": "[0, 0, 0]",
                       "scaling": "[1, 1, 1]"
                     },
                     "Component": {
                       "active": true
+                    }
+                  }
+                }
+              ],
+              "JointUniversal": [
+                {
+                  "ƒ.JointUniversal": {
+                    "springDampingFirst": 5,
+                    "springFrequencyFirst": 10,
+                    "springDampingSecond": 0,
+                    "springFrequencySecond": 0,
+                    "maxRotorFirst": 360,
+                    "minRotorFirst": 0,
+                    "rotorSpeedFirst": 0,
+                    "rotorTorqueFirst": 0,
+                    "maxRotorSecond": 360,
+                    "minRotorSecond": 0,
+                    "rotorSpeedSecond": 0,
+                    "rotorTorqueSecond": 0,
+                    "firstAxis": "[0, 0, 0]",
+                    "secondAxis": "[0, 0, 0]",
+                    "Joint": {
+                      "nameChildToConnect": "Camera",
+                      "internalCollision": false,
+                      "breakForce": 0,
+                      "breakTorque": 0,
+                      "anchor": "[0, 0, 0]",
+                      "Component": {
+                        "active": false
+                      }
                     }
                   }
                 }
@@ -197,8 +253,151 @@
                 "ƒ.Node": {
                   "name": "Camera",
                   "active": true,
-                  "components": {},
+                  "components": {
+                    "ComponentCamera": [
+                      {
+                        "ƒ.ComponentCamera": {
+                          "backgroundColor": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0,
+                            "a": 1
+                          },
+                          "backgroundEnabled": true,
+                          "projection": "central",
+                          "fieldOfView": 45,
+                          "direction": "diagonal",
+                          "aspect": 1,
+                          "pivot": {
+                            "translation": "[0, 0, -44]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ],
+                    "ComponentTransform": [
+                      {
+                        "ƒ.ComponentTransform": {
+                          "local": {
+                            "translation": "[0, 0, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ],
+                    "ComponentRigidbody": []
+                  },
                   "children": []
+                }
+              },
+              {
+                "ƒ.Node": {
+                  "name": "Sensor",
+                  "active": true,
+                  "components": {},
+                  "children": [
+                    {
+                      "ƒ.Node": {
+                        "name": "Left",
+                        "active": true,
+                        "components": {
+                          "ComponentTransform": [
+                            {
+                              "ƒ.ComponentTransform": {
+                                "local": {
+                                  "translation": "[4.839999675750732, 0, -1.1999998092651367]",
+                                  "rotation": "[0, 0, 0]",
+                                  "scaling": "[1, 1, 1]"
+                                },
+                                "Component": {
+                                  "active": true
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "children": [
+                          {
+                            "ƒ.GraphInstance": {
+                              "deserializeFromSource": true,
+                              "name": "Sensor",
+                              "idSource": "Graph|2022-12-01T13:17:37.850Z|86045"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "ƒ.Node": {
+                        "name": "Right",
+                        "active": true,
+                        "components": {
+                          "ComponentTransform": [
+                            {
+                              "ƒ.ComponentTransform": {
+                                "local": {
+                                  "translation": "[-4.840000152587891, 0, -1.2000000476837158]",
+                                  "rotation": "[0, 0, 0]",
+                                  "scaling": "[1, 1, 1]"
+                                },
+                                "Component": {
+                                  "active": true
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "children": [
+                          {
+                            "ƒ.GraphInstance": {
+                              "deserializeFromSource": true,
+                              "name": "Sensor",
+                              "idSource": "Graph|2022-12-01T13:17:37.850Z|86045"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "ƒ.Node": {
+                        "name": "Tip",
+                        "active": true,
+                        "components": {
+                          "ComponentTransform": [
+                            {
+                              "ƒ.ComponentTransform": {
+                                "local": {
+                                  "translation": "[0, 0, 3.9000000953674316]",
+                                  "rotation": "[0, 0, 0]",
+                                  "scaling": "[1, 1, 1]"
+                                },
+                                "Component": {
+                                  "active": true
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "children": [
+                          {
+                            "ƒ.GraphInstance": {
+                              "deserializeFromSource": true,
+                              "name": "Sensor",
+                              "idSource": "Graph|2022-12-01T13:17:37.850Z|86045"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -216,10 +415,10 @@
                     "pivot": {
                       "translation": "[0, 0, 0]",
                       "rotation": "[0, 0, 0]",
-                      "scaling": "[6, 7, 8]"
+                      "scaling": "[1, 1, 1]"
                     },
                     "Component": {
-                      "active": false
+                      "active": true
                     }
                   }
                 }
@@ -229,14 +428,14 @@
                   "ƒ.ComponentMaterial": {
                     "sortForAlpha": false,
                     "clrPrimary": "[0.592156862745098, 0.047058823529411764, 0.047058823529411764, 1]",
-                    "clrSecondary": "[0.7098039215686275, 0.17254901960784313, 0.17254901960784313, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
                     "pivot": {
                       "translation": "[0, 0]",
                       "rotation": 0,
                       "scaling": "[1, 1]"
                     },
                     "Component": {
-                      "active": false
+                      "active": true
                     },
                     "idMaterial": "Material|2022-11-17T14:31:03.863Z|30654"
                   }
@@ -360,30 +559,64 @@
       }
     }
   },
-  "Material|2022-11-17T14:31:03.863Z|30654": {
-    "ƒ.Material": {
-      "name": "ShaderFlatTextured",
-      "idResource": "Material|2022-11-17T14:31:03.863Z|30654",
-      "shader": "ShaderFlatTextured",
-      "coat": {
-        "ƒ.CoatRemissiveTextured": {
-          "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2022-11-17T14:31:18.064Z|26960",
-          "diffuse": 1,
-          "specular": 0
-        }
-      }
+  "MeshCube|2022-12-01T13:18:07.472Z|03938": {
+    "ƒ.MeshCube": {
+      "idResource": "MeshCube|2022-12-01T13:18:07.472Z|03938",
+      "name": "MeshCube",
+      "type": "MeshCube"
     }
   },
-  "TextureImage|2022-11-17T14:31:18.064Z|26960": {
-    "ƒ.TextureImage": {
-      "url": "Texture\\frontend-large.jpg",
-      "type": "TextureImage",
-      "Texture": {
-        "idResource": "TextureImage|2022-11-17T14:31:18.064Z|26960",
-        "name": "Texture\\frontend-large.jpg",
-        "mipmap": "CRISP"
-      }
+  "Graph|2022-12-01T13:17:37.850Z|86045": {
+    "ƒ.Graph": {
+      "name": "Sensor",
+      "active": true,
+      "components": {
+        "ComponentMesh": [
+          {
+            "ƒ.ComponentMesh": {
+              "idMesh": "MeshCube|2022-12-01T13:18:07.472Z|03938",
+              "pivot": {
+                "translation": "[0, 0, 0]",
+                "rotation": "[0, 0, 0]",
+                "scaling": "[0.20000000298023224, 0.20000000298023224, 0.20000000298023224]"
+              },
+              "Component": {
+                "active": true
+              }
+            }
+          }
+        ],
+        "ComponentMaterial": [
+          {
+            "ƒ.ComponentMaterial": {
+              "sortForAlpha": false,
+              "clrPrimary": "[1, 1, 1, 1]",
+              "clrSecondary": "[1, 1, 1, 1]",
+              "pivot": {
+                "translation": "[0, 0]",
+                "rotation": 0,
+                "scaling": "[1, 1]"
+              },
+              "Component": {
+                "active": true
+              },
+              "idMaterial": "Material|2022-11-17T13:38:45.079Z|78471"
+            }
+          }
+        ],
+        "SensorScript": [
+          {
+            "Script.SensorScript": {
+              "active": true,
+              "message": "Sensor added to ",
+              "power": 15000
+            }
+          }
+        ]
+      },
+      "children": [],
+      "idResource": "Graph|2022-12-01T13:17:37.850Z|86045",
+      "type": "Graph"
     }
   }
 }

@@ -4,7 +4,8 @@ namespace Script {
 
   let Spaceship:ƒ.Node;
   let graph: ƒ.Node;
-  let Terrain:ƒ.ComponentMesh;
+  export let Terrain:ƒ.ComponentMesh;
+  export let gameState:GameState;
   let viewport: ƒ.Viewport;
   let cmpEngine: EngineScript;
   let vctMouse: ƒ.Vector2 = ƒ.Vector2.ZERO();
@@ -12,6 +13,7 @@ namespace Script {
   window.addEventListener("mousemove", hndMouse);
 
   function start(_event: CustomEvent): void {
+    gameState= new GameState();
     viewport = _event.detail;
     graph= viewport.getBranch();
     viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
@@ -20,12 +22,10 @@ namespace Script {
     //graph.addEventListener(ƒ.EVENT.RENDER_PREPARE,update)
     Spaceship= graph.getChildrenByName("Spaceship")[0];
     cmpEngine = Spaceship.getComponent(EngineScript);
-    let cmpCamera =Spaceship.getComponent(ƒ.ComponentCamera);
+    let cmpCamera =Spaceship.getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);;
     viewport.camera = cmpCamera;
     Terrain= graph.getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);
     //console.log("Tea", Terrain);
-    
-    
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
@@ -38,7 +38,7 @@ namespace Script {
     ƒ.AudioManager.default.update();
 
     let info:ƒ.TerrainInfo= (Terrain.mesh as ƒ.MeshTerrain).getTerrainInfo(Spaceship.mtxLocal.translation,Terrain.mtxWorld);
-    console.log("INFO",info.distance);
+    //console.log("INFO",info.distance);
   }
 
   function hndMouse(e: MouseEvent): void {

@@ -32,6 +32,8 @@ namespace Script {
           this.rigidbody.addEventListener(ƒ.EVENT_PHYSICS.COLLISION_ENTER, this.hndCollision)
           // this.rgdBodySpaceship.addVelocity(new ƒ.Vector3(0, 0, 10));
           ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
+          this.node.addEventListener("SensorHit",this.hndCollision);
+          
           //console.log(this.node);
           //window.addEventListener("mousemove", this.handleMouse);
           break;
@@ -40,16 +42,24 @@ namespace Script {
           this.removeEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
           break;
         case ƒ.EVENT.NODE_DESERIALIZED:
+          this.node.addEventListener(ƒ.EVENT.RENDER_PREPARE, this.update);
+
           // if deserialized the node is now fully reconstructed and access to all its components and children is possible
           break;
       }
     }
 
     update = (): void => {
+      if (!gameState){
+        return;
+      }
+      gameState.height= this.node.mtxWorld.translation.y;
+      gameState.velocity= Math.round(this.rigidbody.getVelocity().magnitude);
 
     }
     private hndCollision= (_event: Event):void =>{
       console.log("Bum");
+      console.log(_event);
 
       let audioCrash: ƒ.Audio = new ƒ.Audio("Audio/smb_warning.wav");
       this.cmpCrashAudio = new ƒ.ComponentAudio(audioCrash,false,true);
