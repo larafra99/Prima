@@ -28,20 +28,15 @@ namespace Script {
       switch (_event.type) {
         case ƒ.EVENT.COMPONENT_ADD:
           //ƒ.Debug.log(this.message, this.node);
-          this.rigidbody = this.node.getComponent(ƒ.ComponentRigidbody);
-          this.rigidbody.addEventListener(ƒ.EVENT_PHYSICS.COLLISION_ENTER, this.hndCollision)
-          // this.rgdBodySpaceship.addVelocity(new ƒ.Vector3(0, 0, 10));
-          ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
-          this.node.addEventListener("SensorHit",this.hndCollision);
-          
-          //console.log(this.node);
-          //window.addEventListener("mousemove", this.handleMouse);
           break;
         case ƒ.EVENT.COMPONENT_REMOVE:
           this.removeEventListener(ƒ.EVENT.COMPONENT_ADD, this.hndEvent);
           this.removeEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
           break;
         case ƒ.EVENT.NODE_DESERIALIZED:
+          this.rigidbody = this.node.getComponent(ƒ.ComponentRigidbody);
+          this.rigidbody.addEventListener(ƒ.EVENT_PHYSICS.COLLISION_ENTER, this.hndCollision)
+          this.node.addEventListener("SensorHit",this.hndCollision);
           this.node.addEventListener(ƒ.EVENT.RENDER_PREPARE, this.update);
 
           // if deserialized the node is now fully reconstructed and access to all its components and children is possible
@@ -83,10 +78,5 @@ namespace Script {
       this.rigidbody.applyForce(ƒ.Vector3.SCALE(this.node.mtxWorld.getZ(), this.power));
     }
 
-//Camera
-    // protected reduceMutator(_mutator: ƒ.Mutator): void {
-    //   // delete properties that should not be mutated
-    //   // undefined properties and private fields (#) will not be included by default
-    // }
   }
 }

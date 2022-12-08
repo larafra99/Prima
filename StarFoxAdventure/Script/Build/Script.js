@@ -24,19 +24,15 @@ var Script;
             switch (_event.type) {
                 case "componentAdd" /* ƒ.EVENT.COMPONENT_ADD */:
                     //ƒ.Debug.log(this.message, this.node);
-                    this.rigidbody = this.node.getComponent(ƒ.ComponentRigidbody);
-                    this.rigidbody.addEventListener("ColliderEnteredCollision" /* ƒ.EVENT_PHYSICS.COLLISION_ENTER */, this.hndCollision);
-                    // this.rgdBodySpaceship.addVelocity(new ƒ.Vector3(0, 0, 10));
-                    ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
-                    this.node.addEventListener("SensorHit", this.hndCollision);
-                    //console.log(this.node);
-                    //window.addEventListener("mousemove", this.handleMouse);
                     break;
                 case "componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */:
                     this.removeEventListener("componentAdd" /* ƒ.EVENT.COMPONENT_ADD */, this.hndEvent);
                     this.removeEventListener("componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */, this.hndEvent);
                     break;
                 case "nodeDeserialized" /* ƒ.EVENT.NODE_DESERIALIZED */:
+                    this.rigidbody = this.node.getComponent(ƒ.ComponentRigidbody);
+                    this.rigidbody.addEventListener("ColliderEnteredCollision" /* ƒ.EVENT_PHYSICS.COLLISION_ENTER */, this.hndCollision);
+                    this.node.addEventListener("SensorHit", this.hndCollision);
                     this.node.addEventListener("renderPrepare" /* ƒ.EVENT.RENDER_PREPARE */, this.update);
                     // if deserialized the node is now fully reconstructed and access to all its components and children is possible
                     break;
@@ -128,7 +124,7 @@ var Script;
         ƒ.Physics.simulate(); // if physics is included and used
         viewport.draw();
         ƒ.AudioManager.default.update();
-        let info = Script.Terrain.mesh.getTerrainInfo(Spaceship.mtxLocal.translation, Script.Terrain.mtxWorld);
+        //let info:ƒ.TerrainInfo= (Terrain.mesh as ƒ.MeshTerrain).getTerrainInfo(Spaceship.mtxLocal.translation,Terrain.mtxWorld);
         //console.log("INFO",info.distance);
     }
     function hndMouse(e) {

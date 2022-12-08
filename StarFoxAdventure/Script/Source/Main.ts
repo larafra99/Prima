@@ -15,6 +15,7 @@ namespace Script {
   function start(_event: CustomEvent): void {
     gameState= new GameState();
     viewport = _event.detail;
+    
     graph= viewport.getBranch();
     viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
     ƒ.Physics.settings.solverIterations = 300;
@@ -36,8 +37,7 @@ namespace Script {
     ƒ.Physics.simulate();  // if physics is included and used
     viewport.draw();
     ƒ.AudioManager.default.update();
-
-    let info:ƒ.TerrainInfo= (Terrain.mesh as ƒ.MeshTerrain).getTerrainInfo(Spaceship.mtxLocal.translation,Terrain.mtxWorld);
+    //let info:ƒ.TerrainInfo= (Terrain.mesh as ƒ.MeshTerrain).getTerrainInfo(Spaceship.mtxLocal.translation,Terrain.mtxWorld);
     //console.log("INFO",info.distance);
   }
 
