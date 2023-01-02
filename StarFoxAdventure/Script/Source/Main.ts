@@ -3,16 +3,19 @@ namespace Script {
   ƒ.Debug.info("Main Program Template running!");
 
   let Spaceship:ƒ.Node;
-  let graph: ƒ.Node;
+  export let graph: ƒ.Node;
   export let Terrain:ƒ.ComponentMesh;
   export let gameState:GameState;
-  let viewport: ƒ.Viewport;
+  export let viewport: ƒ.Viewport;
   let cmpEngine: EngineScript;
   let vctMouse: ƒ.Vector2 = ƒ.Vector2.ZERO();
-  document.addEventListener("interactiveViewportStarted", <EventListener>start);
+  document.addEventListener("interactiveViewportStarted", <EventListener><unknown>start);
   window.addEventListener("mousemove", hndMouse);
 
-  function start(_event: CustomEvent): void {
+  async function start(_event: CustomEvent): Promise<void> {
+    let response: Response = await fetch('config.json');
+    let json = await response.json();
+    console.log(json);
     gameState= new GameState();
     viewport = _event.detail;
     
@@ -27,9 +30,10 @@ namespace Script {
     viewport.camera = cmpCamera;
     Terrain= graph.getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);
     //console.log("Tea", Terrain);
-
+    
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+    //init();
   }
 
   function update(_event: Event): void {

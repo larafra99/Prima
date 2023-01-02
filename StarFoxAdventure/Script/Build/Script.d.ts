@@ -1,3 +1,7 @@
+/// <reference path="../../../Aid/Build/FudgeAid.d.ts" />
+declare namespace Script {
+    function init(): void;
+}
 declare namespace Script {
     import ƒ = FudgeCore;
     class EngineScript extends ƒ.ComponentScript {
@@ -30,8 +34,10 @@ declare namespace Script {
 }
 declare namespace Script {
     import ƒ = FudgeCore;
+    let graph: ƒ.Node;
     let Terrain: ƒ.ComponentMesh;
     let gameState: GameState;
+    let viewport: ƒ.Viewport;
 }
 declare namespace Script {
     import ƒ = FudgeCore;
@@ -42,4 +48,27 @@ declare namespace Script {
         hndEvent: (_event: Event) => void;
         private update;
     }
+}
+declare namespace Script {
+    import ƒAid = FudgeAid;
+    enum JOB {
+        IDLE = 0,
+        ATTACK = 1
+    }
+    export class StateMachine extends ƒAid.ComponentStateMachine<JOB> {
+        static readonly iSubclass: number;
+        private static instructions;
+        forceEscape: number;
+        torqueIdle: number;
+        constructor();
+        static get(): ƒAid.StateMachineInstructions<JOB>;
+        private static transitDefault;
+        private static actDefault;
+        private static actIdle;
+        private static actAttack;
+        private static actDie;
+        private hndEvent;
+        private update;
+    }
+    export {};
 }

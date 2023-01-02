@@ -1,4 +1,47 @@
 "use strict";
+///<reference path="./../../../Aid/Build/FudgeAid.d.ts"/>
+var Script;
+///<reference path="./../../../Aid/Build/FudgeAid.d.ts"/>
+(function (Script) {
+    var ƒ = FudgeCore;
+    function init() {
+        let time0 = 0;
+        let time1 = 2000;
+        let value0 = 1;
+        let value1 = 45;
+        let fps = 30;
+        if (!Script.graph) {
+            return;
+        }
+        let cube = Script.graph.getChildrenByName("Cube")[0];
+        console.log("CUBE", cube);
+        let animseq = new ƒ.AnimationSequence();
+        animseq.addKey(new ƒ.AnimationKey(time0, value0));
+        animseq.addKey(new ƒ.AnimationKey(time1, value1));
+        let animStructure = {
+            components: {
+                ComponentTransform: [
+                    {
+                        "ƒ.ComponentTransform": {
+                            mtxLocal: {
+                                rotation: {
+                                    x: animseq,
+                                    y: animseq
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        };
+        let animation = new ƒ.Animation("testAnimation", animStructure, fps);
+        let cmpAnimator = new ƒ.ComponentAnimator(animation, ƒ.ANIMATION_PLAYMODE["LOOP"], ƒ.ANIMATION_PLAYBACK["TIMEBASED_CONTINOUS"]);
+        cmpAnimator.scale = 1;
+        cube.addComponent(cmpAnimator);
+        cmpAnimator.activate(true);
+    }
+    Script.init = init;
+})(Script || (Script = {}));
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
@@ -96,33 +139,35 @@ var Script;
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
     let Spaceship;
-    let graph;
-    let viewport;
     let cmpEngine;
     let vctMouse = ƒ.Vector2.ZERO();
     document.addEventListener("interactiveViewportStarted", start);
     window.addEventListener("mousemove", hndMouse);
-    function start(_event) {
+    async function start(_event) {
+        let response = await fetch('config.json');
+        let json = await response.json();
+        console.log(json);
         Script.gameState = new Script.GameState();
-        viewport = _event.detail;
-        graph = viewport.getBranch();
-        viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
+        Script.viewport = _event.detail;
+        Script.graph = Script.viewport.getBranch();
+        Script.viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
         ƒ.Physics.settings.solverIterations = 300;
         //graph.addEventListener(ƒ.EVENT.RENDER_PREPARE,update)
-        Spaceship = graph.getChildrenByName("Spaceship")[0];
+        Spaceship = Script.graph.getChildrenByName("Spaceship")[0];
         cmpEngine = Spaceship.getComponent(Script.EngineScript);
         let cmpCamera = Spaceship.getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);
         ;
-        viewport.camera = cmpCamera;
-        Script.Terrain = graph.getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);
+        Script.viewport.camera = cmpCamera;
+        Script.Terrain = Script.graph.getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);
         //console.log("Tea", Terrain);
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+        //init();
     }
     function update(_event) {
         control();
         ƒ.Physics.simulate(); // if physics is included and used
-        viewport.draw();
+        Script.viewport.draw();
         ƒ.AudioManager.default.update();
         //let info:ƒ.TerrainInfo= (Terrain.mesh as ƒ.MeshTerrain).getTerrainInfo(Spaceship.mtxLocal.translation,Terrain.mtxWorld);
         //console.log("INFO",info.distance);
@@ -194,5 +239,79 @@ var Script;
         };
     }
     Script.SensorScript = SensorScript;
+})(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
+    var ƒAid = FudgeAid;
+    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+    let JOB;
+    (function (JOB) {
+        JOB[JOB["IDLE"] = 0] = "IDLE";
+        JOB[JOB["ATTACK"] = 1] = "ATTACK";
+    })(JOB || (JOB = {}));
+    class StateMachine extends ƒAid.ComponentStateMachine {
+        static iSubclass = ƒ.Component.registerSubclass(StateMachine);
+        static instructions = StateMachine.get();
+        forceEscape = 25;
+        torqueIdle = 5;
+        //   private cmpBody: ƒ.ComponentRigidbody;
+        //   private cmpMaterial: ƒ.ComponentMaterial;
+        constructor() {
+            super();
+            this.instructions = StateMachine.instructions; // setup instructions with the static set
+            // Don't start when running in editor
+            if (ƒ.Project.mode == ƒ.MODE.EDITOR)
+                return;
+        }
+        static get() {
+            let setup = new ƒAid.StateMachineInstructions();
+            setup.transitDefault = StateMachine.transitDefault;
+            setup.actDefault = StateMachine.actDefault;
+            setup.setAction(JOB.IDLE, this.actIdle);
+            setup.setAction(JOB.ATTACK, this.actAttack);
+            //setup.setTransition(JOB.IDLE, JOB.ATTACK, <ƒ.General>this.transitDie);
+            return setup;
+        }
+        static transitDefault(_machine) {
+            console.log("Transit to", _machine.stateNext);
+        }
+        static async actDefault(_machine) {
+            console.log(JOB[_machine.stateCurrent]);
+        }
+        static async actIdle(_machine) {
+            _machine.node.mtxLocal.rotateY(5);
+        }
+        static async actAttack(_machine) {
+            // _machine.cmpMaterial.clrPrimary = ƒ.Color.CSS("white");
+            // let difference: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(_machine.node.mtxWorld.translation, cart.mtxWorld.translation);
+            // difference.normalize(_machine.forceEscape);
+            // _machine.cmpBody.applyForce(difference);
+            // StateMachine.actDefault(_machine);
+        }
+        static async actDie(_machine) {
+            //
+        }
+        // Activate the functions of this component as response to events
+        hndEvent = (_event) => {
+            switch (_event.type) {
+                case "componentAdd" /* ƒ.EVENT.COMPONENT_ADD */:
+                    ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
+                    this.transit(JOB.IDLE);
+                    break;
+                case "componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */:
+                    this.removeEventListener("componentAdd" /* ƒ.EVENT.COMPONENT_ADD */, this.hndEvent);
+                    this.removeEventListener("componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */, this.hndEvent);
+                    ƒ.Loop.removeEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
+                    break;
+                case "nodeDeserialized" /* ƒ.EVENT.NODE_DESERIALIZED */:
+                    break;
+            }
+        };
+        update = (_event) => {
+            this.act();
+        };
+    }
+    Script.StateMachine = StateMachine;
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
