@@ -1,43 +1,72 @@
-namespace Script { // namespace nach Titel des Spieles bennenen
+
+namespace Harvest { // namespace nach Titel des Spieles bennenen
     import ƒ = FudgeCore;
     import ƒAid = FudgeAid;
 
-    export enum ACTION {
-        IDLE, WALK, SPRINT, FARMING, WATERING
+    export enum WALK {
+        IDLE, LEFT, RIGHT, UP, DOWN
     }
 
-    export class Avatar extends ƒAid.NodeSprite{
-        readonly xSpeedDefault = 0.9;
-        readonly xSpeedSprint = 3;
-        private walkanimation: ƒAid.SpriteSheetAnimation; 
-        private ySpeed: number = 1;
-        private gravity: number = 5;
+    export class Avatar extends ƒAid.NodeSprite {
+        private xSpeed: number = .9;
 
+        private walkLeft: ƒAid.SpriteSheetAnimation;
+        private walkRight: ƒAid.SpriteSheetAnimation;
+        private walkUp: ƒAid.SpriteSheetAnimation;
+        private walkDown: ƒAid.SpriteSheetAnimation;
 
 
         public constructor() {
-            super("AvatarInstance");
-            this.addComponent(new ƒ.ComponentTransform());
-           
+        super("AvatarInstance");
+        this.addComponent(new ƒ.ComponentTransform());
         }
 
-        public update(_deltaTime: number): void {
-            this.ySpeed-=this.gravity*_deltaTime;
-            let yOffset: number = this.ySpeed* _deltaTime;
-            this.mtxLocal.translateY(yOffset);
+        public walkleftright(_deltaTime: number): void {
+            this.mtxLocal.translateX(this.xSpeed * _deltaTime, true);
+            //this.mtxLocal.rotateX(this.xSpeed * _deltaTime, true);
         }
-  
-        public initializeAnimation(_imageSpriteSheer:ƒ.TextureImage):void{
-            let coat: ƒ.CoatTextured = new ƒ.CoatTextured(undefined, _imageSpriteSheer);
-        
-            this.walkanimation = new ƒAid.SpriteSheetAnimation("walk", coat);
-            this.walkanimation.generateByGrid(ƒ.Rectangle.GET(0, 0, 15, 16), 3, 12, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
-            // marioSprite = new ƒAid.NodeSprite("marioSprite");
-            // marioSprite.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4()));
-            // marioSprite.setAnimation(this.walkanimation);
-            // marioSprite.mtxLocal.translateY(+0.5); // mtx = Matrix 
-            // marioSprite.framerate = 10;
-            // marioNode.addChild(marioSprite);
+
+        public walkupdown(_deltaTime: number): void {
+            console.log("updown");
+            this.mtxLocal.translateZ(this.xSpeed * _deltaTime, true); 
         }
-  }
+            
+        public act(_action: WALK): void {
+        let animation: ƒAid.SpriteSheetAnimation;
+        switch (_action) {
+            case WALK.LEFT:
+            animation = this.walkLeft;
+            break;
+            case WALK.RIGHT:
+            animation = this.walkRight;
+            break;
+            case WALK.IDLE:
+            //this.showFrame(0);
+            break;
+            case WALK.UP:
+            animation = this.walkUp;
+            break;
+            case WALK.DOWN:
+            animation = this.walkDown;
+            break;
+        }
+        }
+
+        public async initializeAnimations(_imgSpriteSheet: ƒ.TextureImage): Promise<void> {
+        let coat: ƒ.CoatTextured = new ƒ.CoatTextured(undefined, _imgSpriteSheet);
+
+        this.walkLeft = new ƒAid.SpriteSheetAnimation("Left", coat);
+        this.walkLeft.generateByGrid(ƒ.Rectangle.GET(0, 0, 16, 24), 2, 64, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
+
+        this.walkRight = new ƒAid.SpriteSheetAnimation("Right", coat);
+        this.walkRight.generateByGrid(ƒ.Rectangle.GET(0, 24, 16, 24), 2, 64, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
+
+        this.walkUp = new ƒAid.SpriteSheetAnimation("Up", coat);
+        this.walkUp.generateByGrid(ƒ.Rectangle.GET(0, 48, 16, 24), 2, 64, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
+
+        this.walkDown = new ƒAid.SpriteSheetAnimation("Down", coat);
+        this.walkDown.generateByGrid(ƒ.Rectangle.GET(32, 0, 16, 24), 2, 64, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
+        this.framerate = 20;
+        }
+    }
 }
