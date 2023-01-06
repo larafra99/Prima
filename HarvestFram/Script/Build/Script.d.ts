@@ -11,6 +11,7 @@ declare namespace Script {
 declare namespace Harvest {
     import ƒ = FudgeCore;
     let graph: ƒ.Node;
+    let playerstate: UserInterface;
 }
 declare namespace Harvest {
     import ƒ = FudgeCore;
@@ -33,5 +34,17 @@ declare namespace Harvest {
         walkupdown(_deltaTime: number): void;
         act(_action: WALK): void;
         initializeAnimations(_imgSpriteSheet: ƒ.TextureImage): Promise<void>;
+    }
+}
+declare namespace Harvest {
+    import ƒ = FudgeCore;
+    class UserInterface extends ƒ.Mutable {
+        protected reduceMutator(_mutator: ƒ.Mutator): void;
+        stamina: number;
+        vitality: number;
+        private controller;
+        constructor(_config: {
+            [key: string]: number;
+        });
     }
 }

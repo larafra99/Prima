@@ -5,6 +5,7 @@ namespace Harvest {
   // Initialize Viewport
   let viewport: ƒ.Viewport;
   export let graph: ƒ.Node;
+  export let playerstate: UserInterface;
   let avatar: Avatar;
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
@@ -18,7 +19,7 @@ namespace Harvest {
   
   async function hndLoad(_event: Event): Promise<void> {
     let imgSpriteSheet: ƒ.TextureImage = new ƒ.TextureImage();
-    await imgSpriteSheet.load("./Images/Playersprite.png");
+    await imgSpriteSheet.load("./Images/PlayerSprite.png");
 
     graph = viewport.getBranch();
     avatar = new Avatar();
@@ -30,6 +31,12 @@ namespace Harvest {
   }
 
   function update(_event: Event): void {
+    if (!UserInterface){
+      return;
+    }
+    playerstate.stamina= this.node.mtxWorld.translation.y;
+    playerstate.vitality= Math.round(this.rigidbody.getVelocity().magnitude);
+
     let deltaTime: number = ƒ.Loop.timeFrameGame / 1000;
     // Check for key presses
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {

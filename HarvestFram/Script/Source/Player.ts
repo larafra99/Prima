@@ -23,11 +23,9 @@ namespace Harvest { // namespace nach Titel des Spieles bennenen
 
         public walkleftright(_deltaTime: number): void {
             this.mtxLocal.translateX(this.xSpeed * _deltaTime, true);
-            //this.mtxLocal.rotateX(this.xSpeed * _deltaTime, true);
         }
 
         public walkupdown(_deltaTime: number): void {
-            console.log("updown");
             this.mtxLocal.translateZ(this.xSpeed * _deltaTime, true); 
         }
             
@@ -56,17 +54,19 @@ namespace Harvest { // namespace nach Titel des Spieles bennenen
         let coat: ƒ.CoatTextured = new ƒ.CoatTextured(undefined, _imgSpriteSheet);
 
         this.walkLeft = new ƒAid.SpriteSheetAnimation("Left", coat);
-        this.walkLeft.generateByGrid(ƒ.Rectangle.GET(0, 0, 16, 24), 2, 64, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
+        this.walkLeft.generateByGrid(ƒ.Rectangle.GET(10, 210, 86, 100), 3, 70, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
 
         this.walkRight = new ƒAid.SpriteSheetAnimation("Right", coat);
-        this.walkRight.generateByGrid(ƒ.Rectangle.GET(0, 24, 16, 24), 2, 64, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
+        this.walkRight.generateByGrid(ƒ.Rectangle.GET(10, 475, 86, 100), 3, 70, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
 
         this.walkUp = new ƒAid.SpriteSheetAnimation("Up", coat);
-        this.walkUp.generateByGrid(ƒ.Rectangle.GET(0, 48, 16, 24), 2, 64, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
+        this.walkUp.generateByGrid(ƒ.Rectangle.GET(10, 345, 86, 100), 3, 70, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
 
         this.walkDown = new ƒAid.SpriteSheetAnimation("Down", coat);
-        this.walkDown.generateByGrid(ƒ.Rectangle.GET(32, 0, 16, 24), 2, 64, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
+        this.walkDown.generateByGrid(ƒ.Rectangle.GET(10, 70, 86, 100), 3, 70, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
+        
         this.framerate = 20;
+        this.mtxLocal.translateY(+0.5);
         }
     }
 }
