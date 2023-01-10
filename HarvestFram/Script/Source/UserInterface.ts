@@ -1,6 +1,7 @@
 namespace Harvest {
     import ƒ= FudgeCore;
     import ƒui= FudgeUserInterface;
+
     export class UserInterface extends ƒ.Mutable {
         protected reduceMutator(_mutator: ƒ.Mutator): void {
             /**/ 
@@ -12,8 +13,8 @@ namespace Harvest {
 
         constructor(_config: {[key: string]: number}){
             super();
-            this.stamina = _config.stamina;
-            this.vitality=_config.vitality;
+            //this.stamina = _config.stamina;
+            //this.vitality=_config.vitality;
             this.controller= new ƒui.Controller(this,document.querySelector("#vui"))
             console.log(this.controller);
         }

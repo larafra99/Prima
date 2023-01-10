@@ -47,8 +47,8 @@ var Harvest;
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
         viewport = _event.detail;
-        viewport.camera.mtxPivot.translateZ(+10);
-        viewport.camera.mtxPivot.rotateY(+180);
+        //viewport.camera.mtxPivot.translateZ(+10);
+        //viewport.camera.mtxPivot.rotateY(+180);
         hndLoad(_event);
     }
     async function hndLoad(_event) {
@@ -65,10 +65,9 @@ var Harvest;
         if (!Harvest.UserInterface) {
             return;
         }
-        Harvest.playerstate.stamina = this.node.mtxWorld.translation.y;
-        Harvest.playerstate.vitality = Math.round(this.rigidbody.getVelocity().magnitude);
+        //playerstate.stamina= this.node.mtxWorld.translation.y;
+        //playerstate.vitality= Math.round(this.rigidbody.getVelocity().magnitude);
         let deltaTime = ƒ.Loop.timeFrameGame / 1000;
-        // Check for key presses
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
             avatar.mtxLocal.rotation = ƒ.Vector3.Y(180);
             avatar.act(Harvest.WALK.RIGHT);
@@ -109,6 +108,7 @@ var Harvest;
     })(WALK = Harvest.WALK || (Harvest.WALK = {}));
     class Avatar extends ƒAid.NodeSprite {
         xSpeed = .9;
+        animationCurrent;
         walkLeft;
         walkRight;
         walkUp;
@@ -124,6 +124,7 @@ var Harvest;
             this.mtxLocal.translateZ(this.xSpeed * _deltaTime, true);
         }
         act(_action) {
+            this.animationCurrent = this.walkDown;
             let animation;
             switch (_action) {
                 case WALK.LEFT:
@@ -141,6 +142,10 @@ var Harvest;
                 case WALK.DOWN:
                     animation = this.walkDown;
                     break;
+            }
+            if (animation != this.animationCurrent) {
+                this.setAnimation(animation);
+                this.animationCurrent = animation;
             }
         }
         async initializeAnimations(_imgSpriteSheet) {
@@ -173,8 +178,8 @@ var Harvest;
         controller;
         constructor(_config) {
             super();
-            this.stamina = _config.stamina;
-            this.vitality = _config.vitality;
+            //this.stamina = _config.stamina;
+            //this.vitality=_config.vitality;
             this.controller = new ƒui.Controller(this, document.querySelector("#vui"));
             console.log(this.controller);
         }

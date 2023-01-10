@@ -11,12 +11,11 @@ namespace Harvest {
 
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
-    viewport.camera.mtxPivot.translateZ(+10);
-    viewport.camera.mtxPivot.rotateY(+180);
+    //viewport.camera.mtxPivot.translateZ(+10);
+    //viewport.camera.mtxPivot.rotateY(+180);
     hndLoad(_event);
   }
 
-  
   async function hndLoad(_event: Event): Promise<void> {
     let imgSpriteSheet: ƒ.TextureImage = new ƒ.TextureImage();
     await imgSpriteSheet.load("./Images/PlayerSprite.png");
@@ -34,11 +33,10 @@ namespace Harvest {
     if (!UserInterface){
       return;
     }
-    playerstate.stamina= this.node.mtxWorld.translation.y;
-    playerstate.vitality= Math.round(this.rigidbody.getVelocity().magnitude);
+    //playerstate.stamina= this.node.mtxWorld.translation.y;
+    //playerstate.vitality= Math.round(this.rigidbody.getVelocity().magnitude);
 
     let deltaTime: number = ƒ.Loop.timeFrameGame / 1000;
-    // Check for key presses
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
       avatar.mtxLocal.rotation = ƒ.Vector3.Y(180);
       avatar.act(WALK.RIGHT);
@@ -61,8 +59,7 @@ namespace Harvest {
     }
     else{
       avatar.act(WALK.IDLE);
-    }
-      
+    }  
     viewport.draw();
   }
 

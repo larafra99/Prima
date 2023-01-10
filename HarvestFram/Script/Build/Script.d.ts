@@ -25,6 +25,7 @@ declare namespace Harvest {
     }
     class Avatar extends ƒAid.NodeSprite {
         private xSpeed;
+        private animationCurrent;
         private walkLeft;
         private walkRight;
         private walkUp;
