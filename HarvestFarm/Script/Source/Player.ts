@@ -1,5 +1,5 @@
 
-namespace Harvest { 
+namespace Harvest {
     import ƒ = FudgeCore;
     import ƒAid = FudgeAid;
 
@@ -10,12 +10,14 @@ namespace Harvest {
     export class Avatar extends ƒAid.NodeSprite {
         private xSpeed: number = .9;
 
-        private animationCurrent:ƒAid.SpriteSheetAnimation;
+        private animationCurrent: ƒAid.SpriteSheetAnimation;
         private walkLeft: ƒAid.SpriteSheetAnimation;
         private walkRight: ƒAid.SpriteSheetAnimation;
         private walkUp: ƒAid.SpriteSheetAnimation;
         private walkDown: ƒAid.SpriteSheetAnimation;
 
+        //playerstate.stamina= this.node.mtxWorld.translation.y;
+        //playerstate.vitality= Math.round(this.rigidbody.getVelocity().magnitude);
 
         public constructor() {
             super("AvatarInstance");
@@ -31,7 +33,7 @@ namespace Harvest {
         }
 
         public act(_action: WALK): void {
-            this.animationCurrent= this.walkDown;
+
             let animation: ƒAid.SpriteSheetAnimation;
             switch (_action) {
                 case WALK.LEFT:
@@ -41,8 +43,8 @@ namespace Harvest {
                     animation = this.walkRight;
                     break;
                 case WALK.IDLE:
-                    //this.showFrame(1);
-                    animation = this.walkUp;
+                    //this.showFrame(0);
+                    // animation = this.animationCurrent;
                     break;
                 case WALK.UP:
                     animation = this.walkUp;
@@ -51,10 +53,13 @@ namespace Harvest {
                     animation = this.walkDown;
                     break;
             }
-            if (animation != this.animationCurrent) {
+            if(_action == WALK.IDLE){
+                this.showFrame(0);
+            }
+            else if (animation != this.animationCurrent) {
                 this.setAnimation(animation);
-                this.animationCurrent = animation;
-                }
+                this.animationCurrent = animation;   
+            }
         }
 
         public async initializeAnimations(_imgSpriteSheet: ƒ.TextureImage): Promise<void> {

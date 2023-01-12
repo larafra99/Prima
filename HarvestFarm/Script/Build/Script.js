@@ -47,6 +47,7 @@ var Harvest;
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
         viewport = _event.detail;
+        //viewport.draw(); //wenn die Welt nicht lädt
         //viewport.camera.mtxPivot.translateZ(+10);
         //viewport.camera.mtxPivot.rotateY(+180);
         hndLoad(_event);
@@ -57,6 +58,8 @@ var Harvest;
         Harvest.graph = viewport.getBranch();
         avatar = new Harvest.Avatar();
         avatar.initializeAnimations(imgSpriteSheet);
+        avatar.act(Harvest.WALK.DOWN);
+        avatar.act(Harvest.WALK.IDLE);
         Harvest.graph.addChild(avatar);
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start();
@@ -65,8 +68,6 @@ var Harvest;
         if (!Harvest.UserInterface) {
             return;
         }
-        //playerstate.stamina= this.node.mtxWorld.translation.y;
-        //playerstate.vitality= Math.round(this.rigidbody.getVelocity().magnitude);
         let deltaTime = ƒ.Loop.timeFrameGame / 1000;
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
             avatar.mtxLocal.rotation = ƒ.Vector3.Y(180);
@@ -113,6 +114,8 @@ var Harvest;
         walkRight;
         walkUp;
         walkDown;
+        //playerstate.stamina= this.node.mtxWorld.translation.y;
+        //playerstate.vitality= Math.round(this.rigidbody.getVelocity().magnitude);
         constructor() {
             super("AvatarInstance");
             this.addComponent(new ƒ.ComponentTransform());
@@ -124,7 +127,6 @@ var Harvest;
             this.mtxLocal.translateZ(this.xSpeed * _deltaTime, true);
         }
         act(_action) {
-            this.animationCurrent = this.walkDown;
             let animation;
             switch (_action) {
                 case WALK.LEFT:
@@ -134,8 +136,8 @@ var Harvest;
                     animation = this.walkRight;
                     break;
                 case WALK.IDLE:
-                    //this.showFrame(1);
-                    animation = this.walkUp;
+                    //this.showFrame(0);
+                    // animation = this.animationCurrent;
                     break;
                 case WALK.UP:
                     animation = this.walkUp;
@@ -144,7 +146,10 @@ var Harvest;
                     animation = this.walkDown;
                     break;
             }
-            if (animation != this.animationCurrent) {
+            if (_action == WALK.IDLE) {
+                this.showFrame(0);
+            }
+            else if (animation != this.animationCurrent) {
                 this.setAnimation(animation);
                 this.animationCurrent = animation;
             }
@@ -179,8 +184,8 @@ var Harvest;
         controller;
         constructor(_config) {
             super();
-            //this.stamina = _config.stamina;
-            //this.vitality=_config.vitality;
+            this.stamina = _config.stamina;
+            this.vitality = _config.vitality;
             this.controller = new ƒui.Controller(this, document.querySelector("#vui"));
             console.log(this.controller);
         }

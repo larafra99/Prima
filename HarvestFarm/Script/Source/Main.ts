@@ -11,6 +11,7 @@ namespace Harvest {
 
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
+    //viewport.draw(); //wenn die Welt nicht lädt
     //viewport.camera.mtxPivot.translateZ(+10);
     //viewport.camera.mtxPivot.rotateY(+180);
     hndLoad(_event);
@@ -23,6 +24,8 @@ namespace Harvest {
     graph = viewport.getBranch();
     avatar = new Avatar();
     avatar.initializeAnimations(imgSpriteSheet);
+    avatar.act(WALK.DOWN);
+    avatar.act(WALK.IDLE);
     graph.addChild(avatar);
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
@@ -33,8 +36,7 @@ namespace Harvest {
     if (!UserInterface){
       return;
     }
-    //playerstate.stamina= this.node.mtxWorld.translation.y;
-    //playerstate.vitality= Math.round(this.rigidbody.getVelocity().magnitude);
+    
 
     let deltaTime: number = ƒ.Loop.timeFrameGame / 1000;
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
