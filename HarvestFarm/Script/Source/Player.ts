@@ -41,7 +41,8 @@ namespace Harvest {
                     animation = this.walkRight;
                     break;
                 case WALK.IDLE:
-                    //this.showFrame(0);
+                    //this.showFrame(1);
+                    animation = this.walkUp;
                     break;
                 case WALK.UP:
                     animation = this.walkUp;
@@ -60,19 +61,19 @@ namespace Harvest {
             let coat: ƒ.CoatTextured = new ƒ.CoatTextured(undefined, _imgSpriteSheet);
 
             this.walkLeft = new ƒAid.SpriteSheetAnimation("Left", coat);
-            this.walkLeft.generateByGrid(ƒ.Rectangle.GET(10, 210, 86, 100), 3, 70, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
+            this.walkLeft.generateByGrid(ƒ.Rectangle.GET(10, 210, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
 
             this.walkRight = new ƒAid.SpriteSheetAnimation("Right", coat);
-            this.walkRight.generateByGrid(ƒ.Rectangle.GET(10, 475, 86, 100), 3, 70, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
+            this.walkRight.generateByGrid(ƒ.Rectangle.GET(10, 475, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
 
             this.walkUp = new ƒAid.SpriteSheetAnimation("Up", coat);
-            this.walkUp.generateByGrid(ƒ.Rectangle.GET(10, 345, 86, 100), 3, 70, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
+            this.walkUp.generateByGrid(ƒ.Rectangle.GET(10, 345, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
 
             this.walkDown = new ƒAid.SpriteSheetAnimation("Down", coat);
-            this.walkDown.generateByGrid(ƒ.Rectangle.GET(10, 70, 86, 100), 3, 70, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
+            this.walkDown.generateByGrid(ƒ.Rectangle.GET(10, 70, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
 
             this.framerate = 20;
-            this.mtxLocal.translateY(+0.5);
+            //this.mtxLocal.translateY(+0.5);
         }
     }
 }

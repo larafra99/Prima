@@ -12,6 +12,7 @@ namespace Script {
   let marioSprite: ƒAid.NodeSprite;
   let cmpTimeAudio:ƒ.ComponentAudio;
   
+  
   let marioSpeed: number = 3.0;
   let facing: boolean = true; // true = right
   // let ySpeed: number  = 0;
@@ -32,11 +33,11 @@ namespace Script {
 
   async function loadSprite():Promise<void>{
     let spriteSheet: ƒ.TextureImage = new ƒ.TextureImage();
-    await spriteSheet.load("./Images/mariowalkx16.gif");
+    await spriteSheet.load("./Images/PlayerSprite.png");
     let coat: ƒ.CoatTextured = new ƒ.CoatTextured(undefined, spriteSheet);
 
     let walkanimation: ƒAid.SpriteSheetAnimation = new ƒAid.SpriteSheetAnimation("walk", coat);
-    walkanimation.generateByGrid(ƒ.Rectangle.GET(0, 0, 15, 16), 3, 12, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
+    walkanimation.generateByGrid(ƒ.Rectangle.GET(10, 475, 86, 100), 3, 70, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
     marioSprite = new ƒAid.NodeSprite("marioSprite");
     marioSprite.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4()));
     marioSprite.setAnimation(walkanimation);

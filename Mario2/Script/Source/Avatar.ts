@@ -26,12 +26,6 @@ namespace Script { // namespace nach Titel des Spieles bennenen
         
             this.walkanimation = new ƒAid.SpriteSheetAnimation("walk", coat);
             this.walkanimation.generateByGrid(ƒ.Rectangle.GET(0, 0, 15, 16), 3, 12, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
-            // marioSprite = new ƒAid.NodeSprite("marioSprite");
-            // marioSprite.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4()));
-            // marioSprite.setAnimation(this.walkanimation);
-            // marioSprite.mtxLocal.translateY(+0.5); // mtx = Matrix 
-            // marioSprite.framerate = 10;
-            // marioNode.addChild(marioSprite);
         }
     }
 }

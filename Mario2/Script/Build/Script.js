@@ -22,12 +22,6 @@ var Script;
             let coat = new ƒ.CoatTextured(undefined, _imageSpriteSheer);
             this.walkanimation = new ƒAid.SpriteSheetAnimation("walk", coat);
             this.walkanimation.generateByGrid(ƒ.Rectangle.GET(0, 0, 15, 16), 3, 12, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
-            // marioSprite = new ƒAid.NodeSprite("marioSprite");
-            // marioSprite.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4()));
-            // marioSprite.setAnimation(this.walkanimation);
-            // marioSprite.mtxLocal.translateY(+0.5); // mtx = Matrix 
-            // marioSprite.framerate = 10;
-            // marioNode.addChild(marioSprite);
         }
     }
     Script.Avatar = Avatar;
@@ -59,10 +53,10 @@ var Script;
     }
     async function loadSprite() {
         let spriteSheet = new ƒ.TextureImage();
-        await spriteSheet.load("./Images/mariowalkx16.gif");
+        await spriteSheet.load("./Images/PlayerSprite.png");
         let coat = new ƒ.CoatTextured(undefined, spriteSheet);
         let walkanimation = new ƒAid.SpriteSheetAnimation("walk", coat);
-        walkanimation.generateByGrid(ƒ.Rectangle.GET(0, 0, 15, 16), 3, 12, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
+        walkanimation.generateByGrid(ƒ.Rectangle.GET(10, 475, 86, 100), 3, 70, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
         marioSprite = new ƒAid.NodeSprite("marioSprite");
         marioSprite.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4()));
         marioSprite.setAnimation(walkanimation);
