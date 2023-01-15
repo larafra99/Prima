@@ -1,4 +1,49 @@
 "use strict";
+var Harvest;
+(function (Harvest) {
+    var ƒ = FudgeCore;
+    ƒ.Project.registerScriptNamespace(Harvest); // Register the namespace to FUDGE for serialization
+    class CharacterEventScript extends ƒ.ComponentScript {
+        // Register the script as component for use in the editor via drag&drop
+        static iSubclass = ƒ.Component.registerSubclass(CharacterEventScript);
+        // Properties may be mutated by users in the editor via the automatically created user interface
+        eventAudio;
+        stamina;
+        vitality;
+        startpoint;
+        constructor() {
+            super();
+            // Don't start when running in editor
+            if (ƒ.Project.mode == ƒ.MODE.EDITOR)
+                return;
+            // Listen to this component being added to or removed from a node
+            this.addEventListener("componentAdd" /* ƒ.EVENT.COMPONENT_ADD */, this.hndEvent);
+            this.addEventListener("componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */, this.hndEvent);
+            this.addEventListener("nodeDeserialized" /* ƒ.EVENT.NODE_DESERIALIZED */, this.hndEvent);
+        }
+        // Activate the functions of this component as response to events
+        hndEvent = (_event) => {
+            switch (_event.type) {
+                case "componentAdd" /* ƒ.EVENT.COMPONENT_ADD */:
+                    break;
+                case "componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */:
+                    this.removeEventListener("componentAdd" /* ƒ.EVENT.COMPONENT_ADD */, this.hndEvent);
+                    this.removeEventListener("componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */, this.hndEvent);
+                    break;
+                case "nodeDeserialized" /* ƒ.EVENT.NODE_DESERIALIZED */:
+                    console.log("Startpoint", this.startpoint);
+                    // if deserialized the node is now fully reconstructed and access to all its components and children is possible
+                    break;
+            }
+        };
+        startNewDay() {
+            this.node.mtxLocal.set(this.startpoint);
+            this.stamina = Harvest.playerstate.stamina;
+            this.vitality = Harvest.playerstate.vitality;
+        }
+    }
+    Harvest.CharacterEventScript = CharacterEventScript;
+})(Harvest || (Harvest = {}));
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
@@ -46,7 +91,10 @@ var Harvest;
     let cmpBgAudio;
     let avatar;
     document.addEventListener("interactiveViewportStarted", start);
-    function start(_event) {
+    async function start(_event) {
+        let response = await fetch("config.json");
+        let config = await response.json();
+        Harvest.playerstate = new Harvest.UserInterface(config);
         viewport = _event.detail;
         cmpCamera = viewport.camera;
         //TODO: camera at an angle 
@@ -61,8 +109,8 @@ var Harvest;
         Harvest.graph = viewport.getBranch();
         avatar = new Harvest.Avatar();
         avatar.initializeAnimations(imgSpriteSheet);
-        avatar.act(Harvest.WALK.DOWN);
-        avatar.act(Harvest.WALK.IDLE);
+        avatar.act(Harvest.ACTION.DOWN);
+        avatar.act(Harvest.ACTION.IDLE);
         Harvest.graph.addChild(avatar);
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start();
@@ -83,26 +131,30 @@ var Harvest;
         let deltaTime = ƒ.Loop.timeFrameGame / 1000;
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
             avatar.mtxLocal.rotation = ƒ.Vector3.Y(180);
-            avatar.act(Harvest.WALK.RIGHT);
+            avatar.act(Harvest.ACTION.LEFTRIGHT);
             avatar.walkleftright(deltaTime);
         }
         else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
             avatar.mtxLocal.rotation = ƒ.Vector3.Y(0);
-            avatar.act(Harvest.WALK.RIGHT);
+            avatar.act(Harvest.ACTION.LEFTRIGHT);
             avatar.walkleftright(deltaTime);
         }
         else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP])) {
             avatar.mtxLocal.rotation = ƒ.Vector3.Y(0);
-            avatar.act(Harvest.WALK.UP);
+            avatar.act(Harvest.ACTION.UP);
             avatar.walkupdown(deltaTime);
         }
         else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])) {
             avatar.mtxLocal.rotation = ƒ.Vector3.Y(180);
-            avatar.act(Harvest.WALK.DOWN);
+            avatar.act(Harvest.ACTION.DOWN);
             avatar.walkupdown(deltaTime);
         }
+        else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.E])) {
+            avatar.act(Harvest.ACTION.INTERACTION);
+            //TODO:action gießen, hacken, etc. mit musik
+        }
         else {
-            avatar.act(Harvest.WALK.IDLE);
+            avatar.act(Harvest.ACTION.IDLE);
         }
         viewport.draw();
         updateCamera();
@@ -112,21 +164,24 @@ var Harvest;
 (function (Harvest) {
     var ƒ = FudgeCore;
     var ƒAid = FudgeAid;
-    let WALK;
-    (function (WALK) {
-        WALK[WALK["IDLE"] = 0] = "IDLE";
-        WALK[WALK["LEFT"] = 1] = "LEFT";
-        WALK[WALK["RIGHT"] = 2] = "RIGHT";
-        WALK[WALK["UP"] = 3] = "UP";
-        WALK[WALK["DOWN"] = 4] = "DOWN";
-    })(WALK = Harvest.WALK || (Harvest.WALK = {}));
+    let ACTION;
+    (function (ACTION) {
+        ACTION[ACTION["IDLE"] = 0] = "IDLE";
+        ACTION[ACTION["LEFTRIGHT"] = 1] = "LEFTRIGHT";
+        ACTION[ACTION["UP"] = 2] = "UP";
+        ACTION[ACTION["DOWN"] = 3] = "DOWN";
+        ACTION[ACTION["INTERACTION"] = 4] = "INTERACTION";
+    })(ACTION = Harvest.ACTION || (Harvest.ACTION = {}));
     class Avatar extends ƒAid.NodeSprite {
         xSpeed = .9;
         animationCurrent;
-        walkLeft;
-        walkRight;
+        walkLeftRight;
         walkUp;
         walkDown;
+        fieldActionLeft;
+        fieldActionRight;
+        fieldActionUp;
+        fieldActionDown;
         //playerstate.stamina= this.node.mtxWorld.translation.y;
         //playerstate.vitality= Math.round(this.rigidbody.getVelocity().magnitude);
         constructor() {
@@ -142,24 +197,36 @@ var Harvest;
         act(_action) {
             let animation;
             switch (_action) {
-                case WALK.LEFT:
-                    animation = this.walkLeft;
+                case ACTION.LEFTRIGHT:
+                    animation = this.walkLeftRight;
                     break;
-                case WALK.RIGHT:
-                    animation = this.walkRight;
+                case ACTION.IDLE:
                     break;
-                case WALK.IDLE:
-                    //this.showFrame(0);
-                    // animation = this.animationCurrent;
-                    break;
-                case WALK.UP:
+                case ACTION.UP:
                     animation = this.walkUp;
                     break;
-                case WALK.DOWN:
+                case ACTION.DOWN:
                     animation = this.walkDown;
                     break;
+                case ACTION.INTERACTION:
+                    break;
             }
-            if (_action == WALK.IDLE) {
+            if (_action == ACTION.INTERACTION) {
+                if (this.animationCurrent == this.walkLeftRight) {
+                    animation = this.fieldActionRight;
+                    console.log("Left");
+                }
+                else if (this.animationCurrent == this.walkUp) {
+                    animation = this.fieldActionUp;
+                    console.log("UP");
+                }
+                else if (this.animationCurrent == this.walkDown) {
+                    animation = this.fieldActionDown;
+                    console.log("Down");
+                }
+                console.log("YESSSS");
+            }
+            if (_action == ACTION.IDLE) {
                 this.showFrame(0);
             }
             else if (animation != this.animationCurrent) {
@@ -169,14 +236,20 @@ var Harvest;
         }
         async initializeAnimations(_imgSpriteSheet) {
             let coat = new ƒ.CoatTextured(undefined, _imgSpriteSheet);
-            this.walkLeft = new ƒAid.SpriteSheetAnimation("Left", coat);
-            this.walkLeft.generateByGrid(ƒ.Rectangle.GET(10, 210, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
-            this.walkRight = new ƒAid.SpriteSheetAnimation("Right", coat);
-            this.walkRight.generateByGrid(ƒ.Rectangle.GET(10, 475, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
+            this.walkLeftRight = new ƒAid.SpriteSheetAnimation("Right", coat);
+            this.walkLeftRight.generateByGrid(ƒ.Rectangle.GET(10, 475, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
             this.walkUp = new ƒAid.SpriteSheetAnimation("Up", coat);
             this.walkUp.generateByGrid(ƒ.Rectangle.GET(10, 345, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
             this.walkDown = new ƒAid.SpriteSheetAnimation("Down", coat);
             this.walkDown.generateByGrid(ƒ.Rectangle.GET(10, 70, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
+            this.fieldActionLeft = new ƒAid.SpriteSheetAnimation("Left", coat);
+            this.fieldActionLeft.generateByGrid(ƒ.Rectangle.GET(10, 210, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
+            this.fieldActionRight = new ƒAid.SpriteSheetAnimation("Left", coat);
+            this.fieldActionRight.generateByGrid(ƒ.Rectangle.GET(10, 210, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
+            this.fieldActionUp = new ƒAid.SpriteSheetAnimation("Left", coat);
+            this.fieldActionUp.generateByGrid(ƒ.Rectangle.GET(10, 210, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
+            this.fieldActionDown = new ƒAid.SpriteSheetAnimation("Left", coat);
+            this.fieldActionDown.generateByGrid(ƒ.Rectangle.GET(10, 210, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
             this.framerate = 20;
             //this.mtxLocal.translateY(+0.5);
         }

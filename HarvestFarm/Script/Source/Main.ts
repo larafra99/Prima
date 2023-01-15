@@ -8,9 +8,13 @@ namespace Harvest {
   let cmpCamera: ƒ.ComponentCamera
   let cmpBgAudio:ƒ.ComponentAudio;
   let avatar: Avatar;
-  document.addEventListener("interactiveViewportStarted", <EventListener>start);
+  document.addEventListener("interactiveViewportStarted", <EventListener><unknown>start);
 
-  function start(_event: CustomEvent): void {
+  async function start(_event: CustomEvent): Promise<void> {
+    let response: Response = await fetch("config.json");
+    let config: {[key: string]: number} = await response.json();
+    
+    playerstate= new UserInterface(config);
     viewport = _event.detail;
     cmpCamera = viewport.camera;
    //TODO: camera at an angle 
@@ -19,6 +23,7 @@ namespace Harvest {
     hndLoad(_event);
     bgAudio();
   }
+  
 
   async function hndLoad(_event: Event): Promise<void> {
     let imgSpriteSheet: ƒ.TextureImage = new ƒ.TextureImage();
@@ -27,8 +32,8 @@ namespace Harvest {
     graph = viewport.getBranch();
     avatar = new Avatar();
     avatar.initializeAnimations(imgSpriteSheet);
-    avatar.act(WALK.DOWN);
-    avatar.act(WALK.IDLE);
+    avatar.act(ACTION.DOWN);
+    avatar.act(ACTION.IDLE);
     graph.addChild(avatar);
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
@@ -54,26 +59,31 @@ namespace Harvest {
     let deltaTime: number = ƒ.Loop.timeFrameGame / 1000;
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
       avatar.mtxLocal.rotation = ƒ.Vector3.Y(180);
-      avatar.act(WALK.RIGHT);
+      avatar.act(ACTION.LEFTRIGHT);
       avatar.walkleftright(deltaTime);
     }
     else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
       avatar.mtxLocal.rotation = ƒ.Vector3.Y(0);
-      avatar.act( WALK.RIGHT);
+      avatar.act( ACTION.LEFTRIGHT);
       avatar.walkleftright(deltaTime);
     }
     else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP])){
       avatar.mtxLocal.rotation = ƒ.Vector3.Y(0);
-      avatar.act(WALK.UP);
+      avatar.act(ACTION.UP);
       avatar.walkupdown(deltaTime);
     }
     else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])){
       avatar.mtxLocal.rotation = ƒ.Vector3.Y(180);
-      avatar.act(WALK.DOWN);
+      avatar.act(ACTION.DOWN);
       avatar.walkupdown(deltaTime);
     }
+    else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.E])){
+      avatar.act(ACTION.INTERACTION);
+      //TODO:action gießen, hacken, etc. mit musik
+      
+    }
     else{
-      avatar.act(WALK.IDLE);
+      avatar.act(ACTION.IDLE);
     }  
     viewport.draw();
     updateCamera();

@@ -1,4 +1,17 @@
 /// <reference path="../../../Aid/Build/FudgeAid.d.ts" />
+declare namespace Harvest {
+    import ƒ = FudgeCore;
+    class CharacterEventScript extends ƒ.ComponentScript {
+        static readonly iSubclass: number;
+        eventAudio: ƒ.ComponentAudio;
+        private stamina;
+        private vitality;
+        private startpoint;
+        constructor();
+        hndEvent: (_event: Event) => void;
+        private startNewDay;
+    }
+}
 declare namespace Script {
     import ƒ = FudgeCore;
     class CustomComponentScript extends ƒ.ComponentScript {
@@ -16,24 +29,27 @@ declare namespace Harvest {
 declare namespace Harvest {
     import ƒ = FudgeCore;
     import ƒAid = FudgeAid;
-    enum WALK {
+    enum ACTION {
         IDLE = 0,
-        LEFT = 1,
-        RIGHT = 2,
-        UP = 3,
-        DOWN = 4
+        LEFTRIGHT = 1,
+        UP = 2,
+        DOWN = 3,
+        INTERACTION = 4
     }
     class Avatar extends ƒAid.NodeSprite {
         private xSpeed;
         private animationCurrent;
-        private walkLeft;
-        private walkRight;
+        private walkLeftRight;
         private walkUp;
         private walkDown;
+        private fieldActionLeft;
+        private fieldActionRight;
+        private fieldActionUp;
+        private fieldActionDown;
         constructor();
         walkleftright(_deltaTime: number): void;
         walkupdown(_deltaTime: number): void;
-        act(_action: WALK): void;
+        act(_action: ACTION): void;
         initializeAnimations(_imgSpriteSheet: ƒ.TextureImage): Promise<void>;
     }
 }

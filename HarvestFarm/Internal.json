@@ -93,6 +93,13 @@
                     }
                   }
                 }
+              ],
+              "CharacterEventScript": [
+                {
+                  "Harvest.CharacterEventScript": {
+                    "active": true
+                  }
+                }
               ]
             },
             "children": []
