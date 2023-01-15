@@ -41,16 +41,19 @@ var Harvest;
 ///<reference path="./../../../Aid/Build/FudgeAid.d.ts"/>
 (function (Harvest) {
     var ƒ = FudgeCore;
-    // Initialize Viewport
     let viewport;
+    let cmpCamera;
+    let cmpBgAudio;
     let avatar;
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
         viewport = _event.detail;
-        //viewport.draw(); //wenn die Welt nicht lädt
-        //viewport.camera.mtxPivot.translateZ(+10);
-        //viewport.camera.mtxPivot.rotateY(+180);
+        cmpCamera = viewport.camera;
+        //TODO: camera at an angle 
+        cmpCamera.mtxPivot.rotateY(+180);
+        cmpCamera.mtxPivot.translation = new ƒ.Vector3(0, 0, 20);
         hndLoad(_event);
+        bgAudio();
     }
     async function hndLoad(_event) {
         let imgSpriteSheet = new ƒ.TextureImage();
@@ -63,6 +66,15 @@ var Harvest;
         Harvest.graph.addChild(avatar);
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start();
+    }
+    function updateCamera() {
+        //TODO: camera walking with character
+    }
+    async function bgAudio() {
+        let bgMusic = new ƒ.Audio("Audio/BGM_Spring.mp3");
+        cmpBgAudio = new ƒ.ComponentAudio(bgMusic, true, true);
+        cmpBgAudio.connect(true);
+        cmpBgAudio.volume = 4;
     }
     function update(_event) {
         if (!Harvest.UserInterface) {
@@ -80,12 +92,12 @@ var Harvest;
             avatar.walkleftright(deltaTime);
         }
         else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP])) {
-            avatar.mtxLocal.rotation = ƒ.Vector3.Y(180);
+            avatar.mtxLocal.rotation = ƒ.Vector3.Y(0);
             avatar.act(Harvest.WALK.UP);
             avatar.walkupdown(deltaTime);
         }
         else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])) {
-            avatar.mtxLocal.rotation = ƒ.Vector3.Y(0);
+            avatar.mtxLocal.rotation = ƒ.Vector3.Y(180);
             avatar.act(Harvest.WALK.DOWN);
             avatar.walkupdown(deltaTime);
         }
@@ -93,6 +105,7 @@ var Harvest;
             avatar.act(Harvest.WALK.IDLE);
         }
         viewport.draw();
+        updateCamera();
     }
 })(Harvest || (Harvest = {}));
 var Harvest;

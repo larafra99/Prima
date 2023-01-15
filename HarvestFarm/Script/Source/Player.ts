@@ -1,4 +1,3 @@
-
 namespace Harvest {
     import ƒ = FudgeCore;
     import ƒAid = FudgeAid;
@@ -33,7 +32,6 @@ namespace Harvest {
         }
 
         public act(_action: WALK): void {
-
             let animation: ƒAid.SpriteSheetAnimation;
             switch (_action) {
                 case WALK.LEFT:
@@ -53,9 +51,11 @@ namespace Harvest {
                     animation = this.walkDown;
                     break;
             }
+
             if(_action == WALK.IDLE){
                 this.showFrame(0);
             }
+            
             else if (animation != this.animationCurrent) {
                 this.setAnimation(animation);
                 this.animationCurrent = animation;   
