@@ -4,12 +4,12 @@ declare namespace Harvest {
     class CharacterEventScript extends ƒ.ComponentScript {
         static readonly iSubclass: number;
         eventAudio: ƒ.ComponentAudio;
-        private stamina;
-        private vitality;
         private startpoint;
         constructor();
         hndEvent: (_event: Event) => void;
+        private update;
         private startNewDay;
+        private getDistance;
     }
 }
 declare namespace Script {
@@ -25,6 +25,11 @@ declare namespace Harvest {
     import ƒ = FudgeCore;
     let graph: ƒ.Node;
     let playerstate: UserInterface;
+    let cmpField: ƒ.ComponentMesh;
+    let spriteNode: ƒ.Node;
+    let onField: boolean;
+    let stamina: number;
+    let vitality: number;
 }
 declare namespace Harvest {
     import ƒ = FudgeCore;
@@ -38,11 +43,11 @@ declare namespace Harvest {
     }
     class Avatar extends ƒAid.NodeSprite {
         private xSpeed;
+        private interaction;
         private animationCurrent;
         private walkLeftRight;
         private walkUp;
         private walkDown;
-        private fieldActionLeft;
         private fieldActionRight;
         private fieldActionUp;
         private fieldActionDown;
@@ -59,6 +64,7 @@ declare namespace Harvest {
         protected reduceMutator(_mutator: ƒ.Mutator): void;
         stamina: number;
         vitality: number;
+        day: number;
         private controller;
         constructor(_config: {
             [key: string]: number;

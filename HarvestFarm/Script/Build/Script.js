@@ -8,8 +8,6 @@ var Harvest;
         static iSubclass = ƒ.Component.registerSubclass(CharacterEventScript);
         // Properties may be mutated by users in the editor via the automatically created user interface
         eventAudio;
-        stamina;
-        vitality;
         startpoint;
         constructor() {
             super();
@@ -31,15 +29,32 @@ var Harvest;
                     this.removeEventListener("componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */, this.hndEvent);
                     break;
                 case "nodeDeserialized" /* ƒ.EVENT.NODE_DESERIALIZED */:
-                    console.log("Startpoint", this.startpoint);
+                    //this.startNewDay();
+                    this.node.addEventListener("renderPrepare" /* ƒ.EVENT.RENDER_PREPARE */, this.update);
                     // if deserialized the node is now fully reconstructed and access to all its components and children is possible
                     break;
             }
         };
+        update = (_event) => {
+            this.getDistance();
+            if (!Harvest.playerstate) {
+                return;
+            }
+        };
         startNewDay() {
             this.node.mtxLocal.set(this.startpoint);
-            this.stamina = Harvest.playerstate.stamina;
-            this.vitality = Harvest.playerstate.vitality;
+            Harvest.playerstate.stamina = Harvest.stamina;
+            Harvest.playerstate.vitality = Harvest.vitality;
+            Harvest.playerstate.day++;
+        }
+        getDistance() {
+            if (this.node.mtxWorld.translation.x > -5 && this.node.mtxWorld.translation.x < 5 && this.node.mtxWorld.translation.z > -5 && this.node.mtxWorld.translation.z < 5) {
+                //console.log("Yes");
+                Harvest.onField = true;
+            }
+            else {
+                Harvest.onField = false;
+            }
         }
     }
     Harvest.CharacterEventScript = CharacterEventScript;
@@ -94,24 +109,31 @@ var Harvest;
     async function start(_event) {
         let response = await fetch("config.json");
         let config = await response.json();
+        Harvest.stamina = config.stamina;
+        Harvest.vitality = config.vitality;
         Harvest.playerstate = new Harvest.UserInterface(config);
+        //console.log("P",playerstate);
         viewport = _event.detail;
+        Harvest.graph = viewport.getBranch();
         cmpCamera = viewport.camera;
+        Harvest.spriteNode = Harvest.graph.getChildrenByName("Player")[0]; // get Sprite by name
         //TODO: camera at an angle 
-        cmpCamera.mtxPivot.rotateY(+180);
-        cmpCamera.mtxPivot.translation = new ƒ.Vector3(0, 0, 20);
-        hndLoad(_event);
+        cmpCamera.mtxPivot.rotateY(180);
+        cmpCamera.mtxPivot.rotateX(20);
+        cmpCamera.mtxPivot.translation = new ƒ.Vector3(0, 8, 25);
+        Harvest.cmpField = Harvest.graph.getChildrenByName("Ground")[0].getChildrenByName("Field")[0].getComponent(ƒ.ComponentMesh);
+        //console.log("Field",cmpField);
+        await hndLoad();
         bgAudio();
     }
-    async function hndLoad(_event) {
+    async function hndLoad() {
         let imgSpriteSheet = new ƒ.TextureImage();
         await imgSpriteSheet.load("./Images/PlayerSprite.png");
-        Harvest.graph = viewport.getBranch();
         avatar = new Harvest.Avatar();
         avatar.initializeAnimations(imgSpriteSheet);
         avatar.act(Harvest.ACTION.DOWN);
         avatar.act(Harvest.ACTION.IDLE);
-        Harvest.graph.addChild(avatar);
+        Harvest.spriteNode.addChild(avatar);
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start();
     }
@@ -125,32 +147,32 @@ var Harvest;
         cmpBgAudio.volume = 4;
     }
     function update(_event) {
-        if (!Harvest.UserInterface) {
-            return;
-        }
         let deltaTime = ƒ.Loop.timeFrameGame / 1000;
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
-            avatar.mtxLocal.rotation = ƒ.Vector3.Y(180);
+            Harvest.spriteNode.mtxLocal.rotation = ƒ.Vector3.Y(0);
             avatar.act(Harvest.ACTION.LEFTRIGHT);
             avatar.walkleftright(deltaTime);
         }
         else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
-            avatar.mtxLocal.rotation = ƒ.Vector3.Y(0);
+            Harvest.spriteNode.mtxLocal.rotation = ƒ.Vector3.Y(180);
             avatar.act(Harvest.ACTION.LEFTRIGHT);
             avatar.walkleftright(deltaTime);
         }
         else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP])) {
-            avatar.mtxLocal.rotation = ƒ.Vector3.Y(0);
+            Harvest.spriteNode.mtxLocal.rotation = ƒ.Vector3.Y(0);
             avatar.act(Harvest.ACTION.UP);
             avatar.walkupdown(deltaTime);
         }
         else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])) {
-            avatar.mtxLocal.rotation = ƒ.Vector3.Y(180);
+            Harvest.spriteNode.mtxLocal.rotation = ƒ.Vector3.Y(180);
             avatar.act(Harvest.ACTION.DOWN);
             avatar.walkupdown(deltaTime);
         }
         else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.E])) {
             avatar.act(Harvest.ACTION.INTERACTION);
+            if (Harvest.onField) {
+                Harvest.playerstate.stamina = Harvest.playerstate.stamina - 5;
+            }
             //TODO:action gießen, hacken, etc. mit musik
         }
         else {
@@ -174,25 +196,23 @@ var Harvest;
     })(ACTION = Harvest.ACTION || (Harvest.ACTION = {}));
     class Avatar extends ƒAid.NodeSprite {
         xSpeed = .9;
+        interaction;
         animationCurrent;
         walkLeftRight;
         walkUp;
         walkDown;
-        fieldActionLeft;
         fieldActionRight;
         fieldActionUp;
         fieldActionDown;
-        //playerstate.stamina= this.node.mtxWorld.translation.y;
-        //playerstate.vitality= Math.round(this.rigidbody.getVelocity().magnitude);
         constructor() {
             super("AvatarInstance");
             this.addComponent(new ƒ.ComponentTransform());
         }
         walkleftright(_deltaTime) {
-            this.mtxLocal.translateX(this.xSpeed * _deltaTime, true);
+            Harvest.spriteNode.mtxLocal.translateX(this.xSpeed * _deltaTime, true);
         }
         walkupdown(_deltaTime) {
-            this.mtxLocal.translateZ(this.xSpeed * _deltaTime, true);
+            Harvest.spriteNode.mtxLocal.translateZ(this.xSpeed * _deltaTime, true);
         }
         act(_action) {
             let animation;
@@ -209,27 +229,39 @@ var Harvest;
                     animation = this.walkDown;
                     break;
                 case ACTION.INTERACTION:
-                    break;
-            }
-            if (_action == ACTION.INTERACTION) {
-                if (this.animationCurrent == this.walkLeftRight) {
-                    animation = this.fieldActionRight;
-                    console.log("Left");
-                }
-                else if (this.animationCurrent == this.walkUp) {
-                    animation = this.fieldActionUp;
-                    console.log("UP");
-                }
-                else if (this.animationCurrent == this.walkDown) {
-                    animation = this.fieldActionDown;
-                    console.log("Down");
-                }
-                console.log("YESSSS");
+                    if (Harvest.onField) {
+                        this.interaction = true;
+                        if (this.animationCurrent == this.walkLeftRight) {
+                            this.showFrame(0);
+                            animation = this.fieldActionRight;
+                            console.log("Left");
+                            break;
+                        }
+                        else if (this.animationCurrent == this.walkUp) {
+                            this.showFrame(0);
+                            animation = this.fieldActionUp;
+                            console.log("UP");
+                            break;
+                        }
+                        else if (this.animationCurrent == this.walkDown) {
+                            this.showFrame(0);
+                            animation = this.fieldActionDown;
+                            console.log("Down");
+                            break;
+                        }
+                    }
+                    else {
+                        break;
+                    }
             }
             if (_action == ACTION.IDLE) {
+                if (this.interaction) {
+                    animation = this.animationCurrent;
+                    this.interaction = false;
+                }
                 this.showFrame(0);
             }
-            else if (animation != this.animationCurrent) {
+            else if (animation != this.animationCurrent && _action != ACTION.INTERACTION) {
                 this.setAnimation(animation);
                 this.animationCurrent = animation;
             }
@@ -242,16 +274,13 @@ var Harvest;
             this.walkUp.generateByGrid(ƒ.Rectangle.GET(10, 345, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
             this.walkDown = new ƒAid.SpriteSheetAnimation("Down", coat);
             this.walkDown.generateByGrid(ƒ.Rectangle.GET(10, 70, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
-            this.fieldActionLeft = new ƒAid.SpriteSheetAnimation("Left", coat);
-            this.fieldActionLeft.generateByGrid(ƒ.Rectangle.GET(10, 210, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
-            this.fieldActionRight = new ƒAid.SpriteSheetAnimation("Left", coat);
-            this.fieldActionRight.generateByGrid(ƒ.Rectangle.GET(10, 210, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
-            this.fieldActionUp = new ƒAid.SpriteSheetAnimation("Left", coat);
-            this.fieldActionUp.generateByGrid(ƒ.Rectangle.GET(10, 210, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
-            this.fieldActionDown = new ƒAid.SpriteSheetAnimation("Left", coat);
-            this.fieldActionDown.generateByGrid(ƒ.Rectangle.GET(10, 210, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
-            this.framerate = 20;
-            //this.mtxLocal.translateY(+0.5);
+            this.fieldActionRight = new ƒAid.SpriteSheetAnimation("Actionright", coat);
+            this.fieldActionRight.generateByGrid(ƒ.Rectangle.GET(480, 210, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
+            this.fieldActionUp = new ƒAid.SpriteSheetAnimation("Actionup", coat);
+            this.fieldActionUp.generateByGrid(ƒ.Rectangle.GET(480, 345, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
+            this.fieldActionDown = new ƒAid.SpriteSheetAnimation("Actiondown", coat);
+            this.fieldActionDown.generateByGrid(ƒ.Rectangle.GET(480, 65, 86, 100), 3, 100, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(95.8));
+            this.framerate = 25;
         }
     }
     Harvest.Avatar = Avatar;
@@ -264,8 +293,9 @@ var Harvest;
         reduceMutator(_mutator) {
             /**/
         }
-        stamina = 100;
-        vitality = 50;
+        stamina;
+        vitality;
+        day;
         //public time: TimerHandler
         controller;
         constructor(_config) {

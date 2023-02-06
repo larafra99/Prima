@@ -5,7 +5,7 @@
       "name": "MeshTerrain",
       "type": "MeshTerrain",
       "seed": 0,
-      "scale": "[1.0000004768371582, 1]",
+      "scale": "[3.000000476837158, 0]",
       "resolution": "[1, 1]"
     }
   },
@@ -72,7 +72,50 @@
                 }
               ]
             },
-            "children": []
+            "children": [
+              {
+                "ƒ.Node": {
+                  "name": "Field",
+                  "active": true,
+                  "components": {
+                    "ComponentMesh": [
+                      {
+                        "ƒ.ComponentMesh": {
+                          "idMesh": "MeshTerrain|2023-01-02T09:30:18.940Z|95751",
+                          "pivot": {
+                            "translation": "[0, 0.12000006437301636, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[10, 1, 10]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ],
+                    "ComponentMaterial": [
+                      {
+                        "ƒ.ComponentMaterial": {
+                          "sortForAlpha": false,
+                          "clrPrimary": "[0.596078431372549, 0.5333333333333333, 0.36470588235294116, 1]",
+                          "clrSecondary": "[1, 1, 1, 1]",
+                          "pivot": {
+                            "translation": "[0, 0]",
+                            "rotation": 0,
+                            "scaling": "[1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          },
+                          "idMaterial": "Material|2023-01-02T09:28:21.000Z|62129"
+                        }
+                      }
+                    ]
+                  },
+                  "children": []
+                }
+              }
+            ]
           }
         },
         {
@@ -104,10 +147,88 @@
             },
             "children": []
           }
+        },
+        {
+          "ƒ.Node": {
+            "name": "House",
+            "active": true,
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshQuad|2023-01-02T09:27:15.330Z|71971",
+                    "pivot": {
+                      "translation": "[0, 1.1329994201660156, 11]",
+                      "rotation": "[0, 180, 0]",
+                      "scaling": "[3, 3, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-02-06T08:46:14.887Z|41505"
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
         }
       ],
       "idResource": "Graph|2023-01-02T09:25:40.580Z|00906",
       "type": "Graph"
+    }
+  },
+  "TextureImage|2023-02-06T08:39:52.542Z|09563": {
+    "ƒ.TextureImage": {
+      "url": "Images\\house.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-02-06T08:39:52.542Z|09563",
+        "name": "Images\\house.png",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "Material|2023-02-06T08:40:44.824Z|12913": {
+    "ƒ.Material": {
+      "name": "HouseLit",
+      "idResource": "Material|2023-02-06T08:40:44.824Z|12913",
+      "shader": "ShaderLit",
+      "coat": {
+        "ƒ.CoatColored": {
+          "color": "[1, 1, 1, 1]"
+        }
+      }
+    }
+  },
+  "Material|2023-02-06T08:46:14.887Z|41505": {
+    "ƒ.Material": {
+      "name": "ShaderLitTextured",
+      "idResource": "Material|2023-02-06T08:46:14.887Z|41505",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-02-06T08:39:52.542Z|09563"
+        }
+      }
     }
   }
 }

@@ -6,8 +6,9 @@ namespace Harvest {
         protected reduceMutator(_mutator: ƒ.Mutator): void {
             /**/ 
         }
-        public stamina: number = 100;
-        public vitality: number= 50;
+        public stamina: number;
+        public vitality: number;
+        public day: number;
         //public time: TimerHandler
         private controller: ƒui.Controller
 
