@@ -27,6 +27,30 @@
       "name": "MeshQuad"
     }
   },
+  "Material|2023-02-06T08:46:14.887Z|41505": {
+    "ƒ.Material": {
+      "name": "ShaderLitTextured",
+      "idResource": "Material|2023-02-06T08:46:14.887Z|41505",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-02-06T08:39:52.542Z|09563"
+        }
+      }
+    }
+  },
+  "TextureImage|2023-02-06T08:39:52.542Z|09563": {
+    "ƒ.TextureImage": {
+      "url": "Images\\house.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-02-06T08:39:52.542Z|09563",
+        "name": "Images\\house.png",
+        "mipmap": "CRISP"
+      }
+    }
+  },
   "Graph|2023-01-02T09:25:40.580Z|00906": {
     "ƒ.Graph": {
       "name": "Farm",
@@ -158,9 +182,9 @@
                   "ƒ.ComponentMesh": {
                     "idMesh": "MeshQuad|2023-01-02T09:27:15.330Z|71971",
                     "pivot": {
-                      "translation": "[0, 1.1329994201660156, 11]",
-                      "rotation": "[0, 180, 0]",
-                      "scaling": "[3, 3, 1]"
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
                     },
                     "Component": {
                       "active": true
@@ -185,6 +209,45 @@
                     "idMaterial": "Material|2023-02-06T08:46:14.887Z|41505"
                   }
                 }
+              ],
+              "ComponentTransform": [
+                {
+                  "ƒ.ComponentTransform": {
+                    "local": {
+                      "translation": "[0, 1.3329999446868896, 11]",
+                      "rotation": "[0, 180, 0]",
+                      "scaling": "[3, 3, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentRigidbody": [
+                {
+                  "ƒ.ComponentRigidbody": {
+                    "initialization": "TO_PIVOT",
+                    "friction": 0.2,
+                    "restitution": 0.2,
+                    "mass": 1,
+                    "dampTranslation": 0.1,
+                    "dampRotation": 0.1,
+                    "effectGravity": 1,
+                    "typeBody": "STATIC",
+                    "typeCollider": "CUBE",
+                    "isTrigger": false,
+                    "id": 1,
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
               ]
             },
             "children": []
@@ -195,17 +258,6 @@
       "type": "Graph"
     }
   },
-  "TextureImage|2023-02-06T08:39:52.542Z|09563": {
-    "ƒ.TextureImage": {
-      "url": "Images\\house.png",
-      "type": "TextureImage",
-      "Texture": {
-        "idResource": "TextureImage|2023-02-06T08:39:52.542Z|09563",
-        "name": "Images\\house.png",
-        "mipmap": "CRISP"
-      }
-    }
-  },
   "Material|2023-02-06T08:40:44.824Z|12913": {
     "ƒ.Material": {
       "name": "HouseLit",
@@ -214,19 +266,6 @@
       "coat": {
         "ƒ.CoatColored": {
           "color": "[1, 1, 1, 1]"
-        }
-      }
-    }
-  },
-  "Material|2023-02-06T08:46:14.887Z|41505": {
-    "ƒ.Material": {
-      "name": "ShaderLitTextured",
-      "idResource": "Material|2023-02-06T08:46:14.887Z|41505",
-      "shader": "ShaderLitTextured",
-      "coat": {
-        "ƒ.CoatTextured": {
-          "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2023-02-06T08:39:52.542Z|09563"
         }
       }
     }

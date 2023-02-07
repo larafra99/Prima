@@ -37,9 +37,6 @@ var Harvest;
         };
         update = (_event) => {
             this.getDistance();
-            if (!Harvest.playerstate) {
-                return;
-            }
         };
         startNewDay() {
             this.node.mtxLocal.set(this.startpoint);

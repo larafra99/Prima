@@ -43,9 +43,7 @@ namespace Harvest {
 
       private update = (_event: Event): void => {
         this.getDistance();
-        if (!playerstate){
-          return;
-        }
+        
       }
 
       private startNewDay():void{
