@@ -46,7 +46,6 @@ namespace Harvest {
         if (!playerstate){
           return;
         }
-    
       }
 
       private startNewDay():void{

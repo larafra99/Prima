@@ -117,11 +117,11 @@ var Harvest;
         Harvest.graph = viewport.getBranch();
         cmpCamera = viewport.camera;
         Harvest.spriteNode = Harvest.graph.getChildrenByName("Player")[0]; // get Sprite by name
-        //TODO: camera at an angle 
         cmpCamera.mtxPivot.rotateY(180);
         cmpCamera.mtxPivot.rotateX(20);
         cmpCamera.mtxPivot.translation = new ƒ.Vector3(0, 8, 25);
-        Harvest.cmpField = Harvest.graph.getChildrenByName("Ground")[0].getChildrenByName("Field")[0].getComponent(ƒ.ComponentMesh);
+        viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
+        //cmpField =graph.getChildrenByName("Ground")[0].getChildrenByName("Field")[0].getComponent(ƒ.ComponentMesh);
         //console.log("Field",cmpField);
         await hndLoad();
         bgAudio();
@@ -147,6 +147,7 @@ var Harvest;
         cmpBgAudio.volume = 4;
     }
     function update(_event) {
+        ƒ.Physics.simulate();
         let deltaTime = ƒ.Loop.timeFrameGame / 1000;
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
             Harvest.spriteNode.mtxLocal.rotation = ƒ.Vector3.Y(0);
@@ -169,11 +170,11 @@ var Harvest;
             avatar.walkupdown(deltaTime);
         }
         else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.E])) {
-            avatar.act(Harvest.ACTION.INTERACTION);
             if (Harvest.onField) {
+                //TODO:action gießen, hacken, etc. mit musik
                 Harvest.playerstate.stamina = Harvest.playerstate.stamina - 5;
+                avatar.act(Harvest.ACTION.INTERACTION);
             }
-            //TODO:action gießen, hacken, etc. mit musik
         }
         else {
             avatar.act(Harvest.ACTION.IDLE);
@@ -229,28 +230,23 @@ var Harvest;
                     animation = this.walkDown;
                     break;
                 case ACTION.INTERACTION:
-                    if (Harvest.onField) {
-                        this.interaction = true;
-                        if (this.animationCurrent == this.walkLeftRight) {
-                            this.showFrame(0);
-                            animation = this.fieldActionRight;
-                            console.log("Left");
-                            break;
-                        }
-                        else if (this.animationCurrent == this.walkUp) {
-                            this.showFrame(0);
-                            animation = this.fieldActionUp;
-                            console.log("UP");
-                            break;
-                        }
-                        else if (this.animationCurrent == this.walkDown) {
-                            this.showFrame(0);
-                            animation = this.fieldActionDown;
-                            console.log("Down");
-                            break;
-                        }
+                    this.interaction = true;
+                    if (this.animationCurrent == this.walkLeftRight) {
+                        this.showFrame(0);
+                        animation = this.fieldActionRight;
+                        console.log("Left");
+                        break;
                     }
-                    else {
+                    else if (this.animationCurrent == this.walkUp) {
+                        this.showFrame(0);
+                        animation = this.fieldActionUp;
+                        console.log("UP");
+                        break;
+                    }
+                    else if (this.animationCurrent == this.walkDown) {
+                        this.showFrame(0);
+                        animation = this.fieldActionDown;
+                        console.log("Down");
                         break;
                     }
             }
@@ -296,12 +292,13 @@ var Harvest;
         stamina;
         vitality;
         day;
-        //public time: TimerHandler
+        time;
         controller;
         constructor(_config) {
             super();
             this.stamina = _config.stamina;
             this.vitality = _config.vitality;
+            this.day = 0;
             this.controller = new ƒui.Controller(this, document.querySelector("#vui"));
             console.log(this.controller);
         }

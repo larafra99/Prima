@@ -31,12 +31,13 @@ namespace Harvest {
     cmpCamera = viewport.camera;
     spriteNode= graph.getChildrenByName("Player")[0]; // get Sprite by name
 
-   //TODO: camera at an angle 
     cmpCamera.mtxPivot.rotateY(180);
     cmpCamera.mtxPivot.rotateX(20);
     cmpCamera.mtxPivot.translation = new ƒ.Vector3(0,8,25);
 
-    cmpField =graph.getChildrenByName("Ground")[0].getChildrenByName("Field")[0].getComponent(ƒ.ComponentMesh);
+    viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
+
+    //cmpField =graph.getChildrenByName("Ground")[0].getChildrenByName("Field")[0].getComponent(ƒ.ComponentMesh);
     //console.log("Field",cmpField);
 
     await hndLoad();
@@ -72,6 +73,7 @@ namespace Harvest {
   }
 
   function update(_event: Event): void {
+    ƒ.Physics.simulate();
     
     let deltaTime: number = ƒ.Loop.timeFrameGame / 1000;
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
@@ -95,12 +97,14 @@ namespace Harvest {
       avatar.walkupdown(deltaTime);
     }
     else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.E])){
-      avatar.act(ACTION.INTERACTION);
+      
       if(onField){
+         //TODO:action gießen, hacken, etc. mit musik
         playerstate.stamina= playerstate.stamina-5;
+        avatar.act(ACTION.INTERACTION);
       }
       
-      //TODO:action gießen, hacken, etc. mit musik
+     
       
     }
     else{

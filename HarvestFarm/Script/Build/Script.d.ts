@@ -65,6 +65,7 @@ declare namespace Harvest {
         stamina: number;
         vitality: number;
         day: number;
+        time: TimerHandler;
         private controller;
         constructor(_config: {
             [key: string]: number;
