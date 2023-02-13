@@ -22,3 +22,10 @@ canvas.fullscreen {
   color: white;
   z-index: 0;
 }
+#toolbar{
+  position: absolute;
+  float:right;
+  color: white;
+  z-index: 0;
+
+}

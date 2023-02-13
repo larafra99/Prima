@@ -1,14 +1,47 @@
 /// <reference path="../../../Aid/Build/FudgeAid.d.ts" />
 declare namespace Harvest {
     import ƒ = FudgeCore;
+    import ƒAid = FudgeAid;
+    class Animal extends ƒAid.NodeSprite {
+        private walkLeftRight;
+        private walkUp;
+        private walkDown;
+        private sleepAnimation;
+        private animalStateMachine;
+        constructor();
+        initializeAnimations(_imgSpriteSheet: ƒ.TextureImage): Promise<void>;
+    }
+}
+declare namespace Harvest {
+    import ƒAid = FudgeAid;
+    enum ANIMAL_WALK {
+        IDLE = 0,
+        LEFTRIGHT = 1,
+        UP = 2,
+        DOWN = 3,
+        SLEEP = 4
+    }
+    class AnimalStateMachine extends ƒAid.ComponentStateMachine<ANIMAL_WALK> {
+        static readonly iSubclass: number;
+        private static instructions;
+        constructor();
+        static get(): ƒAid.StateMachineInstructions<ANIMAL_WALK>;
+        private static transitDefault;
+        private static actDefault;
+        private static actIdle;
+        private static actWalk;
+        private static actSleep;
+        private hndEvent;
+        private update;
+    }
+}
+declare namespace Harvest {
+    import ƒ = FudgeCore;
     class CharacterEventScript extends ƒ.ComponentScript {
         static readonly iSubclass: number;
-        eventAudio: ƒ.ComponentAudio;
-        private startpoint;
         constructor();
         hndEvent: (_event: Event) => void;
         private update;
-        private startNewDay;
         private getDistance;
     }
 }
@@ -27,9 +60,11 @@ declare namespace Harvest {
     let playerstate: UserInterface;
     let cmpField: ƒ.ComponentMesh;
     let spriteNode: ƒ.Node;
-    let onField: boolean;
     let stamina: number;
     let vitality: number;
+    let onField: boolean;
+    let nearHouse: boolean;
+    let farmingTool: number;
 }
 declare namespace Harvest {
     import ƒ = FudgeCore;
@@ -65,7 +100,7 @@ declare namespace Harvest {
         stamina: number;
         vitality: number;
         day: number;
-        time: TimerHandler;
+        time: ƒ.Timer;
         private controller;
         constructor(_config: {
             [key: string]: number;

@@ -6,9 +6,6 @@ namespace Harvest {
       // Register the script as component for use in the editor via drag&drop
       public static readonly iSubclass: number = ƒ.Component.registerSubclass(CharacterEventScript);
       // Properties may be mutated by users in the editor via the automatically created user interface
-      
-      public eventAudio: ƒ.ComponentAudio;
-      private startpoint:ƒ.Matrix4x4;
   
   
       constructor() {
@@ -42,17 +39,13 @@ namespace Harvest {
       }
 
       private update = (_event: Event): void => {
+        if(!graph){
+          return;
+        }
         this.getDistance();
         
-      }
+      }  
 
-      private startNewDay():void{
-        this.node.mtxLocal.set(this.startpoint);
-        playerstate.stamina= stamina;
-        playerstate.vitality = vitality;
-        playerstate.day++;
-      }
-      
       private getDistance(){
         if(this.node.mtxWorld.translation.x>-5 && this.node.mtxWorld.translation.x<5 && this.node.mtxWorld.translation.z>-5 && this.node.mtxWorld.translation.z<5){
           //console.log("Yes");
@@ -60,7 +53,17 @@ namespace Harvest {
         }
         else{
           onField = false;
+          let house:ƒ.Node= graph.getChildrenByName("House")[0]; 
+          let distance: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(this.node.mtxWorld.translation, house.mtxWorld.translation);
+          //console.log("d",distance.magnitude);
+          if (distance.magnitude<1.6){
+            nearHouse= true;
+          }
+          else{
+            nearHouse= false;
+          }
+          
         }
-    }
+      }
     }
   }

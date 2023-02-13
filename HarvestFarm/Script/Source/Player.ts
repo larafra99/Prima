@@ -7,7 +7,7 @@ namespace Harvest {
     }
 
     export class Avatar extends ƒAid.NodeSprite {
-        private xSpeed: number = .9;
+        private xSpeed: number = 1.1;
         private interaction: boolean;
 
         private animationCurrent: ƒAid.SpriteSheetAnimation;
@@ -47,23 +47,27 @@ namespace Harvest {
                     animation = this.walkDown;
                     break;
                 case ACTION.INTERACTION:
+                    if(farmingTool==3){
+                        // Seed setting 
+                        break;
+                    }
 
                     this.interaction = true;
 
                     if (this.animationCurrent == this.walkLeftRight) {
-                        this.showFrame(0);
+                        this.showFrame(farmingTool);
                         animation = this.fieldActionRight;
                         console.log("Left")
                         break;
                     }
                     else if (this.animationCurrent == this.walkUp) {
-                        this.showFrame(0);
+                        this.showFrame(farmingTool);
                         animation = this.fieldActionUp;
                         console.log("UP");
                         break;
                     }
                     else if (this.animationCurrent == this.walkDown) {
-                        this.showFrame(0);
+                        this.showFrame(farmingTool);
                         animation = this.fieldActionDown;
                         console.log("Down");
                         break;

@@ -9,7 +9,7 @@ namespace Harvest {
         public stamina: number;
         public vitality: number;
         public day: number;
-        public time: TimerHandler
+        public time: ƒ.Timer;
         private controller: ƒui.Controller
 
         constructor(_config: {[key: string]: number}){
@@ -18,7 +18,7 @@ namespace Harvest {
             this.vitality=_config.vitality;
             this.day = 0;
             this.controller= new ƒui.Controller(this,document.querySelector("#vui"))
-            console.log(this.controller);
+            //console.log(this.controller);
         }
     }
 }
