@@ -80,7 +80,7 @@
         "name": "walk_animation",
         "labels": {},
         "events": {},
-        "framesPerSecond": 25,
+        "framesPerSecond": 6,
         "animationStructure": {}
       }
     }
@@ -152,77 +152,6 @@
             "name": "Player",
             "active": true,
             "components": {
-              "ComponentTransform": [
-                {
-                  "ƒ.ComponentTransform": {
-                    "local": {
-                      "translation": "[0, 0, 1]",
-                      "rotation": "[0, 0, 0]",
-                      "scaling": "[1, 1, 1]"
-                    },
-                    "Component": {
-                      "active": false
-                    }
-                  }
-                }
-              ],
-              "ComponentMesh": [
-                {
-                  "ƒ.ComponentMesh": {
-                    "idMesh": "MeshQuad|2023-04-19T07:25:46.433Z|12005",
-                    "pivot": {
-                      "translation": "[0, 0, 0]",
-                      "rotation": "[0, 0, 0]",
-                      "scaling": "[1, 1, 1]"
-                    },
-                    "Component": {
-                      "active": false
-                    }
-                  }
-                }
-              ],
-              "ComponentMaterial": [
-                {
-                  "ƒ.ComponentMaterial": {
-                    "sortForAlpha": false,
-                    "clrPrimary": "[0.9803921568627451, 0.9803921568627451, 0.9803921568627451, 1]",
-                    "clrSecondary": "[1, 1, 1, 1]",
-                    "pivot": {
-                      "translation": "[0.006451612804085016, 0.7124999761581421]",
-                      "rotation": 0,
-                      "scaling": "[0.06451612710952759, 0.1525000035762787]"
-                    },
-                    "Component": {
-                      "active": false
-                    },
-                    "idMaterial": "Material|2023-06-17T09:19:52.298Z|71848"
-                  }
-                }
-              ],
-              "ComponentAnimator": [
-                {
-                  "ƒ.ComponentAnimator": {
-                    "Component": {
-                      "active": false
-                    },
-                    "idAnimation": "AnimationSprite|2023-06-17T09:10:47.141Z|49565",
-                    "playmode": "loop",
-                    "quantization": "discrete",
-                    "scale": 1,
-                    "scaleWithGameTime": false,
-                    "animateInEditor": false
-                  }
-                }
-              ]
-            },
-            "children": []
-          }
-        },
-        {
-          "ƒ.Node": {
-            "name": "Player3",
-            "active": true,
-            "components": {
               "ComponentMaterial": [
                 {
                   "ƒ.ComponentMaterial": {
@@ -230,9 +159,9 @@
                     "clrPrimary": "[1, 1, 1, 1]",
                     "clrSecondary": "[1, 1, 1, 1]",
                     "pivot": {
-                      "translation": "[7.099998950958252, 0.6000000238418579]",
+                      "translation": "[0.006451612804085016, 0.7124999761581421]",
                       "rotation": 0,
-                      "scaling": "[0.10000000149011612, 0.3999999165534973]"
+                      "scaling": "[0.06451612710952759, 0.1525000035762787]"
                     },
                     "Component": {
                       "active": true
@@ -260,13 +189,28 @@
                 {
                   "ƒ.ComponentTransform": {
                     "local": {
-                      "translation": "[0, -1.3000000715255737, 10]",
+                      "translation": "[0, -2.5, 10]",
                       "rotation": "[0, 0, 0]",
                       "scaling": "[1, 1, 1]"
                     },
                     "Component": {
                       "active": true
                     }
+                  }
+                }
+              ],
+              "ComponentAnimator": [
+                {
+                  "ƒ.ComponentAnimator": {
+                    "Component": {
+                      "active": true
+                    },
+                    "idAnimation": "AnimationSprite|2023-06-17T09:10:47.141Z|49565",
+                    "playmode": "loop",
+                    "quantization": "continous",
+                    "scale": 1,
+                    "scaleWithGameTime": true,
+                    "animateInEditor": false
                   }
                 }
               ]
