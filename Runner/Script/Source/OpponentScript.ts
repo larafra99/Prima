@@ -1,10 +1,10 @@
-namespace Script {
+namespace Runner {
   import ƒ = FudgeCore;
-  ƒ.Project.registerScriptNamespace(Script);  // Register the namespace to FUDGE for serialization
+  ƒ.Project.registerScriptNamespace(Runner);  // Register the namespace to FUDGE for serialization
 
-  export class CustomComponentScript extends ƒ.ComponentScript {
+  export class OpponentScript extends ƒ.ComponentScript {
     // Register the script as component for use in the editor via drag&drop
-    public static readonly iSubclass: number = ƒ.Component.registerSubclass(CustomComponentScript);
+    public static readonly iSubclass: number = ƒ.Component.registerSubclass(OpponentScript);
     // Properties may be mutated by users in the editor via the automatically created user interface
     public message: string = "CustomComponentScript added to ";
 
@@ -33,9 +33,20 @@ namespace Script {
           this.removeEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
           break;
         case ƒ.EVENT.NODE_DESERIALIZED:
-          // if deserialized the node is now fully reconstructed and access to all its components and children is possible
+          if(!Opponents){
+            return;
+          }
+        // if deserialized the node is now fully reconstructed and access to all its components and children is possible
+          this.loadOppo();
           break;
       }
+    }
+    public async  loadOppo():Promise<void>{
+      console.log("ASDFGHJ");
+      let imgSpriteSheet: ƒ.TextureImage = new ƒ.TextureImage();
+      await imgSpriteSheet.load("./Image/Sprite1.png");
+      Opponents.addChild
+    
     }
 
     // protected reduceMutator(_mutator: ƒ.Mutator): void {
