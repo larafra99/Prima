@@ -32,13 +32,14 @@ namespace Runner {
 
     await hndLoad();
     spawnOpponents();
+    console.log("O", Opponents);
     
 
     
     
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
 
-    // ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
   }
 
   async function hndLoad(): Promise<void> {
@@ -48,6 +49,7 @@ namespace Runner {
   function spawnOpponents(){
     // console.log("HEllo");
     Opponents.addChild(Opponent.createOpponents());
+    // Opponents.mtxLocal.translateX(3);
   }
   
 
@@ -55,6 +57,7 @@ namespace Runner {
     // ƒ.Physics.simulate();  // if physics is included and used
     //window.addEventListener()
     // spawnOpponents();
+    // Opponents.mtxLocal.translateX(3);
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP])) {
       avatar.act(ACTION.FIGHT);
     }

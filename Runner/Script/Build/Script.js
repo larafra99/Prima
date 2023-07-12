@@ -24,8 +24,9 @@ var Runner;
         // console.log("S",spriteNode);
         await hndLoad();
         spawnOpponents();
+        console.log("O", Runner.Opponents);
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
-        // ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+        ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     async function hndLoad() {
         avatar = new Runner.Avatar();
@@ -34,11 +35,13 @@ var Runner;
     function spawnOpponents() {
         // console.log("HEllo");
         Runner.Opponents.addChild(Runner.Opponent.createOpponents());
+        // Opponents.mtxLocal.translateX(3);
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
         //window.addEventListener()
         // spawnOpponents();
+        // Opponents.mtxLocal.translateX(3);
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP])) {
             avatar.act(Runner.ACTION.FIGHT);
         }
@@ -58,16 +61,23 @@ var Runner;
     class Opponent extends ƒ.Node {
         constructor() {
             super("Opponent");
-            this.addComponent(new ƒ.ComponentMesh(ƒ.Project.getResourcesByName("Quad")[0]));
-            this.addComponent(new ƒ.ComponentMaterial(ƒ.Project.getResourcesByName("Test")[0]));
+            this.addComponent(new ƒ.ComponentMesh(ƒ.Project.getResourcesByName("Player")[0]));
+            this.addComponent(new ƒ.ComponentMaterial(ƒ.Project.getResourcesByName("OpponentShader")[0]));
             this.addComponent(new ƒ.ComponentTransform());
-            this.mtxLocal.translation = new ƒ.Vector3(5, -3.4000000953674316, 10);
+            this.mtxLocal.translation = new ƒ.Vector3(-2, -3.45, 10);
+            this.mtxLocal.rotateY(180);
             // TODO: to start later x = 6.5 
+            this.getComponent(ƒ.ComponentMaterial).mtxPivot.translation = new ƒ.Vector2(0.3935483992099762, 0.1);
+            this.getComponent(ƒ.ComponentMaterial).mtxPivot.scaleX(0.068);
+            this.getComponent(ƒ.ComponentMaterial).mtxPivot.scaleY(0.173);
+            // this.getComponent(ƒ.ComponentMaterial).mtxPivot.scaleY(0.1525000035762787);
+            // this.getComponent(ƒ.ComponentMaterial).mtxPivot.scaleX(0.06451612710952759);
         }
         static createOpponents() {
             console.log("Oppo");
             let OpponentNode = new ƒ.Node("OpponentNode");
             OpponentNode = new Opponent();
+            console.log("Node", OpponentNode);
             return OpponentNode;
         }
     }
