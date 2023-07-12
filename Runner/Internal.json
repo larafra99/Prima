@@ -253,32 +253,9 @@
         },
         {
           "ƒ.Node": {
-            "name": "Opponent",
+            "name": "Opponents",
             "active": true,
-            "components": {
-              "ComponentTransform": [
-                {
-                  "ƒ.ComponentTransform": {
-                    "local": {
-                      "translation": "[9, -3.3999998569488525, 1]",
-                      "rotation": "[0, 0, 0]",
-                      "scaling": "[1, 1, 1]"
-                    },
-                    "Component": {
-                      "active": true
-                    }
-                  }
-                }
-              ],
-              "OpponentScript": [
-                {
-                  "Runner.OpponentScript": {
-                    "active": true,
-                    "message": "CustomComponentScript added to "
-                  }
-                }
-              ]
-            },
+            "components": {},
             "children": []
           }
         }
@@ -334,6 +311,18 @@
         "events": {},
         "framesPerSecond": 25,
         "animationStructure": {}
+      }
+    }
+  },
+  "Material|2023-07-12T07:23:28.890Z|53638": {
+    "ƒ.Material": {
+      "name": "Test",
+      "idResource": "Material|2023-07-12T07:23:28.890Z|53638",
+      "shader": "ShaderLit",
+      "coat": {
+        "ƒ.CoatColored": {
+          "color": "[0.7803921568627451, 0.12156862745098039, 0.12156862745098039, 1]"
+        }
       }
     }
   }

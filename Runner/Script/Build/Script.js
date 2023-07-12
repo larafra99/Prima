@@ -7,6 +7,11 @@ var Runner;
     let cmpCamera;
     let avatar;
     document.addEventListener("interactiveViewportStarted", start);
+    //TODO: get it to work
+    // window.onclick =(event: MouseEvent)=> { 
+    //   console.log("clccccc");
+    //   avatar.act(ACTION.FIGHT);
+    // }
     async function start(_event) {
         viewport = _event.detail;
         Runner.graph = viewport.getBranch();
@@ -15,8 +20,10 @@ var Runner;
         viewport.camera = cmpCamera;
         Runner.spriteNode = Runner.graph.getChildrenByName("Player")[0];
         Runner.Opponents = Runner.graph.getChildrenByName("Opponents")[0]; // get Sprite by name
-        //console.log("S",spriteNode);
+        // console.log("O", Opponents);
+        // console.log("S",spriteNode);
         await hndLoad();
+        spawnOpponents();
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         // ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
@@ -24,9 +31,14 @@ var Runner;
         avatar = new Runner.Avatar();
         ƒ.Loop.start();
     }
+    function spawnOpponents() {
+        // console.log("HEllo");
+        Runner.Opponents.addChild(Runner.Opponent.createOpponents());
+    }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
         //window.addEventListener()
+        // spawnOpponents();
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP])) {
             avatar.act(Runner.ACTION.FIGHT);
         }
@@ -39,6 +51,27 @@ var Runner;
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
+})(Runner || (Runner = {}));
+var Runner;
+(function (Runner) {
+    var ƒ = FudgeCore;
+    class Opponent extends ƒ.Node {
+        constructor() {
+            super("Opponent");
+            this.addComponent(new ƒ.ComponentMesh(ƒ.Project.getResourcesByName("Quad")[0]));
+            this.addComponent(new ƒ.ComponentMaterial(ƒ.Project.getResourcesByName("Test")[0]));
+            this.addComponent(new ƒ.ComponentTransform());
+            this.mtxLocal.translation = new ƒ.Vector3(5, -3.4000000953674316, 10);
+            // TODO: to start later x = 6.5 
+        }
+        static createOpponents() {
+            console.log("Oppo");
+            let OpponentNode = new ƒ.Node("OpponentNode");
+            OpponentNode = new Opponent();
+            return OpponentNode;
+        }
+    }
+    Runner.Opponent = Opponent;
 })(Runner || (Runner = {}));
 var Runner;
 (function (Runner) {
@@ -78,11 +111,12 @@ var Runner;
                     break;
             }
         };
-        async loadOppo() {
+        loadOppo() {
             console.log("ASDFGHJ");
-            let imgSpriteSheet = new ƒ.TextureImage();
-            await imgSpriteSheet.load("./Image/Sprite1.png");
-            Runner.Opponents.addChild;
+            // let skin  = ƒ.Project.getResourcesByName("PlayerShader")[0] ;
+            Runner.Opponents.addComponent(new ƒ.ComponentMesh);
+            //Opponents.addComponent(skin);
+            //Opponents.addChild
         }
     }
     Runner.OpponentScript = OpponentScript;
@@ -101,7 +135,6 @@ var Runner;
         missedOpponnent = false;
         constructor() {
             super("AvatarInstance");
-            this.addComponent(new ƒ.ComponentTransform());
         }
         act(_action) {
             //     let animation: ƒAid.SpriteSheetAnimation;
@@ -127,5 +160,23 @@ var Runner;
         }
     }
     Runner.Avatar = Avatar;
+})(Runner || (Runner = {}));
+var Runner;
+(function (Runner) {
+    var ƒ = FudgeCore;
+    class UserInterface extends ƒ.Mutable {
+        reduceMutator(_mutator) {
+            /**/
+        }
+        speed;
+        money;
+        constructor(_config) {
+            super();
+            this.speed = _config.stamina;
+            this.money = _config.vitality;
+            //console.log(this.controller);
+        }
+    }
+    Runner.UserInterface = UserInterface;
 })(Runner || (Runner = {}));
 //# sourceMappingURL=Script.js.map

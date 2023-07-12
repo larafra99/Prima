@@ -12,7 +12,6 @@ namespace Runner {
 
         public constructor() {
             super("AvatarInstance");
-            this.addComponent(new ƒ.ComponentTransform());
         }
 
        

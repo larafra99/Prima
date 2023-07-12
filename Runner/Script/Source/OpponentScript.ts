@@ -34,18 +34,21 @@ namespace Runner {
           break;
         case ƒ.EVENT.NODE_DESERIALIZED:
           if(!Opponents){
-            return;
+            return
           }
         // if deserialized the node is now fully reconstructed and access to all its components and children is possible
           this.loadOppo();
           break;
       }
     }
-    public async  loadOppo():Promise<void>{
+    public  loadOppo():void{
       console.log("ASDFGHJ");
-      let imgSpriteSheet: ƒ.TextureImage = new ƒ.TextureImage();
-      await imgSpriteSheet.load("./Image/Sprite1.png");
-      Opponents.addChild
+      // let skin  = ƒ.Project.getResourcesByName("PlayerShader")[0] ;
+      
+      Opponents.addComponent(new ƒ.ComponentMesh);
+      //Opponents.addComponent(skin);
+      
+      //Opponents.addChild
     
     }
 
