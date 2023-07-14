@@ -92,6 +92,25 @@
       "type": "MeshSprite"
     }
   },
+  "MeshCube|2023-07-13T14:06:32.026Z|83753": {
+    "ƒ.MeshCube": {
+      "idResource": "MeshCube|2023-07-13T14:06:32.026Z|83753",
+      "name": "MeshCube",
+      "type": "MeshCube"
+    }
+  },
+  "Material|2023-07-12T07:23:28.890Z|53638": {
+    "ƒ.Material": {
+      "name": "Test",
+      "idResource": "Material|2023-07-12T07:23:28.890Z|53638",
+      "shader": "ShaderLit",
+      "coat": {
+        "ƒ.CoatColored": {
+          "color": "[0.7803921568627451, 0.12156862745098039, 0.12156862745098039, 1]"
+        }
+      }
+    }
+  },
   "Graph|2023-04-19T07:26:09.957Z|60845": {
     "ƒ.Graph": {
       "name": "Game",
@@ -246,6 +265,39 @@
                     "animateInEditor": false
                   }
                 }
+              ],
+              "ComponentRigidbody": [
+                {
+                  "ƒ.ComponentRigidbody": {
+                    "initialization": "TO_PIVOT",
+                    "friction": 0.2,
+                    "restitution": 0.2,
+                    "mass": 1,
+                    "dampTranslation": 0.1,
+                    "dampRotation": 0.1,
+                    "effectGravity": 1,
+                    "typeBody": "STATIC",
+                    "typeCollider": "CUBE",
+                    "isTrigger": true,
+                    "id": 0,
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "CollisionScript": [
+                {
+                  "Runner.CollisionScript": {
+                    "active": true,
+                    "message": "CustomComponentScript added to "
+                  }
+                }
               ]
             },
             "children": []
@@ -255,7 +307,22 @@
           "ƒ.Node": {
             "name": "Opponents",
             "active": true,
-            "components": {},
+            "components": {
+              "ComponentTransform": [
+                {
+                  "ƒ.ComponentTransform": {
+                    "local": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ]
+            },
             "children": []
           }
         }
@@ -311,18 +378,6 @@
         "events": {},
         "framesPerSecond": 25,
         "animationStructure": {}
-      }
-    }
-  },
-  "Material|2023-07-12T07:23:28.890Z|53638": {
-    "ƒ.Material": {
-      "name": "Test",
-      "idResource": "Material|2023-07-12T07:23:28.890Z|53638",
-      "shader": "ShaderLit",
-      "coat": {
-        "ƒ.CoatColored": {
-          "color": "[0.7803921568627451, 0.12156862745098039, 0.12156862745098039, 1]"
-        }
       }
     }
   },

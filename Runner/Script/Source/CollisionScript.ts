@@ -2,11 +2,12 @@ namespace Runner {
   import ƒ = FudgeCore;
   ƒ.Project.registerScriptNamespace(Runner);  // Register the namespace to FUDGE for serialization
 
-  export class OpponentScript extends ƒ.ComponentScript {
+  export class CollisionScript extends ƒ.ComponentScript {
     // Register the script as component for use in the editor via drag&drop
-    public static readonly iSubclass: number = ƒ.Component.registerSubclass(OpponentScript);
+    public static readonly iSubclass: number = ƒ.Component.registerSubclass(CollisionScript);
     // Properties may be mutated by users in the editor via the automatically created user interface
     public message: string = "CustomComponentScript added to ";
+    private rigidbody: ƒ.ComponentRigidbody;
 
 
     constructor() {
@@ -33,24 +34,17 @@ namespace Runner {
           this.removeEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
           break;
         case ƒ.EVENT.NODE_DESERIALIZED:
-          if(!Opponents){
-            return
-          }
-        // if deserialized the node is now fully reconstructed and access to all its components and children is possible
-          this.loadOppo();
-          break;
+          console.log("I dont understand");
+          this.rigidbody = this.node.getComponent(ƒ.ComponentRigidbody);
+          this.rigidbody.addEventListener(ƒ.EVENT_PHYSICS.COLLISION_ENTER, this.hndCollision);
+          this.node.addEventListener("SensorHit", this.hndCollision);
+          
       }
     }
-    public  loadOppo():void{
-      console.log("ASDFGHJ");
-      // let skin  = ƒ.Project.getResourcesByName("PlayerShader")[0] ;
-      
-      Opponents.addComponent(new ƒ.ComponentMesh);
-      //Opponents.addComponent(skin);
-      
-      //Opponents.addChild
-    
+    private hndCollision = (_event: Event): void => {
+      console.log("Bumm");
     }
+   
 
     // protected reduceMutator(_mutator: ƒ.Mutator): void {
     //   // delete properties that should not be mutated
