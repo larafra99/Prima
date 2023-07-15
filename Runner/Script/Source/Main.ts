@@ -7,14 +7,15 @@ namespace Runner {
   export let spriteNode: ƒ.Node;
   export let Opponents: ƒ.Node;
   export let OpponentsTrans:Float32Array;
+  export let avatar:Avatar;
+
+  export let fight: boolean = false;
 
   let viewport: ƒ.Viewport;
   let cmpCamera: ƒ.ComponentCamera
-  let avatar:Avatar;
-  let OpponentNode: ƒ.Node;
-  let cmpRigidbody: ƒ.ComponentRigidbody;
+  
   let oppoTimer: number= 0;
-  let Spawntimer: number= 2.5;
+  let hitTimer:number= 0;
 
   document.addEventListener("interactiveViewportStarted", <EventListener><unknown>start);
   //TODO: get it to work
@@ -27,29 +28,16 @@ namespace Runner {
     viewport = _event.detail;
     graph = viewport.getBranch();
     viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS
-    // cmpCamera = viewport.camera;
+    cmpCamera = viewport.camera;
 
     cmpCamera = graph.getComponent(ƒ.ComponentCamera);
     viewport.camera = cmpCamera;
     spriteNode= graph.getChildrenByName("Player")[0];
-    cmpRigidbody= spriteNode.getComponent(ƒ.ComponentRigidbody); 
-    console.log("Rigid", cmpRigidbody);
-    Opponents= graph.getChildrenByName("Opponents")[0]; // get Sprite by name
+    Opponents= graph.getChildrenByName("Opponents")[0];
     // console.log("O", Opponents);
     // console.log("S",spriteNode);
 
     await hndLoad();
-    // spawnOpponents();
-    // console.log("O", Opponents);
-    // OpponentNode = Opponents.getChildrenByName("Opponent")[0];
-    // OpponentNode.mtxLocal.translateX(+3);
-    // let oppoRigidbody: ƒ.ComponentRigidbody = OpponentNode.getComponent(ƒ.ComponentRigidbody);
-    // console.log(oppoRigidbody);
-    // oppoRigidbody.applyForce(ƒ.Vector3.X(15))
-    // Opponents.mtxLocal.translateX(-3);
-    
-
-    
     
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
 
@@ -60,34 +48,43 @@ namespace Runner {
     avatar = new Avatar();
     ƒ.Loop.start();
   }
-  function spawnOpponents(): void{
-    // console.log("HEllo");
 
+  function spawnTimer():number{
+    return (Math.random() * (8 - 1.2) + 1.2);
+  }
+
+  function spawnOpponents(): void{
     oppoTimer += ƒ.Loop.timeFrameGame/1000;
-    // console.log(oppoTimer);
-    if (oppoTimer> Spawntimer){
-      // console.log("HElllo ist me");
+    // if (oppoTimer> spawnTimer()){
+    if (oppoTimer> 5){
       Opponents.addChild(Opponent.createOpponents());
-      // Opponents.mtxLocal.translateX(-1.0*ƒ.Loop.timeFrameGame/1000);
       oppoTimer= 0;
     }
-    
-    // Opponents.mtxLocal.translateX(3);
   }
+  function hitOpponent():void{
+    hitTimer += ƒ.Loop.timeFrameGame/1000;
+    if (hitTimer> 1 && fight ){
+      fight = false;
+      hitTimer= 0;
+    }
+    
+  }
+  
   
 
   function update(_event: Event): void {
-    ƒ.Physics.simulate();  // if physics is included and used
+    ƒ.Physics.simulate(); 
     //window.addEventListener()
     spawnOpponents();
     // TODO: Knoten wir vor der Gegenererstellung bewegt 
     OpponentsTrans= Opponents.mtxLocal.translation.get()
     // console.log(OpponentsTrans);
     Opponents.mtxLocal.translateX(-1.0*ƒ.Loop.timeFrameGame/1000);
-    // console.log("view", Opponents.getChildren());
+    // console.log("view", Opponents.getChildren(),length);
+    hitOpponent();
+    console.log(fight);
 
-    
-    
+
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP])) {
       avatar.act(ACTION.FIGHT);
       
@@ -98,7 +95,6 @@ namespace Runner {
     else{
       avatar.act(ACTION.IDLE);
     }
-    
     viewport.draw();
     ƒ.AudioManager.default.update();
   }

@@ -2,7 +2,6 @@ declare namespace Runner {
     import ƒ = FudgeCore;
     class CollisionScript extends ƒ.ComponentScript {
         static readonly iSubclass: number;
-        message: string;
         private rigidbody;
         constructor();
         hndEvent: (_event: Event) => void;
@@ -15,6 +14,8 @@ declare namespace Runner {
     let spriteNode: ƒ.Node;
     let Opponents: ƒ.Node;
     let OpponentsTrans: Float32Array;
+    let avatar: Avatar;
+    let fight: boolean;
 }
 declare namespace Runner {
     import ƒ = FudgeCore;
@@ -35,6 +36,16 @@ declare namespace Runner {
         private playerFps;
         constructor();
         act(_action: ACTION): void;
+    }
+}
+declare namespace Runner {
+    import ƒ = FudgeCore;
+    class RemoveOpponentScript extends ƒ.ComponentScript {
+        static readonly iSubclass: number;
+        constructor();
+        hndEvent: (_event: Event) => void;
+        private update;
+        private removeAfterHit;
     }
 }
 declare namespace Runner {

@@ -6,9 +6,7 @@ namespace Runner {
     // Register the script as component for use in the editor via drag&drop
     public static readonly iSubclass: number = ƒ.Component.registerSubclass(CollisionScript);
     // Properties may be mutated by users in the editor via the automatically created user interface
-    public message: string = "CustomComponentScript added to ";
     private rigidbody: ƒ.ComponentRigidbody;
-
 
     constructor() {
       super();
@@ -27,7 +25,7 @@ namespace Runner {
     public hndEvent = (_event: Event): void => {
       switch (_event.type) {
         case ƒ.EVENT.COMPONENT_ADD:
-          ƒ.Debug.log(this.message, this.node);
+          ƒ.Debug.log( this.node);
           break;
         case ƒ.EVENT.COMPONENT_REMOVE:
           this.removeEventListener(ƒ.EVENT.COMPONENT_ADD, this.hndEvent);
@@ -37,18 +35,28 @@ namespace Runner {
           console.log("I dont understand");
           this.rigidbody = this.node.getComponent(ƒ.ComponentRigidbody);
           this.rigidbody.addEventListener(ƒ.EVENT_PHYSICS.COLLISION_ENTER, this.hndCollision);
-          this.node.addEventListener("SensorHit", this.hndCollision);
+
+          
           
       }
     }
-    private hndCollision = (_event: Event): void => {
-      console.log("Bumm");
-    }
    
 
-    // protected reduceMutator(_mutator: ƒ.Mutator): void {
-    //   // delete properties that should not be mutated
-    //   // undefined properties and private fields (#) will not be included by default
-    // }
+    private hndCollision(_event: Event): void  {
+      // console.log(this.rigidbody.id)
+      // console.log(ƒ.EventPhysics.)
+      if (fight){
+        console.log("LEft");
+        
+        // spriteNode.dispatchEvent(new Event("Hit", {bubbles: true}));
+      }
+      else{
+        console.log("Bumm");
+        // TODO:hold animation longer
+        avatar.act(ACTION.MISSED);
+
+      }
+      
+    }
   }
 }

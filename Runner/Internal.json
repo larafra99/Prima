@@ -294,8 +294,7 @@
               "CollisionScript": [
                 {
                   "Runner.CollisionScript": {
-                    "active": true,
-                    "message": "CustomComponentScript added to "
+                    "active": true
                   }
                 }
               ]

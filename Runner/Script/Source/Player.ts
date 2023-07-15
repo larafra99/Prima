@@ -20,12 +20,14 @@ namespace Runner {
         //     let animation: ƒAid.SpriteSheetAnimation;
             switch (_action) {
                 case ACTION.FIGHT:
-                    console.log("FOPS", this.playerFps);
+                    // console.log("FOPS", this.playerFps);
                     spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("fight_animation")[0] as ƒ.AnimationSprite;
                     this.missedOpponnent= false;
+                    fight= true;
                     break;
                 case ACTION.IDLE:
                     spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("walk_animation")[0] as ƒ.AnimationSprite;
+                    // fight= false;
                     if(this.missedOpponnent){
                         this.playerFps= 5;
                     }
