@@ -16,6 +16,9 @@ declare namespace Runner {
     let OpponentsTrans: Float32Array;
     let avatar: Avatar;
     let fight: boolean;
+    let json: {
+        [key: string]: number;
+    };
 }
 declare namespace Runner {
     import ƒ = FudgeCore;
@@ -23,6 +26,31 @@ declare namespace Runner {
         constructor();
         static createOpponents(): ƒ.Node;
     }
+}
+declare namespace Runner {
+    import ƒAid = FudgeAid;
+    enum PETSTATE {
+        IDLE = 0,
+        RUN = 1,
+        REST = 2,
+        SIT = 3
+    }
+    export class PetState extends ƒAid.ComponentStateMachine<PETSTATE> {
+        static readonly iSubclass: number;
+        private static instructions;
+        constructor();
+        static get(): ƒAid.StateMachineInstructions<PETSTATE>;
+        private static transitDefault;
+        private static transit;
+        private static petDefault;
+        private static petIdle;
+        private static petRun;
+        private static petSit;
+        private static petRest;
+        private hndEvent;
+        private update;
+    }
+    export {};
 }
 declare namespace Runner {
     import ƒAid = FudgeAid;

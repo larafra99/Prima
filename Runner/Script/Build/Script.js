@@ -34,7 +34,10 @@ var Runner;
                     this.rigidbody.addEventListener("ColliderEnteredCollision" /* ƒ.EVENT_PHYSICS.COLLISION_ENTER */, this.hndCollision);
             }
         };
-        hndCollision(_event) {
+        async hndCollision(_event) {
+            if (!Runner.fight) {
+                await new Promise(resolve => { setTimeout(resolve, 1000); });
+            }
             // console.log(this.rigidbody.id)
             // console.log(ƒ.EventPhysics.)
             if (Runner.fight) {
@@ -66,6 +69,9 @@ var Runner;
     //   avatar.act(ACTION.FIGHT);
     // }
     async function start(_event) {
+        let response = await fetch("config.json");
+        let json = await response.json();
+        console.log(json);
         viewport = _event.detail;
         Runner.graph = viewport.getBranch();
         viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
@@ -97,7 +103,7 @@ var Runner;
     }
     function hitOpponent() {
         hitTimer += ƒ.Loop.timeFrameGame / 1000;
-        if (hitTimer > 1 && Runner.fight) {
+        if (hitTimer > 0.4 && Runner.fight) {
             Runner.fight = false;
             hitTimer = 0;
         }
@@ -106,13 +112,10 @@ var Runner;
         ƒ.Physics.simulate();
         //window.addEventListener()
         spawnOpponents();
-        // TODO: Knoten wir vor der Gegenererstellung bewegt 
         Runner.OpponentsTrans = Runner.Opponents.mtxLocal.translation.get();
-        // console.log(OpponentsTrans);
         Runner.Opponents.mtxLocal.translateX(-1.0 * ƒ.Loop.timeFrameGame / 1000);
-        // console.log("view", Opponents.getChildren(),length);
         hitOpponent();
-        console.log(Runner.fight);
+        // console.log(fight);
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP])) {
             Runner.avatar.act(Runner.ACTION.FIGHT);
         }
@@ -158,6 +161,112 @@ var Runner;
 (function (Runner) {
     var ƒ = FudgeCore;
     var ƒAid = FudgeAid;
+    ƒ.Project.registerScriptNamespace(Runner); // Register the namespace to FUDGE for serialization
+    let PETSTATE;
+    (function (PETSTATE) {
+        PETSTATE[PETSTATE["IDLE"] = 0] = "IDLE";
+        PETSTATE[PETSTATE["RUN"] = 1] = "RUN";
+        PETSTATE[PETSTATE["REST"] = 2] = "REST";
+        PETSTATE[PETSTATE["SIT"] = 3] = "SIT";
+    })(PETSTATE || (PETSTATE = {}));
+    let petTimer = 0;
+    class PetState extends ƒAid.ComponentStateMachine {
+        static iSubclass = ƒ.Component.registerSubclass(PetState);
+        static instructions = PetState.get();
+        constructor() {
+            super();
+            this.instructions = PetState.instructions; // setup instructions with the static set
+            // Don't start when running in editor
+            if (ƒ.Project.mode == ƒ.MODE.EDITOR)
+                return;
+            // Listen to this component being added to or removed from a node
+            this.addEventListener("componentAdd" /* ƒ.EVENT.COMPONENT_ADD */, this.hndEvent);
+            this.addEventListener("componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */, this.hndEvent);
+            this.addEventListener("nodeDeserialized" /* ƒ.EVENT.NODE_DESERIALIZED */, this.hndEvent);
+        }
+        static get() {
+            let setup = new ƒAid.StateMachineInstructions();
+            setup.transitDefault = PetState.transitDefault;
+            setup.actDefault = PetState.petDefault;
+            setup.setAction(PETSTATE.IDLE, this.petIdle);
+            setup.setAction(PETSTATE.RUN, this.petRun);
+            setup.setAction(PETSTATE.SIT, this.petSit);
+            setup.setAction(PETSTATE.REST, this.petRest);
+            setup.setTransition(PETSTATE.IDLE, PETSTATE.RUN, this.transit);
+            setup.setTransition(PETSTATE.RUN, PETSTATE.SIT, this.transit);
+            setup.setTransition(PETSTATE.SIT, PETSTATE.REST, this.transit);
+            setup.setTransition(PETSTATE.REST, PETSTATE.IDLE, this.transit);
+            //setup.setTransition(JOB.IDLE, JOB.ATTACK, <ƒ.General>this.transitDie);
+            return setup;
+        }
+        static transitDefault(_pet) {
+            console.log("Transit to", _pet.stateNext);
+        }
+        static transit(_pet) {
+            console.log("Transit");
+            // 
+        }
+        static async petDefault(_pet) {
+            console.log(PETSTATE[_pet.stateCurrent]);
+        }
+        static async petIdle(_pet) {
+            petTimer += ƒ.Loop.timeFrameGame / 1000;
+            _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("walk_pet")[0];
+            if (petTimer > 3) {
+                _pet.transit(PETSTATE.RUN);
+                petTimer = 0;
+            }
+            // 
+        }
+        static async petRun(_pet) {
+            _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("run_pet")[0];
+            _pet.node.mtxLocal.translateX(3.0 * ƒ.Loop.timeFrameGame / 1000);
+            if (_pet.node.mtxLocal.translation.x > 4) {
+                _pet.transit(PETSTATE.SIT);
+            }
+        }
+        static async petSit(_pet) {
+            petTimer += ƒ.Loop.timeFrameGame / 1000;
+            _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("sit_pet")[0];
+            _pet.node.mtxLocal.translateX(-1.0 * ƒ.Loop.timeFrameGame / 1000);
+            if (petTimer > 0.19) {
+                _pet.transit(PETSTATE.REST);
+                petTimer = 0;
+            }
+        }
+        static async petRest(_pet) {
+            _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("rest_pet")[0];
+            _pet.node.mtxLocal.translateX(-1.8 * ƒ.Loop.timeFrameGame / 1000);
+            if (_pet.node.mtxLocal.translation.x <= -4.5) {
+                _pet.transit(PETSTATE.IDLE);
+            }
+        }
+        // Activate the functions of this component as response to events
+        hndEvent = (_event) => {
+            switch (_event.type) {
+                case "componentAdd" /* ƒ.EVENT.COMPONENT_ADD */:
+                    ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
+                    this.transit(PETSTATE.IDLE);
+                    break;
+                case "componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */:
+                    this.removeEventListener("componentAdd" /* ƒ.EVENT.COMPONENT_ADD */, this.hndEvent);
+                    this.removeEventListener("componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */, this.hndEvent);
+                    ƒ.Loop.removeEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
+                    break;
+                case "nodeDeserialized" /* ƒ.EVENT.NODE_DESERIALIZED */:
+                    break;
+            }
+        };
+        update = (_event) => {
+            this.act();
+        };
+    }
+    Runner.PetState = PetState;
+})(Runner || (Runner = {}));
+var Runner;
+(function (Runner) {
+    var ƒ = FudgeCore;
+    var ƒAid = FudgeAid;
     let ACTION;
     (function (ACTION) {
         ACTION[ACTION["IDLE"] = 0] = "IDLE";
@@ -194,6 +303,7 @@ var Runner;
                     Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps = this.playerFps;
                     break;
                 case ACTION.MISSED:
+                    // TODO: hold animation longer
                     Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("missed_animation")[0];
                     this.missedOpponnent = true;
                     break;

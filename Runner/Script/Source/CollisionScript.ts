@@ -1,3 +1,4 @@
+
 namespace Runner {
   import ƒ = FudgeCore;
   ƒ.Project.registerScriptNamespace(Runner);  // Register the namespace to FUDGE for serialization
@@ -42,7 +43,11 @@ namespace Runner {
     }
    
 
-    private hndCollision(_event: Event): void  {
+    private async hndCollision(_event: Event): Promise<void>  {
+      if(!fight){
+        await new Promise(resolve => {setTimeout(resolve, 1000)});
+      }
+      
       // console.log(this.rigidbody.id)
       // console.log(ƒ.EventPhysics.)
       if (fight){

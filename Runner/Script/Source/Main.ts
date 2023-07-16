@@ -10,12 +10,14 @@ namespace Runner {
   export let avatar:Avatar;
 
   export let fight: boolean = false;
+  export let json: {[key: string]: number}; 
 
   let viewport: ƒ.Viewport;
   let cmpCamera: ƒ.ComponentCamera
   
   let oppoTimer: number= 0;
   let hitTimer:number= 0;
+
 
   document.addEventListener("interactiveViewportStarted", <EventListener><unknown>start);
   //TODO: get it to work
@@ -25,6 +27,10 @@ namespace Runner {
   // }
 
   async function start(_event: CustomEvent): Promise<void> {
+    let response = await fetch("config.json");
+    let json = await response.json();
+    console.log(json);
+
     viewport = _event.detail;
     graph = viewport.getBranch();
     viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS
@@ -63,7 +69,7 @@ namespace Runner {
   }
   function hitOpponent():void{
     hitTimer += ƒ.Loop.timeFrameGame/1000;
-    if (hitTimer> 1 && fight ){
+    if (hitTimer> 0.4 && fight ){
       fight = false;
       hitTimer= 0;
     }
@@ -76,13 +82,10 @@ namespace Runner {
     ƒ.Physics.simulate(); 
     //window.addEventListener()
     spawnOpponents();
-    // TODO: Knoten wir vor der Gegenererstellung bewegt 
     OpponentsTrans= Opponents.mtxLocal.translation.get()
-    // console.log(OpponentsTrans);
     Opponents.mtxLocal.translateX(-1.0*ƒ.Loop.timeFrameGame/1000);
-    // console.log("view", Opponents.getChildren(),length);
     hitOpponent();
-    console.log(fight);
+    // console.log(fight);
 
 
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP])) {

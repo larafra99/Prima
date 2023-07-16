@@ -111,6 +111,50 @@
       }
     }
   },
+  "Material|2023-07-16T09:04:37.293Z|82127": {
+    "ƒ.Material": {
+      "name": "PetShader",
+      "idResource": "Material|2023-07-16T09:04:37.293Z|82127",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-07-16T09:04:29.678Z|42897"
+        }
+      }
+    }
+  },
+  "TextureImage|2023-07-16T09:04:29.678Z|42897": {
+    "ƒ.TextureImage": {
+      "url": "Image\\petsprite.jpg",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-07-16T09:04:29.678Z|42897",
+        "name": "petsprite.jpg",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "AnimationSprite|2023-07-16T09:15:48.395Z|98878": {
+    "ƒ.AnimationSprite": {
+      "idResource": "AnimationSprite|2023-07-16T09:15:48.395Z|98878",
+      "idTexture": "TextureImage|2023-07-16T09:04:29.678Z|42897",
+      "frames": 4,
+      "wrapAfter": 4,
+      "start": "[280, 18]",
+      "size": "[90, 90]",
+      "next": "[120, 0]",
+      "wrap": "[0, 80]",
+      "Animation": {
+        "idResource": "AnimationSprite|2023-07-16T09:15:48.395Z|98878",
+        "name": "walk_pet",
+        "labels": {},
+        "events": {},
+        "framesPerSecond": 15,
+        "animationStructure": {}
+      }
+    }
+  },
   "Graph|2023-04-19T07:26:09.957Z|60845": {
     "ƒ.Graph": {
       "name": "Game",
@@ -324,20 +368,88 @@
             },
             "children": []
           }
+        },
+        {
+          "ƒ.Node": {
+            "name": "Pet",
+            "active": true,
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshSprite|2023-06-19T08:58:20.839Z|09714",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentTransform": [
+                {
+                  "ƒ.ComponentTransform": {
+                    "local": {
+                      "translation": "[-5, -3.749999523162842, 10]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[0.5, 0.5, 0.5]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0.636904776096344, 0.03921568766236305]",
+                      "rotation": 0,
+                      "scaling": "[0.0892857164144516, 0.19389978051185608]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-07-16T09:04:37.293Z|82127"
+                  }
+                }
+              ],
+              "ComponentAnimator": [
+                {
+                  "ƒ.ComponentAnimator": {
+                    "Component": {
+                      "active": true
+                    },
+                    "idAnimation": "AnimationSprite|2023-07-16T09:15:48.395Z|98878",
+                    "playmode": "loop",
+                    "quantization": "discrete",
+                    "scale": 1,
+                    "scaleWithGameTime": true,
+                    "animateInEditor": false
+                  }
+                }
+              ],
+              "PetState": [
+                {
+                  "Runner.PetState": {
+                    "active": true
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
         }
       ],
       "idResource": "Graph|2023-04-19T07:26:09.957Z|60845",
       "type": "Graph"
-    }
-  },
-  "Animation|2023-06-24T08:15:14.362Z|17995": {
-    "ƒ.Animation": {
-      "idResource": "Animation|2023-06-24T08:15:14.362Z|17995",
-      "name": "Animation",
-      "labels": {},
-      "events": {},
-      "framesPerSecond": 60,
-      "animationStructure": {}
     }
   },
   "AnimationSprite|2023-06-24T08:31:46.588Z|86724": {
@@ -375,7 +487,7 @@
         "name": "missed_animation",
         "labels": {},
         "events": {},
-        "framesPerSecond": 25,
+        "framesPerSecond": 0.1,
         "animationStructure": {}
       }
     }
@@ -401,6 +513,66 @@
         "idResource": "TextureImage|2023-07-12T08:02:22.883Z|44414",
         "name": "OpponentImage",
         "mipmap": "CRISP"
+      }
+    }
+  },
+  "AnimationSprite|2023-07-16T09:27:59.385Z|93132": {
+    "ƒ.AnimationSprite": {
+      "idResource": "AnimationSprite|2023-07-16T09:27:59.385Z|93132",
+      "idTexture": "TextureImage|2023-07-16T09:04:29.678Z|42897",
+      "frames": 3,
+      "wrapAfter": 5,
+      "start": "[270, 350]",
+      "size": "[110, 96]",
+      "next": "[120, 0]",
+      "wrap": "[0, 80]",
+      "Animation": {
+        "idResource": "AnimationSprite|2023-07-16T09:27:59.385Z|93132",
+        "name": "run_pet",
+        "labels": {},
+        "events": {},
+        "framesPerSecond": 15,
+        "animationStructure": {}
+      }
+    }
+  },
+  "AnimationSprite|2023-07-16T09:28:37.562Z|61315": {
+    "ƒ.AnimationSprite": {
+      "idResource": "AnimationSprite|2023-07-16T09:28:37.562Z|61315",
+      "idTexture": "TextureImage|2023-07-16T09:04:29.678Z|42897",
+      "frames": 4,
+      "wrapAfter": 5,
+      "start": "[275, 117]",
+      "size": "[94, 93]",
+      "next": "[120, 0]",
+      "wrap": "[0, 80]",
+      "Animation": {
+        "idResource": "AnimationSprite|2023-07-16T09:28:37.562Z|61315",
+        "name": "sit_pet",
+        "labels": {},
+        "events": {},
+        "framesPerSecond": 9,
+        "animationStructure": {}
+      }
+    }
+  },
+  "AnimationSprite|2023-07-16T09:30:20.387Z|11095": {
+    "ƒ.AnimationSprite": {
+      "idResource": "AnimationSprite|2023-07-16T09:30:20.387Z|11095",
+      "idTexture": "TextureImage|2023-07-16T09:04:29.678Z|42897",
+      "frames": 3,
+      "wrapAfter": 5,
+      "start": "[280, 232]",
+      "size": "[84, 96]",
+      "next": "[120, 0]",
+      "wrap": "[0, 80]",
+      "Animation": {
+        "idResource": "AnimationSprite|2023-07-16T09:30:20.387Z|11095",
+        "name": "rest_pet",
+        "labels": {},
+        "events": {},
+        "framesPerSecond": 5,
+        "animationStructure": {}
       }
     }
   }

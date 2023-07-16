@@ -40,6 +40,7 @@ namespace Runner {
                     spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps = this.playerFps;
                     break;
                 case ACTION.MISSED:
+                    // TODO: hold animation longer
                     spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("missed_animation")[0] as ƒ.AnimationSprite;
                     this.missedOpponnent= true; 
                     break;
