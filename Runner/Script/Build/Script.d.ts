@@ -21,12 +21,23 @@ declare namespace Runner {
     let json: {
         [key: string]: number;
     };
+    let petNode: ƒ.Node;
+    let petStateMachine: PetState;
 }
 declare namespace Runner {
     import ƒ = FudgeCore;
     class Opponent extends ƒ.Node {
         constructor();
         static createOpponents(): ƒ.Node;
+    }
+}
+declare namespace Runner {
+    import ƒ = FudgeCore;
+    class PetScript extends ƒ.ComponentScript {
+        static readonly iSubclass: number;
+        constructor();
+        hndEvent: (_event: Event) => void;
+        private startPostion;
     }
 }
 declare namespace Runner {
@@ -43,13 +54,13 @@ declare namespace Runner {
         constructor();
         static get(): ƒAid.StateMachineInstructions<PETSTATE>;
         private static transitDefault;
-        private static transit;
         private static petDefault;
         private static petIdle;
         private static petRun;
         private static petSit;
         private static petRest;
         private hndEvent;
+        petReset(): void;
         private update;
     }
     export {};

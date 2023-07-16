@@ -175,7 +175,7 @@
               "direction": "horizontal",
               "aspect": 1,
               "pivot": {
-                "translation": "[0, -2, 25]",
+                "translation": "[0, -1, 25]",
                 "rotation": "[0, 180, 0]",
                 "scaling": "[1, 1, 1]"
               },
@@ -285,7 +285,7 @@
                 {
                   "ƒ.ComponentTransform": {
                     "local": {
-                      "translation": "[-3.299999713897705, -3.4000000953674316, 10]",
+                      "translation": "[-3.299999713897705, -3.000000476837158, 10]",
                       "rotation": "[0, 0, 0]",
                       "scaling": "[1.5000001192092896, 1, 1]"
                     },
@@ -393,9 +393,9 @@
                 {
                   "ƒ.ComponentTransform": {
                     "local": {
-                      "translation": "[-5, -3.749999523162842, 10]",
+                      "translation": "[-4.699999809265137, -3, 12]",
                       "rotation": "[0, 0, 0]",
-                      "scaling": "[0.5, 0.5, 0.5]"
+                      "scaling": "[0.4000000059604645, 0.4000000059604645, 0.4000000059604645]"
                     },
                     "Component": {
                       "active": true
@@ -439,6 +439,13 @@
               "PetState": [
                 {
                   "Runner.PetState": {
+                    "active": true
+                  }
+                }
+              ],
+              "PetScript": [
+                {
+                  "Runner.PetScript": {
                     "active": true
                   }
                 }

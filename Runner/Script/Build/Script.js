@@ -35,13 +35,13 @@ var Runner;
             }
         };
         async hndCollision(_event) {
+            let oppoNode = _event.cmpRigidbody.node;
             if (!Runner.fight) {
                 await new Promise(resolve => { setTimeout(resolve, 1000); });
             }
-            // console.log(this.rigidbody.id)
-            // console.log(ƒ.EventPhysics.)
             if (Runner.fight) {
                 console.log("LEft");
+                Runner.Opponents.removeChild(oppoNode);
                 Runner.ui.money = Runner.ui.money + 1;
                 // spriteNode.dispatchEvent(new Event("Hit", {bubbles: true}));
             }
@@ -74,6 +74,7 @@ var Runner;
         let response = await fetch("config.json");
         let json = await response.json();
         Runner.ui = new Runner.UserInterface(json);
+        Runner.petStateMachine = new Runner.PetState();
         viewport = _event.detail;
         Runner.graph = viewport.getBranch();
         viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
@@ -82,6 +83,7 @@ var Runner;
         viewport.camera = cmpCamera;
         Runner.spriteNode = Runner.graph.getChildrenByName("Player")[0];
         Runner.Opponents = Runner.graph.getChildrenByName("Opponents")[0];
+        Runner.petNode = Runner.graph.getChildrenByName("Pet")[0];
         // console.log("O", Opponents);
         // console.log("S",spriteNode);
         let resetButton = document.getElementById("resetbutton");
@@ -136,6 +138,7 @@ var Runner;
         console.log("Reset");
         Runner.ui.money = 0;
         Runner.ui.speed = 15;
+        Runner.petNode.dispatchEvent(new Event("Reset", { bubbles: true }));
         Runner.missedOpponnent = false;
         Runner.avatar.act(Runner.ACTION.IDLE);
     }
@@ -149,7 +152,7 @@ var Runner;
             this.addComponent(new ƒ.ComponentMesh(ƒ.Project.getResourcesByName("Player")[0]));
             this.addComponent(new ƒ.ComponentMaterial(ƒ.Project.getResourcesByName("OpponentShader")[0]));
             this.addComponent(new ƒ.ComponentTransform());
-            this.getComponent(ƒ.ComponentTransform).mtxLocal.translation = new ƒ.Vector3(7 - Runner.OpponentsTrans[0], -3.45, 10);
+            this.getComponent(ƒ.ComponentTransform).mtxLocal.translation = new ƒ.Vector3(7 - Runner.OpponentsTrans[0], -3.1, 10);
             this.mtxLocal.rotateY(180);
             this.getComponent(ƒ.ComponentMaterial).mtxPivot.translation = new ƒ.Vector2(0.3935483992099762, 0.1);
             this.getComponent(ƒ.ComponentMaterial).mtxPivot.scaleX(0.068);
@@ -167,6 +170,49 @@ var Runner;
         }
     }
     Runner.Opponent = Opponent;
+})(Runner || (Runner = {}));
+var Runner;
+(function (Runner) {
+    var ƒ = FudgeCore;
+    ƒ.Project.registerScriptNamespace(Runner); // Register the namespace to FUDGE for serialization
+    class PetScript extends ƒ.ComponentScript {
+        // Register the script as component for use in the editor via drag&drop
+        static iSubclass = ƒ.Component.registerSubclass(PetScript);
+        // Properties may be mutated by users in the editor via the automatically created user interface
+        constructor() {
+            super();
+            // Don't start when running in editor
+            if (ƒ.Project.mode == ƒ.MODE.EDITOR)
+                return;
+            // Listen to this component being added to or removed from a node
+            this.addEventListener("componentAdd" /* ƒ.EVENT.COMPONENT_ADD */, this.hndEvent);
+            this.addEventListener("componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */, this.hndEvent);
+            this.addEventListener("nodeDeserialized" /* ƒ.EVENT.NODE_DESERIALIZED */, this.hndEvent);
+        }
+        // Activate the functions of this component as response to events
+        hndEvent = (_event) => {
+            switch (_event.type) {
+                case "componentAdd" /* ƒ.EVENT.COMPONENT_ADD */:
+                    ƒ.Debug.log(this.node);
+                    break;
+                case "componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */:
+                    this.removeEventListener("componentAdd" /* ƒ.EVENT.COMPONENT_ADD */, this.hndEvent);
+                    this.removeEventListener("componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */, this.hndEvent);
+                    break;
+                case "nodeDeserialized" /* ƒ.EVENT.NODE_DESERIALIZED */:
+                    console.log("I dont understand");
+                    this.node.addEventListener("Reset", this.startPostion);
+            }
+        };
+        startPostion(_event) {
+            console.log("Doggo go home");
+            // this.node.mtxLocal.translation.x= -4.69;
+            Runner.petStateMachine.petReset();
+            Runner.petNode.mtxLocal.translation.x = -4.69;
+            Runner.petNode.mtxLocal.translation = new ƒ.Vector3(-4.7, -3, 12);
+        }
+    }
+    Runner.PetScript = PetScript;
 })(Runner || (Runner = {}));
 var Runner;
 (function (Runner) {
@@ -203,31 +249,22 @@ var Runner;
             setup.setAction(PETSTATE.RUN, this.petRun);
             setup.setAction(PETSTATE.SIT, this.petSit);
             setup.setAction(PETSTATE.REST, this.petRest);
-            setup.setTransition(PETSTATE.IDLE, PETSTATE.RUN, this.transit);
-            setup.setTransition(PETSTATE.RUN, PETSTATE.SIT, this.transit);
-            setup.setTransition(PETSTATE.SIT, PETSTATE.REST, this.transit);
-            setup.setTransition(PETSTATE.REST, PETSTATE.IDLE, this.transit);
-            //setup.setTransition(JOB.IDLE, JOB.ATTACK, <ƒ.General>this.transitDie);
             return setup;
         }
         static transitDefault(_pet) {
             console.log("Transit to", _pet.stateNext);
         }
-        static transit(_pet) {
-            console.log("Transit");
-            // 
-        }
         static async petDefault(_pet) {
             console.log(PETSTATE[_pet.stateCurrent]);
         }
         static async petIdle(_pet) {
+            console.log("walk");
             petTimer += ƒ.Loop.timeFrameGame / 1000;
             _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("walk_pet")[0];
             if (petTimer > 3) {
                 _pet.transit(PETSTATE.RUN);
                 petTimer = 0;
             }
-            // 
         }
         static async petRun(_pet) {
             _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("run_pet")[0];
@@ -247,7 +284,7 @@ var Runner;
         }
         static async petRest(_pet) {
             _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("rest_pet")[0];
-            _pet.node.mtxLocal.translateX(-1.8 * ƒ.Loop.timeFrameGame / 1000);
+            _pet.node.mtxLocal.translateX(-2 * ƒ.Loop.timeFrameGame / 1000);
             if (_pet.node.mtxLocal.translation.x <= -4.5) {
                 _pet.transit(PETSTATE.IDLE);
             }
@@ -268,6 +305,10 @@ var Runner;
                     break;
             }
         };
+        petReset() {
+            console.log("PEtSTatereset");
+            this.transit(PETSTATE.IDLE);
+        }
         update = (_event) => {
             this.act();
         };

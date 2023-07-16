@@ -43,15 +43,17 @@ namespace Runner {
     }
    
 
-    private async hndCollision(_event: Event): Promise<void>  {
+    private async hndCollision(_event: ƒ.EventPhysics): Promise<void>  {
+      
+      let oppoNode: ƒ.Node = _event.cmpRigidbody.node;
+      
+
       if(!fight){
         await new Promise(resolve => {setTimeout(resolve, 1000)});
       }
-      
-      // console.log(this.rigidbody.id)
-      // console.log(ƒ.EventPhysics.)
       if (fight){
         console.log("LEft");
+        Opponents.removeChild(oppoNode);
         ui.money= ui.money+1;
         
         // spriteNode.dispatchEvent(new Event("Hit", {bubbles: true}));

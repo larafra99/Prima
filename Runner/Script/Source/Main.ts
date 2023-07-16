@@ -12,10 +12,13 @@ namespace Runner {
 
   export let fight: boolean = false;
   export let missedOpponnent:boolean = false;
-  export let json: {[key: string]: number}; 
+  export let json: {[key: string]: number};
+  export let petNode:ƒ.Node;
+  export let petStateMachine: PetState;
 
   let viewport: ƒ.Viewport;
-  let cmpCamera: ƒ.ComponentCamera
+  let cmpCamera: ƒ.ComponentCamera;
+  
   
   let oppoTimer: number= 0;
   let hitTimer:number= 0;
@@ -32,6 +35,7 @@ namespace Runner {
     let response = await fetch("config.json");
     let json = await response.json();
     ui= new UserInterface(json);
+    petStateMachine= new PetState();
 
     viewport = _event.detail;
     graph = viewport.getBranch();
@@ -42,6 +46,7 @@ namespace Runner {
 
     spriteNode= graph.getChildrenByName("Player")[0];
     Opponents= graph.getChildrenByName("Opponents")[0];
+    petNode= graph.getChildrenByName("Pet")[0];
     // console.log("O", Opponents);
     // console.log("S",spriteNode);
 
@@ -111,8 +116,10 @@ namespace Runner {
     console.log("Reset");
     ui.money= 0;
     ui.speed= 15;
+    petNode.dispatchEvent(new Event("Reset", {bubbles: true}));
     missedOpponnent= false;
     avatar.act(ACTION.IDLE);
+    
     
   }
 
