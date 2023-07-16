@@ -7,7 +7,7 @@ namespace Runner {
     }
 
     export class Avatar extends ƒAid.NodeSprite {
-        private missedOpponnent:boolean = false;
+        
         private playerFps: number = spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps;
 
 
@@ -22,13 +22,14 @@ namespace Runner {
                 case ACTION.FIGHT:
                     // console.log("FOPS", this.playerFps);
                     spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("fight_animation")[0] as ƒ.AnimationSprite;
-                    this.missedOpponnent= false;
+                    missedOpponnent= false;
                     fight= true;
                     break;
                 case ACTION.IDLE:
                     spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("walk_animation")[0] as ƒ.AnimationSprite;
                     // fight= false;
-                    if(this.missedOpponnent){
+                    if(missedOpponnent){
+                        ui.speed= 5;
                         this.playerFps= 5;
                     }
                     else{
@@ -42,9 +43,10 @@ namespace Runner {
                 case ACTION.MISSED:
                     // TODO: hold animation longer
                     spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("missed_animation")[0] as ƒ.AnimationSprite;
-                    this.missedOpponnent= true; 
+                    missedOpponnent= true; 
                     break;
             }
+            ui.speed= this.playerFps;
         }  
     }
 }

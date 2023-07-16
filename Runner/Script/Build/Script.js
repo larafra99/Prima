@@ -42,6 +42,7 @@ var Runner;
             // console.log(ƒ.EventPhysics.)
             if (Runner.fight) {
                 console.log("LEft");
+                Runner.ui.money = Runner.ui.money + 1;
                 // spriteNode.dispatchEvent(new Event("Hit", {bubbles: true}));
             }
             else {
@@ -58,6 +59,7 @@ var Runner;
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
     Runner.fight = false;
+    Runner.missedOpponnent = false;
     let viewport;
     let cmpCamera;
     let oppoTimer = 0;
@@ -71,7 +73,7 @@ var Runner;
     async function start(_event) {
         let response = await fetch("config.json");
         let json = await response.json();
-        console.log(json);
+        Runner.ui = new Runner.UserInterface(json);
         viewport = _event.detail;
         Runner.graph = viewport.getBranch();
         viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
@@ -82,6 +84,8 @@ var Runner;
         Runner.Opponents = Runner.graph.getChildrenByName("Opponents")[0];
         // console.log("O", Opponents);
         // console.log("S",spriteNode);
+        let resetButton = document.getElementById("resetbutton");
+        resetButton.addEventListener("click", function () { reset(); });
         await hndLoad();
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
@@ -127,6 +131,13 @@ var Runner;
         }
         viewport.draw();
         ƒ.AudioManager.default.update();
+    }
+    function reset() {
+        console.log("Reset");
+        Runner.ui.money = 0;
+        Runner.ui.speed = 15;
+        Runner.missedOpponnent = false;
+        Runner.avatar.act(Runner.ACTION.IDLE);
     }
 })(Runner || (Runner = {}));
 var Runner;
@@ -274,7 +285,6 @@ var Runner;
         ACTION[ACTION["MISSED"] = 2] = "MISSED";
     })(ACTION = Runner.ACTION || (Runner.ACTION = {}));
     class Avatar extends ƒAid.NodeSprite {
-        missedOpponnent = false;
         playerFps = Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps;
         constructor() {
             super("AvatarInstance");
@@ -285,13 +295,14 @@ var Runner;
                 case ACTION.FIGHT:
                     // console.log("FOPS", this.playerFps);
                     Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("fight_animation")[0];
-                    this.missedOpponnent = false;
+                    Runner.missedOpponnent = false;
                     Runner.fight = true;
                     break;
                 case ACTION.IDLE:
                     Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("walk_animation")[0];
                     // fight= false;
-                    if (this.missedOpponnent) {
+                    if (Runner.missedOpponnent) {
+                        Runner.ui.speed = 5;
                         this.playerFps = 5;
                     }
                     else {
@@ -305,9 +316,10 @@ var Runner;
                 case ACTION.MISSED:
                     // TODO: hold animation longer
                     Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("missed_animation")[0];
-                    this.missedOpponnent = true;
+                    Runner.missedOpponnent = true;
                     break;
             }
+            Runner.ui.speed = this.playerFps;
         }
     }
     Runner.Avatar = Avatar;
@@ -363,16 +375,19 @@ var Runner;
 var Runner;
 (function (Runner) {
     var ƒ = FudgeCore;
+    var ƒui = FudgeUserInterface;
     class UserInterface extends ƒ.Mutable {
         reduceMutator(_mutator) {
             /**/
         }
         speed;
         money;
+        controller;
         constructor(_config) {
             super();
-            this.speed = _config.stamina;
-            this.money = _config.vitality;
+            this.speed = _config.speed;
+            this.money = _config.money;
+            this.controller = new ƒui.Controller(this, document.querySelector("#vui"));
             //console.log(this.controller);
         }
     }

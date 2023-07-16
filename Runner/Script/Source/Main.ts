@@ -8,8 +8,10 @@ namespace Runner {
   export let Opponents: ƒ.Node;
   export let OpponentsTrans:Float32Array;
   export let avatar:Avatar;
+  export let ui:UserInterface;
 
   export let fight: boolean = false;
+  export let missedOpponnent:boolean = false;
   export let json: {[key: string]: number}; 
 
   let viewport: ƒ.Viewport;
@@ -29,19 +31,23 @@ namespace Runner {
   async function start(_event: CustomEvent): Promise<void> {
     let response = await fetch("config.json");
     let json = await response.json();
-    console.log(json);
+    ui= new UserInterface(json);
 
     viewport = _event.detail;
     graph = viewport.getBranch();
     viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS
     cmpCamera = viewport.camera;
-
     cmpCamera = graph.getComponent(ƒ.ComponentCamera);
     viewport.camera = cmpCamera;
+
     spriteNode= graph.getChildrenByName("Player")[0];
     Opponents= graph.getChildrenByName("Opponents")[0];
     // console.log("O", Opponents);
     // console.log("S",spriteNode);
+
+    let resetButton: HTMLButtonElement =<HTMLButtonElement>document.getElementById("resetbutton");
+    resetButton.addEventListener("click", function (): void {reset()});
+    
 
     await hndLoad();
     
@@ -73,8 +79,8 @@ namespace Runner {
       fight = false;
       hitTimer= 0;
     }
-    
   }
+  
   
   
 
@@ -100,6 +106,14 @@ namespace Runner {
     }
     viewport.draw();
     ƒ.AudioManager.default.update();
+  }
+  function reset():void{
+    console.log("Reset");
+    ui.money= 0;
+    ui.speed= 15;
+    missedOpponnent= false;
+    avatar.act(ACTION.IDLE);
+    
   }
 
 }

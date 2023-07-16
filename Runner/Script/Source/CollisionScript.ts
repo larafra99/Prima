@@ -52,6 +52,7 @@ namespace Runner {
       // console.log(ƒ.EventPhysics.)
       if (fight){
         console.log("LEft");
+        ui.money= ui.money+1;
         
         // spriteNode.dispatchEvent(new Event("Hit", {bubbles: true}));
       }

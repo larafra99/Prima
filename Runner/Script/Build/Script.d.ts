@@ -15,7 +15,9 @@ declare namespace Runner {
     let Opponents: ƒ.Node;
     let OpponentsTrans: Float32Array;
     let avatar: Avatar;
+    let ui: UserInterface;
     let fight: boolean;
+    let missedOpponnent: boolean;
     let json: {
         [key: string]: number;
     };
@@ -60,7 +62,6 @@ declare namespace Runner {
         MISSED = 2
     }
     class Avatar extends ƒAid.NodeSprite {
-        private missedOpponnent;
         private playerFps;
         constructor();
         act(_action: ACTION): void;
@@ -78,10 +79,12 @@ declare namespace Runner {
 }
 declare namespace Runner {
     import ƒ = FudgeCore;
+    import ƒui = FudgeUserInterface;
     class UserInterface extends ƒ.Mutable {
         protected reduceMutator(_mutator: ƒ.Mutator): void;
         speed: number;
         money: number;
+        controller: ƒui.Controller;
         constructor(_config: {
             [key: string]: number;
         });
