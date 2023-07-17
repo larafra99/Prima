@@ -20,7 +20,6 @@ namespace Runner {
         //     let animation: ƒAid.SpriteSheetAnimation;
             switch (_action) {
                 case ACTION.FIGHT:
-                    console.log("Fight");
                     spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("fight_animation")[0] as ƒ.AnimationSprite;
                     missedOpponnent= false;
                     fight= true;
@@ -35,15 +34,12 @@ namespace Runner {
                     spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps = playerFps;
                     break;
                 case ACTION.MISSED:
-                    // TODO: hold animation longer
-                    
                     spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("missed_animation")[0] as ƒ.AnimationSprite;
                     missedOpponnent= true; 
                     spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps = 15;
                     
                     await new Promise(resolve => {setTimeout(resolve, 200)});
                     avatar.act(ACTION.IDLE);
-                    // console.log(spriteNode.getComponent(ƒ.ComponentAnimator).playmode= );
                     break;
             }
             

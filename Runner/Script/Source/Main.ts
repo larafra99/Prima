@@ -1,8 +1,6 @@
 namespace Runner {
   import ƒ = FudgeCore;
   ƒ.Debug.info("Main Program Template running!");
-  //TODO: access Mouse
-  //TODO: spawn Opponent, Opponent not define
   export let graph: ƒ.Node;
   export let spriteNode: ƒ.Node;
   export let Opponents: ƒ.Node;
@@ -54,6 +52,13 @@ namespace Runner {
 
     let resetButton: HTMLButtonElement =<HTMLButtonElement>document.getElementById("resetbutton");
     resetButton.addEventListener("click", function (): void {reset()});
+    let OpponentMultiplicatorButton: HTMLButtonElement =<HTMLButtonElement>document.getElementById("opponentbutton");
+    OpponentMultiplicatorButton.addEventListener("click", function (): void {checkButton("oppo")});
+    let moneyMulitpilactorButton: HTMLButtonElement =<HTMLButtonElement>document.getElementById("multipicatorbutton");
+    moneyMulitpilactorButton.addEventListener("click", function (): void {checkButton("money")});
+    let maxSpeedButton: HTMLButtonElement =<HTMLButtonElement>document.getElementById("maxspeedbutton");
+    maxSpeedButton.addEventListener("click", function (): void {checkButton("speed")});
+    
     
 
     await hndLoad();
@@ -85,8 +90,8 @@ namespace Runner {
 
   function spawnOpponents(): void{
     oppoTimer += ƒ.Loop.timeFrameGame/1000;
-    // if (oppoTimer> spawnTimer()){
-    if (oppoTimer> 5){
+    if (oppoTimer> spawnTimer()){
+    // if (oppoTimer> 3){
       Opponents.addChild(Opponent.createOpponents());
       oppoTimer= 0;
     }
@@ -98,6 +103,20 @@ namespace Runner {
       hitTimer= 0;
     }
   }
+  function checkButton(add:string):void{
+    if(add=="oppo"){
+      ui.opponentmulitplicator=ui.opponentmulitplicator+1;
+    }
+    else if( add== "money"){
+      ui.moneymultipilcator= ui.moneymultipilcator*1.005
+
+    }
+    else if(add=="speed"){
+      ui.maxspeed= ui.maxspeed+1;
+
+    }
+
+  }
   
   
   
@@ -108,7 +127,7 @@ namespace Runner {
     //window.addEventListener()
     spawnOpponents();
     OpponentsTrans= Opponents.mtxLocal.translation.get()
-    Opponents.mtxLocal.translateX(-1.0*ƒ.Loop.timeFrameGame/1000);
+    Opponents.mtxLocal.translateX(-(1.0+ opponentSpeed)*ƒ.Loop.timeFrameGame/1000);
     hitOpponent();
     // console.log(fight);
 
@@ -138,7 +157,10 @@ namespace Runner {
     console.log("Reset");
     ui.money= 0;
     ui.maxspeed= 15;
+    ui.opponentmulitplicator= 1;
+    ui.moneymultipilcator= 1;
     playerFps= 15;
+    
     petNode.dispatchEvent(new Event("Reset", {bubbles: true}));
     missedOpponnent= false;
     avatar.act(ACTION.IDLE);
