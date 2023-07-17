@@ -51,7 +51,7 @@ namespace Runner {
           playerFps= playerFps+1;
         }
         Opponents.removeChild(oppoNode);
-        ui.money= ui.money+(ui.opponentmulitplicator*ui.moneymultipilcator);
+        ui.money= parseFloat((ui.money+(ui.opponentmulitplicator*ui.moneymultipilcator)).toFixed(4));
         petNode.dispatchEvent(new Event("ChangeSpeed", {bubbles: true}));
       
       }

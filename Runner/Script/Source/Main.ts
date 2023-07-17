@@ -63,7 +63,7 @@ namespace Runner {
 
     await hndLoad();
     bgAudio();
-    reset();
+    // reset();
   
     
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
@@ -85,17 +85,19 @@ namespace Runner {
 
 
   function spawnTimer():number{
-    return (Math.random() * (8 - 1.2) + 1.2);
+    return (Math.random() * (12 - 0.9) + 0.9);
   }
 
   function spawnOpponents(): void{
     oppoTimer += ƒ.Loop.timeFrameGame/1000;
     if (oppoTimer> spawnTimer()){
     // if (oppoTimer> 3){
+      document.getElementById("transaktion").innerText="";
       Opponents.addChild(Opponent.createOpponents());
       oppoTimer= 0;
     }
   }
+
   function hitOpponent():void{
     hitTimer += ƒ.Loop.timeFrameGame/1000;
     if (hitTimer> 0.4 && fight ){
@@ -103,24 +105,25 @@ namespace Runner {
       hitTimer= 0;
     }
   }
+
   function checkButton(add:string):void{
-    if(add=="oppo"){
+    if(add=="oppo"&&ui.money>=50){
       ui.opponentmulitplicator=ui.opponentmulitplicator+1;
+      ui.money= ui.money-50;
     }
-    else if( add== "money"){
-      ui.moneymultipilcator= ui.moneymultipilcator*1.005
-
+    else if( add== "money" && ui.money>=20){
+      ui.moneymultipilcator= ui.moneymultipilcator+0.005;
+      ui.money= ui.money-20;
     }
-    else if(add=="speed"){
+    else if(add=="speed" && ui.money>=100){
       ui.maxspeed= ui.maxspeed+1;
-
+      ui.money= ui.money-100;
     }
-
+    else{
+      document.getElementById("transaktion").innerText= "Geld war nicht ausreichend für die Transaktion";
+    }
   }
   
-  
-  
-
   function update(_event: Event): void {
     // opponentSpeed= ui.speed*0.01;
     ƒ.Physics.simulate(); 

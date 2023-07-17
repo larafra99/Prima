@@ -45,7 +45,7 @@ var Runner;
                     Runner.playerFps = Runner.playerFps + 1;
                 }
                 Runner.Opponents.removeChild(oppoNode);
-                Runner.ui.money = Runner.ui.money + (Runner.ui.opponentmulitplicator * Runner.ui.moneymultipilcator);
+                Runner.ui.money = parseFloat((Runner.ui.money + (Runner.ui.opponentmulitplicator * Runner.ui.moneymultipilcator)).toFixed(4));
                 Runner.petNode.dispatchEvent(new Event("ChangeSpeed", { bubbles: true }));
             }
             else {
@@ -96,7 +96,7 @@ var Runner;
         maxSpeedButton.addEventListener("click", function () { checkButton("speed"); });
         await hndLoad();
         bgAudio();
-        reset();
+        // reset();
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
@@ -110,12 +110,13 @@ var Runner;
         cmpAudio.volume = 2;
     }
     function spawnTimer() {
-        return (Math.random() * (8 - 1.2) + 1.2);
+        return (Math.random() * (12 - 0.9) + 0.9);
     }
     function spawnOpponents() {
         oppoTimer += ƒ.Loop.timeFrameGame / 1000;
         if (oppoTimer > spawnTimer()) {
             // if (oppoTimer> 3){
+            document.getElementById("transaktion").innerText = "";
             Runner.Opponents.addChild(Runner.Opponent.createOpponents());
             oppoTimer = 0;
         }
@@ -128,14 +129,20 @@ var Runner;
         }
     }
     function checkButton(add) {
-        if (add == "oppo") {
+        if (add == "oppo" && Runner.ui.money >= 50) {
             Runner.ui.opponentmulitplicator = Runner.ui.opponentmulitplicator + 1;
+            Runner.ui.money = Runner.ui.money - 50;
         }
-        else if (add == "money") {
-            Runner.ui.moneymultipilcator = Runner.ui.moneymultipilcator * 1.005;
+        else if (add == "money" && Runner.ui.money >= 20) {
+            Runner.ui.moneymultipilcator = Runner.ui.moneymultipilcator + 0.005;
+            Runner.ui.money = Runner.ui.money - 20;
         }
-        else if (add == "speed") {
+        else if (add == "speed" && Runner.ui.money >= 100) {
             Runner.ui.maxspeed = Runner.ui.maxspeed + 1;
+            Runner.ui.money = Runner.ui.money - 100;
+        }
+        else {
+            document.getElementById("transaktion").innerText = "Geld war nicht ausreichend für die Transaktion";
         }
     }
     function update(_event) {

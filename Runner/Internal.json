@@ -155,6 +155,21 @@
       }
     }
   },
+  "Material|2023-07-17T13:35:06.675Z|94361": {
+    "ƒ.Material": {
+      "name": "ShaderFlatTextured",
+      "idResource": "Material|2023-07-17T13:35:06.675Z|94361",
+      "shader": "ShaderFlatTextured",
+      "coat": {
+        "ƒ.CoatRemissiveTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-04-19T07:36:49.313Z|19056",
+          "diffuse": 1,
+          "specular": 0
+        }
+      }
+    }
+  },
   "Graph|2023-04-19T07:26:09.957Z|60845": {
     "ƒ.Graph": {
       "name": "Game",
@@ -221,7 +236,7 @@
                     "Component": {
                       "active": true
                     },
-                    "idMaterial": "Material|2023-04-19T07:27:25.778Z|50856"
+                    "idMaterial": "Material|2023-07-17T13:35:06.675Z|94361"
                   }
                 }
               ],
@@ -452,6 +467,57 @@
               ]
             },
             "children": []
+          }
+        },
+        {
+          "ƒ.Node": {
+            "name": "Sun",
+            "active": true,
+            "components": {},
+            "children": [
+              {
+                "ƒ.Node": {
+                  "name": "Light",
+                  "active": true,
+                  "components": {
+                    "ComponentTransform": [
+                      {
+                        "ƒ.ComponentTransform": {
+                          "local": {
+                            "translation": "[-4.399999618530273, 5.299999713897705, 1]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ],
+                    "ComponentLight": [
+                      {
+                        "ƒ.ComponentLight": {
+                          "pivot": {
+                            "translation": "[0, 0, 0]",
+                            "rotation": "[40, 180, 101]",
+                            "scaling": "[1, 2, 3]"
+                          },
+                          "light": {
+                            "ƒ.LightAmbient": {
+                              "color": "[1, 1, 1, 1]"
+                            }
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "children": []
+                }
+              }
+            ]
           }
         }
       ],
