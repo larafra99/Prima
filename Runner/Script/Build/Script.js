@@ -37,20 +37,19 @@ var Runner;
         async hndCollision(_event) {
             let oppoNode = _event.cmpRigidbody.node;
             if (!Runner.fight) {
-                await new Promise(resolve => { setTimeout(resolve, 1500); });
+                await new Promise(resolve => { setTimeout(resolve, 1000 - 2 * Runner.ui.speed); });
             }
             if (Runner.fight) {
                 console.log("LEft");
-                if (Runner.ui.speed < 15) {
+                if (Runner.ui.speed < Runner.ui.maxspeed) {
                     Runner.playerFps = Runner.playerFps + 1;
                 }
                 Runner.Opponents.removeChild(oppoNode);
-                Runner.ui.money = Runner.ui.money + 1;
+                Runner.ui.money = Runner.ui.money + (Runner.ui.opponentmulitplicator * Runner.ui.moneymultipilcator);
                 Runner.petNode.dispatchEvent(new Event("ChangeSpeed", { bubbles: true }));
             }
             else {
                 console.log("Bumm");
-                // TODO:hold animation longer
                 Runner.avatar.act(Runner.ACTION.MISSED);
             }
         }
@@ -89,6 +88,12 @@ var Runner;
         Runner.opponentSpeed = Runner.ui.speed * 0.01;
         let resetButton = document.getElementById("resetbutton");
         resetButton.addEventListener("click", function () { reset(); });
+        let OpponentMultiplicatorButton = document.getElementById("opponentbutton");
+        OpponentMultiplicatorButton.addEventListener("click", function () { checkButton("oppo"); });
+        let moneyMulitpilactorButton = document.getElementById("multipicatorbutton");
+        moneyMulitpilactorButton.addEventListener("click", function () { checkButton("money"); });
+        let maxSpeedButton = document.getElementById("maxspeedbutton");
+        maxSpeedButton.addEventListener("click", function () { checkButton("speed"); });
         await hndLoad();
         bgAudio();
         reset();
@@ -109,8 +114,8 @@ var Runner;
     }
     function spawnOpponents() {
         oppoTimer += ƒ.Loop.timeFrameGame / 1000;
-        // if (oppoTimer> spawnTimer()){
-        if (oppoTimer > 5) {
+        if (oppoTimer > spawnTimer()) {
+            // if (oppoTimer> 3){
             Runner.Opponents.addChild(Runner.Opponent.createOpponents());
             oppoTimer = 0;
         }
@@ -122,13 +127,24 @@ var Runner;
             hitTimer = 0;
         }
     }
+    function checkButton(add) {
+        if (add == "oppo") {
+            Runner.ui.opponentmulitplicator = Runner.ui.opponentmulitplicator + 1;
+        }
+        else if (add == "money") {
+            Runner.ui.moneymultipilcator = Runner.ui.moneymultipilcator * 1.005;
+        }
+        else if (add == "speed") {
+            Runner.ui.maxspeed = Runner.ui.maxspeed + 1;
+        }
+    }
     function update(_event) {
         // opponentSpeed= ui.speed*0.01;
         ƒ.Physics.simulate();
         //window.addEventListener()
         spawnOpponents();
         Runner.OpponentsTrans = Runner.Opponents.mtxLocal.translation.get();
-        Runner.Opponents.mtxLocal.translateX(-1.0 * ƒ.Loop.timeFrameGame / 1000);
+        Runner.Opponents.mtxLocal.translateX(-(1.0 + Runner.opponentSpeed) * ƒ.Loop.timeFrameGame / 1000);
         hitOpponent();
         // console.log(fight);
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
@@ -154,6 +170,8 @@ var Runner;
         console.log("Reset");
         Runner.ui.money = 0;
         Runner.ui.maxspeed = 15;
+        Runner.ui.opponentmulitplicator = 1;
+        Runner.ui.moneymultipilcator = 1;
         Runner.playerFps = 15;
         Runner.petNode.dispatchEvent(new Event("Reset", { bubbles: true }));
         Runner.missedOpponnent = false;
@@ -368,7 +386,6 @@ var Runner;
             //     let animation: ƒAid.SpriteSheetAnimation;
             switch (_action) {
                 case ACTION.FIGHT:
-                    console.log("Fight");
                     Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("fight_animation")[0];
                     Runner.missedOpponnent = false;
                     Runner.fight = true;
@@ -383,13 +400,11 @@ var Runner;
                     Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps = Runner.playerFps;
                     break;
                 case ACTION.MISSED:
-                    // TODO: hold animation longer
                     Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("missed_animation")[0];
                     Runner.missedOpponnent = true;
                     Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps = 15;
                     await new Promise(resolve => { setTimeout(resolve, 200); });
                     Runner.avatar.act(ACTION.IDLE);
-                    // console.log(spriteNode.getComponent(ƒ.ComponentAnimator).playmode= );
                     break;
             }
             Runner.ui.speed = Runner.playerFps;
@@ -452,12 +467,16 @@ var Runner;
         speed;
         money;
         maxspeed;
+        opponentmulitplicator;
+        moneymultipilcator;
         controller;
         constructor(_config) {
             super();
             this.speed = _config.speed;
             this.money = _config.money;
             this.maxspeed = _config.maxspeed;
+            this.opponentmulitplicator = _config.opponentmulitplicator;
+            this.moneymultipilcator = _config.moneymultipilcator;
             this.controller = new ƒui.Controller(this, document.querySelector("#vui"));
             //console.log(this.controller);
         }

@@ -9,6 +9,8 @@ namespace Runner {
         public speed: number;
         public money: number;
         public maxspeed: number;
+        public opponentmulitplicator: number;
+        public moneymultipilcator: number;
         public controller: ƒui.Controller;
 
         constructor(_config: {[key: string]: number}){
@@ -16,6 +18,8 @@ namespace Runner {
             this.speed = _config.speed;
             this.money=_config.money;
             this.maxspeed = _config.maxspeed;
+            this.opponentmulitplicator= _config.opponentmulitplicator;
+            this.moneymultipilcator=_config.moneymultipilcator;
             this.controller= new ƒui.Controller(this,document.querySelector("#vui"))
             
             //console.log(this.controller);

@@ -43,21 +43,20 @@ namespace Runner {
     private async hndCollision(_event: ƒ.EventPhysics): Promise<void>  {
       let oppoNode: ƒ.Node = _event.cmpRigidbody.node;
       if(!fight){
-        await new Promise(resolve => {setTimeout(resolve, 1500)});
+        await new Promise(resolve => {setTimeout(resolve, 1000-2*ui.speed)});
       }
       if (fight){
         console.log("LEft");
-        if(ui.speed < 15){
+        if(ui.speed < ui.maxspeed){
           playerFps= playerFps+1;
         }
         Opponents.removeChild(oppoNode);
-        ui.money= ui.money+1;
+        ui.money= ui.money+(ui.opponentmulitplicator*ui.moneymultipilcator);
         petNode.dispatchEvent(new Event("ChangeSpeed", {bubbles: true}));
       
       }
       else{
         console.log("Bumm");
-        // TODO:hold animation longer
         avatar.act(ACTION.MISSED);
       }
     }

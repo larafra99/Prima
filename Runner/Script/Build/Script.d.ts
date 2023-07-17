@@ -98,6 +98,8 @@ declare namespace Runner {
         speed: number;
         money: number;
         maxspeed: number;
+        opponentmulitplicator: number;
+        moneymultipilcator: number;
         controller: ƒui.Controller;
         constructor(_config: {
             [key: string]: number;
