@@ -52,6 +52,7 @@ namespace Runner {
         }
         Opponents.removeChild(oppoNode);
         ui.money= ui.money+1;
+        petNode.dispatchEvent(new Event("ChangeSpeed", {bubbles: true}));
       
       }
       else{

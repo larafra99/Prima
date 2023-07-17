@@ -24,6 +24,7 @@ declare namespace Runner {
     let petNode: ƒ.Node;
     let petStateMachine: PetState;
     let playerFps: number;
+    let opponentSpeed: number;
 }
 declare namespace Runner {
     import ƒ = FudgeCore;
@@ -39,6 +40,7 @@ declare namespace Runner {
         constructor();
         hndEvent: (_event: Event) => void;
         private startPostion;
+        private petSpeedChange;
     }
 }
 declare namespace Runner {
@@ -62,6 +64,7 @@ declare namespace Runner {
         private static petRest;
         private hndEvent;
         petReset(): void;
+        changeSpeed(): void;
         private update;
     }
     export {};
@@ -94,6 +97,7 @@ declare namespace Runner {
         protected reduceMutator(_mutator: ƒ.Mutator): void;
         speed: number;
         money: number;
+        maxspeed: number;
         controller: ƒui.Controller;
         constructor(_config: {
             [key: string]: number;

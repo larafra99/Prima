@@ -30,6 +30,7 @@ namespace Runner {
                     spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("walk_animation")[0] as ƒ.AnimationSprite;
                     if(missedOpponnent){
                         playerFps= 5;
+                        petNode.dispatchEvent(new Event("ChangeSpeed", {bubbles: true}));
                     }
                     spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps = playerFps;
                     break;
@@ -47,6 +48,7 @@ namespace Runner {
             }
             
             ui.speed= playerFps;
+            opponentSpeed= ui.speed*0.01;
         }  
     }
 }

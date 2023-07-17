@@ -7,16 +7,20 @@ namespace Runner {
       IDLE, RUN, REST, SIT
     }
     let petTimer:number = 0;
+    let resetboolean: boolean= false;
+
+    let currentState: PETSTATE= PETSTATE.IDLE;
 
   
     export class PetState extends ƒAid.ComponentStateMachine<PETSTATE> {
       public static readonly iSubclass: number = ƒ.Component.registerSubclass(PetState);
       private static instructions: ƒAid.StateMachineInstructions<PETSTATE> = PetState.get();
-      
+
   
       constructor() {
         super();
-        this.instructions = PetState.instructions; // setup instructions with the static set
+        this.instructions = PetState.instructions;
+ // setup instructions with the static set
   
         // Don't start when running in editor
         if (ƒ.Project.mode == ƒ.MODE.EDITOR)
@@ -40,17 +44,17 @@ namespace Runner {
       }
   
       private static transitDefault(_pet: PetState): void {
-        console.log("Transit to", _pet.stateNext);
-        
+        // console.log("Transit to", _pet.stateNext);
       }
   
       private static async petDefault(_pet: PetState): Promise<void> {
-        console.log("default");
-        console.log(PETSTATE[_pet.stateCurrent]);
+        // console.log("default");
+        // console.log(PETSTATE[_pet.stateCurrent]);
       }
   
       private static async petIdle(_pet: PetState): Promise<void> {
-        console.log("walk");
+        currentState= PETSTATE.IDLE;
+        resetboolean= false;
         petTimer += ƒ.Loop.timeFrameGame/1000;
         _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("walk_pet")[0] as ƒ.AnimationSprite;
         if (petTimer> 3){
@@ -60,7 +64,11 @@ namespace Runner {
       }
 
       private static async petRun(_pet: PetState): Promise<void> {
+        currentState= PETSTATE.RUN;
         _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("run_pet")[0] as ƒ.AnimationSprite;
+        if (resetboolean){
+          _pet.transit(PETSTATE.IDLE);
+        }
         _pet.node.mtxLocal.translateX(3.0*ƒ.Loop.timeFrameGame/1000);
         if(_pet.node.mtxLocal.translation.x> 4){
             _pet.transit(PETSTATE.SIT)
@@ -68,9 +76,10 @@ namespace Runner {
       }
 
       private static async petSit(_pet: PetState): Promise<void> {
+        currentState= PETSTATE.SIT;
         petTimer += ƒ.Loop.timeFrameGame/1000;
         _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("sit_pet")[0] as ƒ.AnimationSprite;
-        _pet.node.mtxLocal.translateX(-1.0*ƒ.Loop.timeFrameGame/1000);
+        _pet.node.mtxLocal.translateX(-(1.0+opponentSpeed)*ƒ.Loop.timeFrameGame/1000);
         _pet.node.getComponent(ƒ.ComponentAnimator).playmode = ƒ.ANIMATION_PLAYMODE.PLAY_ONCE;
         if (petTimer> 0.19){
             _pet.transit(PETSTATE.REST);
@@ -79,9 +88,10 @@ namespace Runner {
       }
 
       private static async petRest(_pet: PetState): Promise<void> {
+        currentState= PETSTATE.REST;
         _pet.node.getComponent(ƒ.ComponentAnimator).playmode = ƒ.ANIMATION_PLAYMODE.LOOP;
         _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("rest_pet")[0] as ƒ.AnimationSprite;
-        _pet.node.mtxLocal.translateX(-2*ƒ.Loop.timeFrameGame/1000);
+        _pet.node.mtxLocal.translateX(-(2+opponentSpeed)*ƒ.Loop.timeFrameGame/1000);
         if(_pet.node.mtxLocal.translation.x<= -4.5){
             _pet.transit(PETSTATE.IDLE)
         }
@@ -104,8 +114,11 @@ namespace Runner {
       }
 
       public petReset():void{
-        console.log("PEtSTatereset")
         this.transit(PETSTATE.IDLE);
+        resetboolean= true;
+      }
+      public changeSpeed():void{
+        this.transit(currentState);
       }
   
       private update = (_event: Event): void => {

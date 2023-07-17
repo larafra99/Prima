@@ -46,6 +46,7 @@ var Runner;
                 }
                 Runner.Opponents.removeChild(oppoNode);
                 Runner.ui.money = Runner.ui.money + 1;
+                Runner.petNode.dispatchEvent(new Event("ChangeSpeed", { bubbles: true }));
             }
             else {
                 console.log("Bumm");
@@ -85,6 +86,7 @@ var Runner;
         Runner.Opponents = Runner.graph.getChildrenByName("Opponents")[0];
         Runner.petNode = Runner.graph.getChildrenByName("Pet")[0];
         Runner.playerFps = Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps;
+        Runner.opponentSpeed = Runner.ui.speed * 0.01;
         let resetButton = document.getElementById("resetbutton");
         resetButton.addEventListener("click", function () { reset(); });
         await hndLoad();
@@ -121,6 +123,7 @@ var Runner;
         }
     }
     function update(_event) {
+        // opponentSpeed= ui.speed*0.01;
         ƒ.Physics.simulate();
         //window.addEventListener()
         spawnOpponents();
@@ -150,10 +153,12 @@ var Runner;
     function reset() {
         console.log("Reset");
         Runner.ui.money = 0;
+        Runner.ui.maxspeed = 15;
         Runner.playerFps = 15;
         Runner.petNode.dispatchEvent(new Event("Reset", { bubbles: true }));
         Runner.missedOpponnent = false;
         Runner.avatar.act(Runner.ACTION.IDLE);
+        Runner.Opponents.removeAllChildren();
     }
 })(Runner || (Runner = {}));
 var Runner;
@@ -215,12 +220,16 @@ var Runner;
                 case "nodeDeserialized" /* ƒ.EVENT.NODE_DESERIALIZED */:
                     console.log("I dont understand");
                     this.node.addEventListener("Reset", this.startPostion);
+                    this.node.addEventListener("ChangeSpeed", this.petSpeedChange);
             }
         };
         startPostion(_event) {
             Runner.petStateMachine.petReset();
             Runner.petNode.mtxLocal.translation.x = -4.69;
             Runner.petNode.mtxLocal.translation = new ƒ.Vector3(-4.7, -3, 12);
+        }
+        petSpeedChange(_event) {
+            Runner.petStateMachine.changeSpeed();
         }
     }
     Runner.PetScript = PetScript;
@@ -238,12 +247,15 @@ var Runner;
         PETSTATE[PETSTATE["SIT"] = 3] = "SIT";
     })(PETSTATE || (PETSTATE = {}));
     let petTimer = 0;
+    let resetboolean = false;
+    let currentState = PETSTATE.IDLE;
     class PetState extends ƒAid.ComponentStateMachine {
         static iSubclass = ƒ.Component.registerSubclass(PetState);
         static instructions = PetState.get();
         constructor() {
             super();
-            this.instructions = PetState.instructions; // setup instructions with the static set
+            this.instructions = PetState.instructions;
+            // setup instructions with the static set
             // Don't start when running in editor
             if (ƒ.Project.mode == ƒ.MODE.EDITOR)
                 return;
@@ -263,14 +275,15 @@ var Runner;
             return setup;
         }
         static transitDefault(_pet) {
-            console.log("Transit to", _pet.stateNext);
+            // console.log("Transit to", _pet.stateNext);
         }
         static async petDefault(_pet) {
-            console.log("default");
-            console.log(PETSTATE[_pet.stateCurrent]);
+            // console.log("default");
+            // console.log(PETSTATE[_pet.stateCurrent]);
         }
         static async petIdle(_pet) {
-            console.log("walk");
+            currentState = PETSTATE.IDLE;
+            resetboolean = false;
             petTimer += ƒ.Loop.timeFrameGame / 1000;
             _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("walk_pet")[0];
             if (petTimer > 3) {
@@ -279,16 +292,21 @@ var Runner;
             }
         }
         static async petRun(_pet) {
+            currentState = PETSTATE.RUN;
             _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("run_pet")[0];
+            if (resetboolean) {
+                _pet.transit(PETSTATE.IDLE);
+            }
             _pet.node.mtxLocal.translateX(3.0 * ƒ.Loop.timeFrameGame / 1000);
             if (_pet.node.mtxLocal.translation.x > 4) {
                 _pet.transit(PETSTATE.SIT);
             }
         }
         static async petSit(_pet) {
+            currentState = PETSTATE.SIT;
             petTimer += ƒ.Loop.timeFrameGame / 1000;
             _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("sit_pet")[0];
-            _pet.node.mtxLocal.translateX(-1.0 * ƒ.Loop.timeFrameGame / 1000);
+            _pet.node.mtxLocal.translateX(-(1.0 + Runner.opponentSpeed) * ƒ.Loop.timeFrameGame / 1000);
             _pet.node.getComponent(ƒ.ComponentAnimator).playmode = ƒ.ANIMATION_PLAYMODE.PLAY_ONCE;
             if (petTimer > 0.19) {
                 _pet.transit(PETSTATE.REST);
@@ -296,9 +314,10 @@ var Runner;
             }
         }
         static async petRest(_pet) {
+            currentState = PETSTATE.REST;
             _pet.node.getComponent(ƒ.ComponentAnimator).playmode = ƒ.ANIMATION_PLAYMODE.LOOP;
             _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("rest_pet")[0];
-            _pet.node.mtxLocal.translateX(-2 * ƒ.Loop.timeFrameGame / 1000);
+            _pet.node.mtxLocal.translateX(-(2 + Runner.opponentSpeed) * ƒ.Loop.timeFrameGame / 1000);
             if (_pet.node.mtxLocal.translation.x <= -4.5) {
                 _pet.transit(PETSTATE.IDLE);
             }
@@ -319,8 +338,11 @@ var Runner;
             }
         };
         petReset() {
-            console.log("PEtSTatereset");
             this.transit(PETSTATE.IDLE);
+            resetboolean = true;
+        }
+        changeSpeed() {
+            this.transit(currentState);
         }
         update = (_event) => {
             this.act();
@@ -356,6 +378,7 @@ var Runner;
                     Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("walk_animation")[0];
                     if (Runner.missedOpponnent) {
                         Runner.playerFps = 5;
+                        Runner.petNode.dispatchEvent(new Event("ChangeSpeed", { bubbles: true }));
                     }
                     Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps = Runner.playerFps;
                     break;
@@ -370,6 +393,7 @@ var Runner;
                     break;
             }
             Runner.ui.speed = Runner.playerFps;
+            Runner.opponentSpeed = Runner.ui.speed * 0.01;
         }
     }
     Runner.Avatar = Avatar;
@@ -427,11 +451,13 @@ var Runner;
         }
         speed;
         money;
+        maxspeed;
         controller;
         constructor(_config) {
             super();
             this.speed = _config.speed;
             this.money = _config.money;
+            this.maxspeed = _config.maxspeed;
             this.controller = new ƒui.Controller(this, document.querySelector("#vui"));
             //console.log(this.controller);
         }

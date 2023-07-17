@@ -32,7 +32,8 @@ namespace Runner {
             break;
           case ƒ.EVENT.NODE_DESERIALIZED:
             console.log("I dont understand");
-            this.node.addEventListener("Reset", this.startPostion);  
+            this.node.addEventListener("Reset", this.startPostion); 
+            this.node.addEventListener("ChangeSpeed", this.petSpeedChange); 
         }
       }
      
@@ -40,7 +41,9 @@ namespace Runner {
         petStateMachine.petReset();
         petNode.mtxLocal.translation.x= -4.69;
         petNode.mtxLocal.translation= new ƒ.Vector3(-4.7,-3, 12);
-        
       }
+    private petSpeedChange(_event:Event):void{
+      petStateMachine.changeSpeed();
+    }
     }
   }

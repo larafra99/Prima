@@ -16,6 +16,7 @@ namespace Runner {
   export let petNode:ƒ.Node;
   export let petStateMachine: PetState;
   export let playerFps: number;
+  export let opponentSpeed:number;
 
   let viewport: ƒ.Viewport;
   let cmpCamera: ƒ.ComponentCamera;
@@ -49,6 +50,7 @@ namespace Runner {
     Opponents= graph.getChildrenByName("Opponents")[0];
     petNode= graph.getChildrenByName("Pet")[0];
     playerFps= spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps;
+    opponentSpeed= ui.speed*0.01;
 
     let resetButton: HTMLButtonElement =<HTMLButtonElement>document.getElementById("resetbutton");
     resetButton.addEventListener("click", function (): void {reset()});
@@ -101,6 +103,7 @@ namespace Runner {
   
 
   function update(_event: Event): void {
+    // opponentSpeed= ui.speed*0.01;
     ƒ.Physics.simulate(); 
     //window.addEventListener()
     spawnOpponents();
@@ -134,10 +137,12 @@ namespace Runner {
   function reset():void{
     console.log("Reset");
     ui.money= 0;
+    ui.maxspeed= 15;
     playerFps= 15;
     petNode.dispatchEvent(new Event("Reset", {bubbles: true}));
     missedOpponnent= false;
     avatar.act(ACTION.IDLE);
+    Opponents.removeAllChildren();
   }
 
 }
