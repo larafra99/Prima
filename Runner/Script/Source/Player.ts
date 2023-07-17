@@ -8,7 +8,7 @@ namespace Runner {
 
     export class Avatar extends ƒAid.NodeSprite {
         
-        private playerFps: number = spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps;
+        
 
 
         public constructor() {
@@ -16,37 +16,37 @@ namespace Runner {
         }
 
        
-        public act(_action: ACTION): void {
+        public async act(_action: ACTION): Promise<void> {
         //     let animation: ƒAid.SpriteSheetAnimation;
             switch (_action) {
                 case ACTION.FIGHT:
-                    // console.log("FOPS", this.playerFps);
+                    console.log("Fight");
                     spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("fight_animation")[0] as ƒ.AnimationSprite;
                     missedOpponnent= false;
                     fight= true;
+                    spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps = 15;
                     break;
                 case ACTION.IDLE:
                     spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("walk_animation")[0] as ƒ.AnimationSprite;
-                    // fight= false;
                     if(missedOpponnent){
-                        ui.speed= 5;
-                        this.playerFps= 5;
+                        playerFps= 5;
                     }
-                    else{
-                        if(spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps < 15){
-                            // this.playerFps= this.playerFps+1; 
-                            this.playerFps= 15;  
-                        }
-                    }
-                    spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps = this.playerFps;
+                    spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps = playerFps;
                     break;
                 case ACTION.MISSED:
                     // TODO: hold animation longer
+                    
                     spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("missed_animation")[0] as ƒ.AnimationSprite;
                     missedOpponnent= true; 
+                    spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps = 15;
+                    
+                    await new Promise(resolve => {setTimeout(resolve, 200)});
+                    avatar.act(ACTION.IDLE);
+                    // console.log(spriteNode.getComponent(ƒ.ComponentAnimator).playmode= );
                     break;
             }
-            ui.speed= this.playerFps;
+            
+            ui.speed= playerFps;
         }  
     }
 }

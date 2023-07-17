@@ -36,10 +36,7 @@ namespace Runner {
         }
       }
      
-  
     private startPostion(_event:Event):void{
-        console.log("Doggo go home");
-        // this.node.mtxLocal.translation.x= -4.69;
         petStateMachine.petReset();
         petNode.mtxLocal.translation.x= -4.69;
         petNode.mtxLocal.translation= new ƒ.Vector3(-4.7,-3, 12);

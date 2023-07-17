@@ -15,21 +15,22 @@ namespace Runner {
   export let json: {[key: string]: number};
   export let petNode:ƒ.Node;
   export let petStateMachine: PetState;
+  export let playerFps: number;
 
   let viewport: ƒ.Viewport;
   let cmpCamera: ƒ.ComponentCamera;
+  let cmpAudio:ƒ.ComponentAudio;
   
   
   let oppoTimer: number= 0;
   let hitTimer:number= 0;
 
+  let bgMusic: ƒ.Audio = new ƒ.Audio("Sound/background.mp3");
+  let swordAudio: ƒ.Audio = new ƒ.Audio("Sound/sword.wav");
+
 
   document.addEventListener("interactiveViewportStarted", <EventListener><unknown>start);
-  //TODO: get it to work
-  // window.onclick =(event: MouseEvent)=> { 
-  //   console.log("clccccc");
-  //   avatar.act(ACTION.FIGHT);
-  // }
+ 
 
   async function start(_event: CustomEvent): Promise<void> {
     let response = await fetch("config.json");
@@ -40,21 +41,23 @@ namespace Runner {
     viewport = _event.detail;
     graph = viewport.getBranch();
     viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS
-    cmpCamera = viewport.camera;
     cmpCamera = graph.getComponent(ƒ.ComponentCamera);
     viewport.camera = cmpCamera;
+    cmpAudio = graph.getComponent(ƒ.ComponentAudio);
 
     spriteNode= graph.getChildrenByName("Player")[0];
     Opponents= graph.getChildrenByName("Opponents")[0];
     petNode= graph.getChildrenByName("Pet")[0];
-    // console.log("O", Opponents);
-    // console.log("S",spriteNode);
+    playerFps= spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps;
 
     let resetButton: HTMLButtonElement =<HTMLButtonElement>document.getElementById("resetbutton");
     resetButton.addEventListener("click", function (): void {reset()});
     
 
     await hndLoad();
+    bgAudio();
+    reset();
+  
     
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
 
@@ -65,6 +68,14 @@ namespace Runner {
     avatar = new Avatar();
     ƒ.Loop.start();
   }
+  function bgAudio():void{
+
+    cmpAudio = new ƒ.ComponentAudio(bgMusic,true,true);
+    cmpAudio.connect(true);
+    cmpAudio.volume=2;
+  }
+  
+
 
   function spawnTimer():number{
     return (Math.random() * (8 - 1.2) + 1.2);
@@ -99,28 +110,34 @@ namespace Runner {
     // console.log(fight);
 
 
-    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP])) {
-      avatar.act(ACTION.FIGHT);
-      
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
+      cmpAudio.setAudio(swordAudio);
+      cmpAudio.loop = false;
+      cmpAudio.volume= 10;
+      cmpAudio.play(true);
+      avatar.act(ACTION.FIGHT); 
     }
-    else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_DOWN])) {
-      avatar.act(ACTION.MISSED);
-    }
-    else{
+    else if (!missedOpponnent){
       avatar.act(ACTION.IDLE);
+      if(cmpAudio.getAudio().name == "sword.wav"){
+        cmpAudio.setAudio(bgMusic);
+        cmpAudio.volume= 2;
+        cmpAudio.loop = true;
+        cmpAudio.play(true);
+      }
+      
     }
     viewport.draw();
     ƒ.AudioManager.default.update();
   }
+
   function reset():void{
     console.log("Reset");
     ui.money= 0;
-    ui.speed= 15;
+    playerFps= 15;
     petNode.dispatchEvent(new Event("Reset", {bubbles: true}));
     missedOpponnent= false;
     avatar.act(ACTION.IDLE);
-    
-    
   }
 
 }

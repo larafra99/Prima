@@ -32,8 +32,6 @@ namespace Runner {
                 this.removeEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
                 break; 
             case ƒ.EVENT.NODE_DESERIALIZED:
-                // this.node.addEventListener(ƒ.EVENT.RENDER_PREPARE, this.update);
-                this.node.addEventListener("Hit", this.removeAfterHit);
                 break;
             }   
             
@@ -44,16 +42,6 @@ namespace Runner {
             console.log("Opponent removed");
             Opponents.removeChild(this.node);
         }
-      }
-      private removeAfterHit(_event: Event): void {
-        console.log("I've been hit");
-
-      }
-     
-  
-      // protected reduceMutator(_mutator: ƒ.Mutator): void {
-      //   // delete properties that should not be mutated
-      //   // undefined properties and private fields (#) will not be included by default
-      // }
+    }
     }
   }

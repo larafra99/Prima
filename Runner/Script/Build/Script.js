@@ -37,13 +37,15 @@ var Runner;
         async hndCollision(_event) {
             let oppoNode = _event.cmpRigidbody.node;
             if (!Runner.fight) {
-                await new Promise(resolve => { setTimeout(resolve, 1000); });
+                await new Promise(resolve => { setTimeout(resolve, 1500); });
             }
             if (Runner.fight) {
                 console.log("LEft");
+                if (Runner.ui.speed < 15) {
+                    Runner.playerFps = Runner.playerFps + 1;
+                }
                 Runner.Opponents.removeChild(oppoNode);
                 Runner.ui.money = Runner.ui.money + 1;
-                // spriteNode.dispatchEvent(new Event("Hit", {bubbles: true}));
             }
             else {
                 console.log("Bumm");
@@ -62,14 +64,12 @@ var Runner;
     Runner.missedOpponnent = false;
     let viewport;
     let cmpCamera;
+    let cmpAudio;
     let oppoTimer = 0;
     let hitTimer = 0;
+    let bgMusic = new ƒ.Audio("Sound/background.mp3");
+    let swordAudio = new ƒ.Audio("Sound/sword.wav");
     document.addEventListener("interactiveViewportStarted", start);
-    //TODO: get it to work
-    // window.onclick =(event: MouseEvent)=> { 
-    //   console.log("clccccc");
-    //   avatar.act(ACTION.FIGHT);
-    // }
     async function start(_event) {
         let response = await fetch("config.json");
         let json = await response.json();
@@ -78,23 +78,29 @@ var Runner;
         viewport = _event.detail;
         Runner.graph = viewport.getBranch();
         viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
-        cmpCamera = viewport.camera;
         cmpCamera = Runner.graph.getComponent(ƒ.ComponentCamera);
         viewport.camera = cmpCamera;
+        cmpAudio = Runner.graph.getComponent(ƒ.ComponentAudio);
         Runner.spriteNode = Runner.graph.getChildrenByName("Player")[0];
         Runner.Opponents = Runner.graph.getChildrenByName("Opponents")[0];
         Runner.petNode = Runner.graph.getChildrenByName("Pet")[0];
-        // console.log("O", Opponents);
-        // console.log("S",spriteNode);
+        Runner.playerFps = Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps;
         let resetButton = document.getElementById("resetbutton");
         resetButton.addEventListener("click", function () { reset(); });
         await hndLoad();
+        bgAudio();
+        reset();
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     async function hndLoad() {
         Runner.avatar = new Runner.Avatar();
         ƒ.Loop.start();
+    }
+    function bgAudio() {
+        cmpAudio = new ƒ.ComponentAudio(bgMusic, true, true);
+        cmpAudio.connect(true);
+        cmpAudio.volume = 2;
     }
     function spawnTimer() {
         return (Math.random() * (8 - 1.2) + 1.2);
@@ -122,14 +128,21 @@ var Runner;
         Runner.Opponents.mtxLocal.translateX(-1.0 * ƒ.Loop.timeFrameGame / 1000);
         hitOpponent();
         // console.log(fight);
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP])) {
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
+            cmpAudio.setAudio(swordAudio);
+            cmpAudio.loop = false;
+            cmpAudio.volume = 10;
+            cmpAudio.play(true);
             Runner.avatar.act(Runner.ACTION.FIGHT);
         }
-        else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_DOWN])) {
-            Runner.avatar.act(Runner.ACTION.MISSED);
-        }
-        else {
+        else if (!Runner.missedOpponnent) {
             Runner.avatar.act(Runner.ACTION.IDLE);
+            if (cmpAudio.getAudio().name == "sword.wav") {
+                cmpAudio.setAudio(bgMusic);
+                cmpAudio.volume = 2;
+                cmpAudio.loop = true;
+                cmpAudio.play(true);
+            }
         }
         viewport.draw();
         ƒ.AudioManager.default.update();
@@ -137,7 +150,7 @@ var Runner;
     function reset() {
         console.log("Reset");
         Runner.ui.money = 0;
-        Runner.ui.speed = 15;
+        Runner.playerFps = 15;
         Runner.petNode.dispatchEvent(new Event("Reset", { bubbles: true }));
         Runner.missedOpponnent = false;
         Runner.avatar.act(Runner.ACTION.IDLE);
@@ -205,8 +218,6 @@ var Runner;
             }
         };
         startPostion(_event) {
-            console.log("Doggo go home");
-            // this.node.mtxLocal.translation.x= -4.69;
             Runner.petStateMachine.petReset();
             Runner.petNode.mtxLocal.translation.x = -4.69;
             Runner.petNode.mtxLocal.translation = new ƒ.Vector3(-4.7, -3, 12);
@@ -255,6 +266,7 @@ var Runner;
             console.log("Transit to", _pet.stateNext);
         }
         static async petDefault(_pet) {
+            console.log("default");
             console.log(PETSTATE[_pet.stateCurrent]);
         }
         static async petIdle(_pet) {
@@ -277,19 +289,20 @@ var Runner;
             petTimer += ƒ.Loop.timeFrameGame / 1000;
             _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("sit_pet")[0];
             _pet.node.mtxLocal.translateX(-1.0 * ƒ.Loop.timeFrameGame / 1000);
+            _pet.node.getComponent(ƒ.ComponentAnimator).playmode = ƒ.ANIMATION_PLAYMODE.PLAY_ONCE;
             if (petTimer > 0.19) {
                 _pet.transit(PETSTATE.REST);
                 petTimer = 0;
             }
         }
         static async petRest(_pet) {
+            _pet.node.getComponent(ƒ.ComponentAnimator).playmode = ƒ.ANIMATION_PLAYMODE.LOOP;
             _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("rest_pet")[0];
             _pet.node.mtxLocal.translateX(-2 * ƒ.Loop.timeFrameGame / 1000);
             if (_pet.node.mtxLocal.translation.x <= -4.5) {
                 _pet.transit(PETSTATE.IDLE);
             }
         }
-        // Activate the functions of this component as response to events
         hndEvent = (_event) => {
             switch (_event.type) {
                 case "componentAdd" /* ƒ.EVENT.COMPONENT_ADD */:
@@ -326,41 +339,37 @@ var Runner;
         ACTION[ACTION["MISSED"] = 2] = "MISSED";
     })(ACTION = Runner.ACTION || (Runner.ACTION = {}));
     class Avatar extends ƒAid.NodeSprite {
-        playerFps = Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps;
         constructor() {
             super("AvatarInstance");
         }
-        act(_action) {
+        async act(_action) {
             //     let animation: ƒAid.SpriteSheetAnimation;
             switch (_action) {
                 case ACTION.FIGHT:
-                    // console.log("FOPS", this.playerFps);
+                    console.log("Fight");
                     Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("fight_animation")[0];
                     Runner.missedOpponnent = false;
                     Runner.fight = true;
+                    Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps = 15;
                     break;
                 case ACTION.IDLE:
                     Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("walk_animation")[0];
-                    // fight= false;
                     if (Runner.missedOpponnent) {
-                        Runner.ui.speed = 5;
-                        this.playerFps = 5;
+                        Runner.playerFps = 5;
                     }
-                    else {
-                        if (Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps < 15) {
-                            // this.playerFps= this.playerFps+1; 
-                            this.playerFps = 15;
-                        }
-                    }
-                    Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps = this.playerFps;
+                    Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps = Runner.playerFps;
                     break;
                 case ACTION.MISSED:
                     // TODO: hold animation longer
                     Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("missed_animation")[0];
                     Runner.missedOpponnent = true;
+                    Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps = 15;
+                    await new Promise(resolve => { setTimeout(resolve, 200); });
+                    Runner.avatar.act(ACTION.IDLE);
+                    // console.log(spriteNode.getComponent(ƒ.ComponentAnimator).playmode= );
                     break;
             }
-            Runner.ui.speed = this.playerFps;
+            Runner.ui.speed = Runner.playerFps;
         }
     }
     Runner.Avatar = Avatar;
@@ -395,8 +404,6 @@ var Runner;
                     this.removeEventListener("componentRemove" /* ƒ.EVENT.COMPONENT_REMOVE */, this.hndEvent);
                     break;
                 case "nodeDeserialized" /* ƒ.EVENT.NODE_DESERIALIZED */:
-                    // this.node.addEventListener(ƒ.EVENT.RENDER_PREPARE, this.update);
-                    this.node.addEventListener("Hit", this.removeAfterHit);
                     break;
             }
         };
@@ -407,9 +414,6 @@ var Runner;
                 Runner.Opponents.removeChild(this.node);
             }
         };
-        removeAfterHit(_event) {
-            console.log("I've been hit");
-        }
     }
     Runner.RemoveOpponentScript = RemoveOpponentScript;
 })(Runner || (Runner = {}));

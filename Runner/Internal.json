@@ -255,9 +255,9 @@
                     "clrPrimary": "[1, 1, 1, 1]",
                     "clrSecondary": "[1, 1, 1, 1]",
                     "pivot": {
-                      "translation": "[0.3935483992099762, 0.7124999761581421]",
+                      "translation": "[0.006451612804085016, 0.6875]",
                       "rotation": 0,
-                      "scaling": "[0.06451612710952759, 0.1525000035762787]"
+                      "scaling": "[0.10537634044885635, 0.17499999701976776]"
                     },
                     "Component": {
                       "active": true
@@ -474,7 +474,7 @@
         "name": "fight_animation",
         "labels": {},
         "events": {},
-        "framesPerSecond": 25,
+        "framesPerSecond": 15,
         "animationStructure": {}
       }
     }

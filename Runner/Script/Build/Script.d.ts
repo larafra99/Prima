@@ -23,6 +23,7 @@ declare namespace Runner {
     };
     let petNode: ƒ.Node;
     let petStateMachine: PetState;
+    let playerFps: number;
 }
 declare namespace Runner {
     import ƒ = FudgeCore;
@@ -73,9 +74,8 @@ declare namespace Runner {
         MISSED = 2
     }
     class Avatar extends ƒAid.NodeSprite {
-        private playerFps;
         constructor();
-        act(_action: ACTION): void;
+        act(_action: ACTION): Promise<void>;
     }
 }
 declare namespace Runner {
@@ -85,7 +85,6 @@ declare namespace Runner {
         constructor();
         hndEvent: (_event: Event) => void;
         private update;
-        private removeAfterHit;
     }
 }
 declare namespace Runner {

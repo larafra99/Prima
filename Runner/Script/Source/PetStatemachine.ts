@@ -45,6 +45,7 @@ namespace Runner {
       }
   
       private static async petDefault(_pet: PetState): Promise<void> {
+        console.log("default");
         console.log(PETSTATE[_pet.stateCurrent]);
       }
   
@@ -63,19 +64,22 @@ namespace Runner {
         _pet.node.mtxLocal.translateX(3.0*ƒ.Loop.timeFrameGame/1000);
         if(_pet.node.mtxLocal.translation.x> 4){
             _pet.transit(PETSTATE.SIT)
-        }
-        
+        } 
       }
+
       private static async petSit(_pet: PetState): Promise<void> {
         petTimer += ƒ.Loop.timeFrameGame/1000;
         _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("sit_pet")[0] as ƒ.AnimationSprite;
         _pet.node.mtxLocal.translateX(-1.0*ƒ.Loop.timeFrameGame/1000);
+        _pet.node.getComponent(ƒ.ComponentAnimator).playmode = ƒ.ANIMATION_PLAYMODE.PLAY_ONCE;
         if (petTimer> 0.19){
             _pet.transit(PETSTATE.REST);
             petTimer= 0;
         }
       }
+
       private static async petRest(_pet: PetState): Promise<void> {
+        _pet.node.getComponent(ƒ.ComponentAnimator).playmode = ƒ.ANIMATION_PLAYMODE.LOOP;
         _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("rest_pet")[0] as ƒ.AnimationSprite;
         _pet.node.mtxLocal.translateX(-2*ƒ.Loop.timeFrameGame/1000);
         if(_pet.node.mtxLocal.translation.x<= -4.5){
@@ -83,7 +87,6 @@ namespace Runner {
         }
       }
       
-      // Activate the functions of this component as response to events
       private hndEvent = (_event: Event): void => {
         switch (_event.type) {
           case ƒ.EVENT.COMPONENT_ADD:
@@ -99,7 +102,7 @@ namespace Runner {
             break;
         }
       }
-      
+
       public petReset():void{
         console.log("PEtSTatereset")
         this.transit(PETSTATE.IDLE);

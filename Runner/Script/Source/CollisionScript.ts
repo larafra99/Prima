@@ -36,35 +36,29 @@ namespace Runner {
           console.log("I dont understand");
           this.rigidbody = this.node.getComponent(ƒ.ComponentRigidbody);
           this.rigidbody.addEventListener(ƒ.EVENT_PHYSICS.COLLISION_ENTER, this.hndCollision);
-
-          
-          
+   
       }
     }
    
-
     private async hndCollision(_event: ƒ.EventPhysics): Promise<void>  {
-      
       let oppoNode: ƒ.Node = _event.cmpRigidbody.node;
-      
-
       if(!fight){
-        await new Promise(resolve => {setTimeout(resolve, 1000)});
+        await new Promise(resolve => {setTimeout(resolve, 1500)});
       }
       if (fight){
         console.log("LEft");
+        if(ui.speed < 15){
+          playerFps= playerFps+1;
+        }
         Opponents.removeChild(oppoNode);
         ui.money= ui.money+1;
-        
-        // spriteNode.dispatchEvent(new Event("Hit", {bubbles: true}));
+      
       }
       else{
         console.log("Bumm");
         // TODO:hold animation longer
         avatar.act(ACTION.MISSED);
-
       }
-      
     }
   }
 }
