@@ -40,12 +40,11 @@ var Runner;
                 await new Promise(resolve => { setTimeout(resolve, 1000 - 2 * Runner.ui.speed); });
             }
             if (Runner.fight) {
-                console.log("LEft");
                 if (Runner.ui.speed < Runner.ui.maxspeed) {
                     Runner.playerFps = Runner.playerFps + 1;
                 }
                 Runner.Opponents.removeChild(oppoNode);
-                Runner.ui.money = parseFloat((Runner.ui.money + (Runner.ui.opponentmulitplicator * Runner.ui.moneymultipilcator)).toFixed(4));
+                Runner.ui.money = parseFloat((Runner.ui.money + (Runner.ui.opponentmulitplicator * Runner.ui.moneymultipilcator)).toFixed(1));
                 Runner.petNode.dispatchEvent(new Event("ChangeSpeed", { bubbles: true }));
             }
             else {
@@ -94,9 +93,10 @@ var Runner;
         moneyMulitpilactorButton.addEventListener("click", function () { checkButton("money"); });
         let maxSpeedButton = document.getElementById("maxspeedbutton");
         maxSpeedButton.addEventListener("click", function () { checkButton("speed"); });
+        let changOopposkinButton = document.getElementById("changeopposkinbutton");
+        changOopposkinButton.addEventListener("click", function () { checkButton("skin"); });
         await hndLoad();
         bgAudio();
-        // reset();
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
@@ -131,29 +131,31 @@ var Runner;
     function checkButton(add) {
         if (add == "oppo" && Runner.ui.money >= 50) {
             Runner.ui.opponentmulitplicator = Runner.ui.opponentmulitplicator + 1;
-            Runner.ui.money = Runner.ui.money - 50;
+            Runner.ui.money = parseFloat((Runner.ui.money - 50).toFixed(1));
+            ;
         }
         else if (add == "money" && Runner.ui.money >= 20) {
-            Runner.ui.moneymultipilcator = Runner.ui.moneymultipilcator + 0.005;
-            Runner.ui.money = Runner.ui.money - 20;
+            Runner.ui.moneymultipilcator = Runner.ui.moneymultipilcator + 0.1;
+            Runner.ui.money = parseFloat((Runner.ui.money - 20).toFixed(1));
         }
         else if (add == "speed" && Runner.ui.money >= 100) {
             Runner.ui.maxspeed = Runner.ui.maxspeed + 1;
-            Runner.ui.money = Runner.ui.money - 100;
+            Runner.ui.money = parseFloat((Runner.ui.money - 100).toFixed(1));
+            ;
+        }
+        else if (add == "skin" && Runner.ui.money >= 900) {
+            console.log("change");
         }
         else {
             document.getElementById("transaktion").innerText = "Geld war nicht ausreichend für die Transaktion";
         }
     }
     function update(_event) {
-        // opponentSpeed= ui.speed*0.01;
         ƒ.Physics.simulate();
-        //window.addEventListener()
         spawnOpponents();
         Runner.OpponentsTrans = Runner.Opponents.mtxLocal.translation.get();
         Runner.Opponents.mtxLocal.translateX(-(1.0 + Runner.opponentSpeed) * ƒ.Loop.timeFrameGame / 1000);
         hitOpponent();
-        // console.log(fight);
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
             cmpAudio.setAudio(swordAudio);
             cmpAudio.loop = false;
@@ -456,7 +458,6 @@ var Runner;
         update = (_event) => {
             // TODO: Remove Zahl auch -7 setzen, werden erst removed, wenn sie aus dem Bild sind 
             if (this.node.mtxLocal.translation.x < -6 - Runner.OpponentsTrans[0]) {
-                console.log("Opponent removed");
                 Runner.Opponents.removeChild(this.node);
             }
         };

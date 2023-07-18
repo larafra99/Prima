@@ -20,4 +20,133 @@ canvas.fullscreen {
   top:10px;
   left:30px;
   z-index: 0;
+  
+}
+#Playerwealth{
+  background-color: aliceblue;
+  height: 90px;
+  width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-style: double;
+}
+img{
+  position: center;
+  width: 30%;
+  height: 50%;
+
+}
+input{
+  float: right;
+  left: 20px;
+  width: 50%;
+  font-size:2.3em;
+  color: black;
+  background-color: transparent;
+  border: none;
+}
+#money{
+  margin-right: 0.4em;
+  text-align: center;
+}
+#imgspeed{
+  width: 40%;
+  height: 60%;
+  margin-left: 5px;
+}
+
+#Playerspeed{                        
+  background-color: aliceblue;
+  height: 90px;
+  width: 180px;
+  display: flex;
+  align-items: center;
+  
+  margin-left:20px;
+  border-style: double;
+
+}
+#labelspeed{
+  font-size:3em;
+  margin-left: 0  ;
+
+}
+#speed{
+  margin-left: 20px;
+  margin-right: -5 px;
+}
+#stats{
+  display: flex;
+  align-items: center;
+}
+#multiplicator{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: fixed;
+  right:10px;
+  top: 25px
+
+}
+#reset{
+  left:10px;
+  bottom: 10px;
+  position: fixed;
+}
+button{
+  width:200px;
+  height: 50px;
+  font-size:16px;
+  margin-top: 10px;;
+  background-color:aliceblue;
+  
+  border:#fff solid 1px
+
+}
+button:hover{
+  background-color:white ;
+  border-color: black;
+  cursor: pointer;
+  
+}
+#opponentbutton::before{
+  content: "Gegner bringen mehr Geld";
+}
+
+#opponentbutton:hover::after{
+  display:block;
+  content: "kostet 50";
+}
+
+#multipicatorbutton::before{
+  content: "Geldwert steigt";
+}
+
+#multipicatorbutton:hover::after{
+  display:block;
+  content: "kostet 20";
+}
+
+#maxspeedbutton::before{
+  content: "Maximalgeschwindigkeit+1";
+}
+
+#maxspeedbutton:hover::after{
+  display:block;
+  content: "kostet = 100";
+}
+
+#changeopposkinbutton::before{
+  content: "Anderer Gegener";
+}
+
+#changeopposkinbutton:hover::after{
+  display:block;
+  content: "kostet = 900";
+}
+
+#resetbutton{
+  width:80px;
+  height: 40px;
 }

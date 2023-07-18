@@ -58,16 +58,13 @@ namespace Runner {
     moneyMulitpilactorButton.addEventListener("click", function (): void {checkButton("money")});
     let maxSpeedButton: HTMLButtonElement =<HTMLButtonElement>document.getElementById("maxspeedbutton");
     maxSpeedButton.addEventListener("click", function (): void {checkButton("speed")});
+    let changOopposkinButton: HTMLButtonElement =<HTMLButtonElement>document.getElementById("changeopposkinbutton");
+    changOopposkinButton.addEventListener("click", function (): void {checkButton("skin")});
     
-    
-
     await hndLoad();
     bgAudio();
-    // reset();
   
-    
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
-
      ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
   }
 
@@ -82,8 +79,6 @@ namespace Runner {
     cmpAudio.volume=2;
   }
   
-
-
   function spawnTimer():number{
     return (Math.random() * (12 - 0.9) + 0.9);
   }
@@ -109,15 +104,18 @@ namespace Runner {
   function checkButton(add:string):void{
     if(add=="oppo"&&ui.money>=50){
       ui.opponentmulitplicator=ui.opponentmulitplicator+1;
-      ui.money= ui.money-50;
+      ui.money= parseFloat((ui.money-50).toFixed(1));;
     }
     else if( add== "money" && ui.money>=20){
-      ui.moneymultipilcator= ui.moneymultipilcator+0.005;
-      ui.money= ui.money-20;
+      ui.moneymultipilcator= ui.moneymultipilcator+0.1;
+      ui.money= parseFloat((ui.money-20).toFixed(1));
     }
     else if(add=="speed" && ui.money>=100){
       ui.maxspeed= ui.maxspeed+1;
-      ui.money= ui.money-100;
+      ui.money= parseFloat((ui.money-100).toFixed(1));;
+    }
+    else if(add=="skin" && ui.money>=900){
+      console.log("change");
     }
     else{
       document.getElementById("transaktion").innerText= "Geld war nicht ausreichend für die Transaktion";
@@ -125,15 +123,11 @@ namespace Runner {
   }
   
   function update(_event: Event): void {
-    // opponentSpeed= ui.speed*0.01;
     ƒ.Physics.simulate(); 
-    //window.addEventListener()
     spawnOpponents();
     OpponentsTrans= Opponents.mtxLocal.translation.get()
     Opponents.mtxLocal.translateX(-(1.0+ opponentSpeed)*ƒ.Loop.timeFrameGame/1000);
     hitOpponent();
-    // console.log(fight);
-
 
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
       cmpAudio.setAudio(swordAudio);
@@ -150,7 +144,6 @@ namespace Runner {
         cmpAudio.loop = true;
         cmpAudio.play(true);
       }
-      
     }
     viewport.draw();
     ƒ.AudioManager.default.update();

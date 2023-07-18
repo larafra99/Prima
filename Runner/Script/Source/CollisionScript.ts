@@ -46,12 +46,11 @@ namespace Runner {
         await new Promise(resolve => {setTimeout(resolve, 1000-2*ui.speed)});
       }
       if (fight){
-        console.log("LEft");
         if(ui.speed < ui.maxspeed){
           playerFps= playerFps+1;
         }
         Opponents.removeChild(oppoNode);
-        ui.money= parseFloat((ui.money+(ui.opponentmulitplicator*ui.moneymultipilcator)).toFixed(4));
+        ui.money= parseFloat((ui.money+(ui.opponentmulitplicator*ui.moneymultipilcator)).toFixed(1));
         petNode.dispatchEvent(new Event("ChangeSpeed", {bubbles: true}));
       
       }
