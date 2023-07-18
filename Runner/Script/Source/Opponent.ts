@@ -22,7 +22,6 @@ namespace Runner {
             OpponentNode.getComponent(ƒ.ComponentMaterial).mtxPivot.translation = new ƒ.Vector2(0.3935483992099762, 0.1);
             OpponentNode.getComponent(ƒ.ComponentMaterial).mtxPivot.scaleX(0.068);
             OpponentNode.getComponent(ƒ.ComponentMaterial).mtxPivot.scaleY(0.173);
-            // console.log("Node", OpponentNode);
             return OpponentNode;
         }
 

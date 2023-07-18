@@ -28,6 +28,10 @@ namespace Runner {
   let bgMusic: ƒ.Audio = new ƒ.Audio("Sound/background.mp3");
   let swordAudio: ƒ.Audio = new ƒ.Audio("Sound/sword.wav");
 
+  let changOopposkinButton: HTMLButtonElement;
+  let buttonCounter:number =0;
+  let randomOppo:boolean = false;
+
 
   document.addEventListener("interactiveViewportStarted", <EventListener><unknown>start);
  
@@ -60,7 +64,8 @@ namespace Runner {
     moneyMulitpilactorButton.addEventListener("click", function (): void {checkButton("money")});
     let maxSpeedButton: HTMLButtonElement =<HTMLButtonElement>document.getElementById("maxspeedbutton");
     maxSpeedButton.addEventListener("click", function (): void {checkButton("speed")});
-    let changOopposkinButton: HTMLButtonElement =<HTMLButtonElement>document.getElementById("changeopposkinbutton");
+    changOopposkinButton =<HTMLButtonElement>document.getElementById("changeopposkinbutton");
+    changOopposkinButton.textContent="Anderer Gegener";
     changOopposkinButton.addEventListener("click", function (): void {checkButton("skin")});
     
     await hndLoad();
@@ -86,6 +91,14 @@ namespace Runner {
   }
 
   function spawnOpponents(): void{
+    if(randomOppo){
+      if(Math.random()<0.5){
+        oppoSkin= ƒ.Project.getResourcesByName("OpponentShader")[0] as ƒ.Material;
+      }
+      else{
+        oppoSkin=ƒ.Project.getResourcesByName("OpponentShader2")[0] as ƒ.Material;
+      }
+    }
     oppoTimer += ƒ.Loop.timeFrameGame/1000;
     if (oppoTimer> spawnTimer()){
     // if (oppoTimer> 3){
@@ -116,14 +129,27 @@ namespace Runner {
       ui.maxspeed= ui.maxspeed+1;
       ui.money= parseFloat((ui.money-100).toFixed(1));;
     }
-    else if(add=="skin" && ui.money>=10){
-      oppoSkin= ƒ.Project.getResourcesByName("OpponentShader2")[0] as ƒ.Material;
-      ui.money= parseFloat((ui.money-10).toFixed(1));;
+    else if(add=="skin" && ui.money>=500){
+      if(buttonCounter==0){
+        oppoSkin= ƒ.Project.getResourcesByName("OpponentShader2")[0] as ƒ.Material;
+        changOopposkinButton.textContent="Random Gegner"
+
+      }
+      else if(buttonCounter==1){
+        randomOppo=true;
+        changOopposkinButton.disabled = true;
+        changOopposkinButton.hidden= true;
+
+      
+      }
+      ui.money= parseFloat((ui.money-500).toFixed(1));;
+      buttonCounter= buttonCounter+1;
     }
     else{
       document.getElementById("transaktion").innerText= "Geld war nicht ausreichend für die Transaktion";
     }
   }
+
   
   function update(_event: Event): void {
     ƒ.Physics.simulate(); 

@@ -137,14 +137,15 @@ button:hover{
   content: "kostet = 100";
 }
 
-#changeopposkinbutton::before{
-  content: "Anderer Gegener";
-}
-
 #changeopposkinbutton:hover::after{
   display:block;
   content: "kostet = 900";
 }
+#changeopposkinbutton:c{
+  display:block;
+  content: "kostet = 500";
+}
+
 
 #resetbutton{
   width:80px;

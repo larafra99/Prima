@@ -69,6 +69,9 @@ var Runner;
     let hitTimer = 0;
     let bgMusic = new ƒ.Audio("Sound/background.mp3");
     let swordAudio = new ƒ.Audio("Sound/sword.wav");
+    let changOopposkinButton;
+    let buttonCounter = 0;
+    let randomOppo = false;
     document.addEventListener("interactiveViewportStarted", start);
     async function start(_event) {
         let response = await fetch("config.json");
@@ -95,7 +98,8 @@ var Runner;
         moneyMulitpilactorButton.addEventListener("click", function () { checkButton("money"); });
         let maxSpeedButton = document.getElementById("maxspeedbutton");
         maxSpeedButton.addEventListener("click", function () { checkButton("speed"); });
-        let changOopposkinButton = document.getElementById("changeopposkinbutton");
+        changOopposkinButton = document.getElementById("changeopposkinbutton");
+        changOopposkinButton.textContent = "Anderer Gegener";
         changOopposkinButton.addEventListener("click", function () { checkButton("skin"); });
         await hndLoad();
         bgAudio();
@@ -115,6 +119,14 @@ var Runner;
         return (Math.random() * (12 - 0.9) + 0.9);
     }
     function spawnOpponents() {
+        if (randomOppo) {
+            if (Math.random() < 0.5) {
+                oppoSkin = ƒ.Project.getResourcesByName("OpponentShader")[0];
+            }
+            else {
+                oppoSkin = ƒ.Project.getResourcesByName("OpponentShader2")[0];
+            }
+        }
         oppoTimer += ƒ.Loop.timeFrameGame / 1000;
         if (oppoTimer > spawnTimer()) {
             // if (oppoTimer> 3){
@@ -145,10 +157,19 @@ var Runner;
             Runner.ui.money = parseFloat((Runner.ui.money - 100).toFixed(1));
             ;
         }
-        else if (add == "skin" && Runner.ui.money >= 10) {
-            oppoSkin = ƒ.Project.getResourcesByName("OpponentShader2")[0];
-            Runner.ui.money = parseFloat((Runner.ui.money - 10).toFixed(1));
+        else if (add == "skin" && Runner.ui.money >= 500) {
+            if (buttonCounter == 0) {
+                oppoSkin = ƒ.Project.getResourcesByName("OpponentShader2")[0];
+                changOopposkinButton.textContent = "Random Gegner";
+            }
+            else if (buttonCounter == 1) {
+                randomOppo = true;
+                changOopposkinButton.disabled = true;
+                changOopposkinButton.hidden = true;
+            }
+            Runner.ui.money = parseFloat((Runner.ui.money - 500).toFixed(1));
             ;
+            buttonCounter = buttonCounter + 1;
         }
         else {
             document.getElementById("transaktion").innerText = "Geld war nicht ausreichend für die Transaktion";
@@ -214,7 +235,6 @@ var Runner;
             OpponentNode.getComponent(ƒ.ComponentMaterial).mtxPivot.translation = new ƒ.Vector2(0.3935483992099762, 0.1);
             OpponentNode.getComponent(ƒ.ComponentMaterial).mtxPivot.scaleX(0.068);
             OpponentNode.getComponent(ƒ.ComponentMaterial).mtxPivot.scaleY(0.173);
-            // console.log("Node", OpponentNode);
             return OpponentNode;
         }
     }
