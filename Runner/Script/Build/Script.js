@@ -232,7 +232,8 @@ var Runner;
             let OpponentNode = new ƒ.Node("OpponentNode");
             OpponentNode = new Opponent();
             OpponentNode.addComponent(new ƒ.ComponentMaterial(skin));
-            OpponentNode.getComponent(ƒ.ComponentMaterial).mtxPivot.translation = new ƒ.Vector2(0.3935483992099762, 0.1);
+            OpponentNode.getComponent(ƒ.ComponentMaterial).mtxPivot.translation = new ƒ.Vector2(0.4, 0.1);
+            // 0.3935483992099762
             OpponentNode.getComponent(ƒ.ComponentMaterial).mtxPivot.scaleX(0.068);
             OpponentNode.getComponent(ƒ.ComponentMaterial).mtxPivot.scaleY(0.173);
             return OpponentNode;
