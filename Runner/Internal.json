@@ -648,5 +648,29 @@
         "animationStructure": {}
       }
     }
+  },
+  "TextureImage|2023-07-18T07:54:13.052Z|81636": {
+    "ƒ.TextureImage": {
+      "url": "Image\\Sprite3.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-07-18T07:54:13.052Z|81636",
+        "name": "Opponent2",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "Material|2023-07-18T08:07:35.050Z|29238": {
+    "ƒ.Material": {
+      "name": "OpponentShader2",
+      "idResource": "Material|2023-07-18T08:07:35.050Z|29238",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-07-18T07:54:13.052Z|81636"
+        }
+      }
+    }
   }
 }

@@ -30,7 +30,7 @@ declare namespace Runner {
     import ƒ = FudgeCore;
     class Opponent extends ƒ.Node {
         constructor();
-        static createOpponents(): ƒ.Node;
+        static createOpponents(skin: ƒ.Material): ƒ.Node;
     }
 }
 declare namespace Runner {

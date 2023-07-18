@@ -64,6 +64,7 @@ var Runner;
     let viewport;
     let cmpCamera;
     let cmpAudio;
+    let oppoSkin;
     let oppoTimer = 0;
     let hitTimer = 0;
     let bgMusic = new ƒ.Audio("Sound/background.mp3");
@@ -85,6 +86,7 @@ var Runner;
         Runner.petNode = Runner.graph.getChildrenByName("Pet")[0];
         Runner.playerFps = Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps;
         Runner.opponentSpeed = Runner.ui.speed * 0.01;
+        oppoSkin = ƒ.Project.getResourcesByName("OpponentShader")[0];
         let resetButton = document.getElementById("resetbutton");
         resetButton.addEventListener("click", function () { reset(); });
         let OpponentMultiplicatorButton = document.getElementById("opponentbutton");
@@ -117,7 +119,7 @@ var Runner;
         if (oppoTimer > spawnTimer()) {
             // if (oppoTimer> 3){
             document.getElementById("transaktion").innerText = "";
-            Runner.Opponents.addChild(Runner.Opponent.createOpponents());
+            Runner.Opponents.addChild(Runner.Opponent.createOpponents(oppoSkin));
             oppoTimer = 0;
         }
     }
@@ -143,8 +145,10 @@ var Runner;
             Runner.ui.money = parseFloat((Runner.ui.money - 100).toFixed(1));
             ;
         }
-        else if (add == "skin" && Runner.ui.money >= 900) {
-            console.log("change");
+        else if (add == "skin" && Runner.ui.money >= 10) {
+            oppoSkin = ƒ.Project.getResourcesByName("OpponentShader2")[0];
+            Runner.ui.money = parseFloat((Runner.ui.money - 10).toFixed(1));
+            ;
         }
         else {
             document.getElementById("transaktion").innerText = "Geld war nicht ausreichend für die Transaktion";
@@ -195,21 +199,21 @@ var Runner;
         constructor() {
             super("Opponent");
             this.addComponent(new ƒ.ComponentMesh(ƒ.Project.getResourcesByName("Player")[0]));
-            this.addComponent(new ƒ.ComponentMaterial(ƒ.Project.getResourcesByName("OpponentShader")[0]));
             this.addComponent(new ƒ.ComponentTransform());
             this.getComponent(ƒ.ComponentTransform).mtxLocal.translation = new ƒ.Vector3(7 - Runner.OpponentsTrans[0], -3.1, 10);
             this.mtxLocal.rotateY(180);
-            this.getComponent(ƒ.ComponentMaterial).mtxPivot.translation = new ƒ.Vector2(0.3935483992099762, 0.1);
-            this.getComponent(ƒ.ComponentMaterial).mtxPivot.scaleX(0.068);
-            this.getComponent(ƒ.ComponentMaterial).mtxPivot.scaleY(0.173);
             let rigidbody = new ƒ.ComponentRigidbody(1, ƒ.BODY_TYPE.KINEMATIC, ƒ.COLLIDER_TYPE.CUBE);
             this.addComponent(rigidbody);
             this.addComponent((new Runner.RemoveOpponentScript()));
         }
-        static createOpponents() {
+        static createOpponents(skin) {
             // console.log("Oppo");
             let OpponentNode = new ƒ.Node("OpponentNode");
             OpponentNode = new Opponent();
+            OpponentNode.addComponent(new ƒ.ComponentMaterial(skin));
+            OpponentNode.getComponent(ƒ.ComponentMaterial).mtxPivot.translation = new ƒ.Vector2(0.3935483992099762, 0.1);
+            OpponentNode.getComponent(ƒ.ComponentMaterial).mtxPivot.scaleX(0.068);
+            OpponentNode.getComponent(ƒ.ComponentMaterial).mtxPivot.scaleY(0.173);
             // console.log("Node", OpponentNode);
             return OpponentNode;
         }

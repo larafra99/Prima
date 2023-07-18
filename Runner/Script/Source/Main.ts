@@ -19,6 +19,7 @@ namespace Runner {
   let viewport: ƒ.Viewport;
   let cmpCamera: ƒ.ComponentCamera;
   let cmpAudio:ƒ.ComponentAudio;
+  let oppoSkin:ƒ.Material;
   
   
   let oppoTimer: number= 0;
@@ -49,6 +50,7 @@ namespace Runner {
     petNode= graph.getChildrenByName("Pet")[0];
     playerFps= spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps;
     opponentSpeed= ui.speed*0.01;
+    oppoSkin= ƒ.Project.getResourcesByName("OpponentShader")[0] as ƒ.Material;
 
     let resetButton: HTMLButtonElement =<HTMLButtonElement>document.getElementById("resetbutton");
     resetButton.addEventListener("click", function (): void {reset()});
@@ -88,7 +90,7 @@ namespace Runner {
     if (oppoTimer> spawnTimer()){
     // if (oppoTimer> 3){
       document.getElementById("transaktion").innerText="";
-      Opponents.addChild(Opponent.createOpponents());
+      Opponents.addChild(Opponent.createOpponents(oppoSkin));
       oppoTimer= 0;
     }
   }
@@ -114,8 +116,9 @@ namespace Runner {
       ui.maxspeed= ui.maxspeed+1;
       ui.money= parseFloat((ui.money-100).toFixed(1));;
     }
-    else if(add=="skin" && ui.money>=900){
-      console.log("change");
+    else if(add=="skin" && ui.money>=10){
+      oppoSkin= ƒ.Project.getResourcesByName("OpponentShader2")[0] as ƒ.Material;
+      ui.money= parseFloat((ui.money-10).toFixed(1));;
     }
     else{
       document.getElementById("transaktion").innerText= "Geld war nicht ausreichend für die Transaktion";
