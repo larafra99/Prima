@@ -43,7 +43,7 @@ namespace Runner {
 
     viewport = _event.detail;
     graph = viewport.getBranch();
-    viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS
+    // viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS
     cmpCamera = graph.getComponent(ƒ.ComponentCamera);
     viewport.camera = cmpCamera;
     cmpAudio = graph.getComponent(ƒ.ComponentAudio);

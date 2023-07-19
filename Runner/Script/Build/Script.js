@@ -81,7 +81,7 @@ var Runner;
         Runner.petStateMachine = new Runner.PetState();
         viewport = _event.detail;
         Runner.graph = viewport.getBranch();
-        viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
+        // viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS
         cmpCamera = Runner.graph.getComponent(ƒ.ComponentCamera);
         viewport.camera = cmpCamera;
         cmpAudio = Runner.graph.getComponent(ƒ.ComponentAudio);

@@ -43,5 +43,5 @@ Durch den Reset-Button besteht die Möglichkeit, das Spiel von vorne zu beginnen
 |  B | Physics             | Mithilfe der Physik, werden die Kollisionen von Gegner und Charakter durch deren Rigidbodys erfasst.                                           |
 |  C | Net                 | wird nicht verwendet                                                                                                  |
 |  D | State Machines      | Das Haustier verfügt über eine State Machines  , die zwischen verschiedenen Zuständen wechselt. Dadurch wird das Tier zum Beispiel dazu gebracht, nach vorne zu laufen.                                   |
-|  E | Animation           | ES werden SpriteSheetAnimations verwendet um den Charakter und das Pet zu animieren                                                   |
+|  E | Animation           | Es werden SpriteSheetAnimations verwendet um den Charakter und das Pet zu animieren                                                   |
     
