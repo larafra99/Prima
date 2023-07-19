@@ -69,7 +69,7 @@ namespace Runner {
         if (resetboolean){
           _pet.transit(PETSTATE.IDLE);
         }
-        _pet.node.mtxLocal.translateX(3.0*ƒ.Loop.timeFrameGame/1000);
+        _pet.node.mtxLocal.translateX((3.0+ opponentSpeed)*ƒ.Loop.timeFrameGame/1000);
         if(_pet.node.mtxLocal.translation.x> 4){
             _pet.transit(PETSTATE.SIT)
         } 

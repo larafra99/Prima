@@ -17,13 +17,12 @@ namespace Runner {
                 case ACTION.FIGHT:
                     missedOpponnent= false;
                     fight= true;
-                    if(!fightCoolDown){
-                        spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("fight_animation")[0] as ƒ.AnimationSprite;
-                        spriteNode.getComponent(ƒ.ComponentAnimator).scale = 1;
+                    spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("fight_animation")[0] as ƒ.AnimationSprite;
+                    spriteNode.getComponent(ƒ.ComponentAnimator).scale = 1;
+                    fightCoolDown= true;
 
-                        let time: ƒ.Time = new ƒ.Time();
-                        new ƒ.Timer(time, 500, 1, this.enableFighting);
-                    }
+                    let time: ƒ.Time = new ƒ.Time();
+                    new ƒ.Timer(time, 100, 1, this.enableFighting);
                     break;
                 case ACTION.IDLE:
                     spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("walk_animation")[0] as ƒ.AnimationSprite;

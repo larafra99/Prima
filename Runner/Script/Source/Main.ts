@@ -51,10 +51,9 @@ namespace Runner {
     spriteNode= graph.getChildrenByName("Player")[0];
     Opponents= graph.getChildrenByName("Opponents")[0];
     petNode= graph.getChildrenByName("Pet")[0];
-    // ''########################################################################
+
     playerFps= ui.speed/10;
-    // ###########################################################
-    opponentSpeed= ui.speed*0.01;
+    opponentSpeed= playerFps;
     oppoSkin= ƒ.Project.getResourcesByName("OpponentShader")[0] as ƒ.Material;
 
     let resetButton: HTMLButtonElement =<HTMLButtonElement>document.getElementById("resetbutton");
@@ -155,13 +154,13 @@ namespace Runner {
     Opponents.mtxLocal.translateX(-(1.0+ opponentSpeed)*ƒ.Loop.timeFrameGame/1000);
     hitOpponent();
 
-    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
+    if (!fightCoolDown&& ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
       cmpAudio.setAudio(swordAudio);
       cmpAudio.loop = false;
       cmpAudio.volume= 10;
       cmpAudio.play(true);
       avatar.act(ACTION.FIGHT);
-      fightCoolDown= true; 
+       
     }    
     
     else if (!missedOpponnent){

@@ -88,10 +88,8 @@ var Runner;
         Runner.spriteNode = Runner.graph.getChildrenByName("Player")[0];
         Runner.Opponents = Runner.graph.getChildrenByName("Opponents")[0];
         Runner.petNode = Runner.graph.getChildrenByName("Pet")[0];
-        // ''########################################################################
         Runner.playerFps = Runner.ui.speed / 10;
-        // ###########################################################
-        Runner.opponentSpeed = Runner.ui.speed * 0.01;
+        Runner.opponentSpeed = Runner.playerFps;
         oppoSkin = ƒ.Project.getResourcesByName("OpponentShader")[0];
         let resetButton = document.getElementById("resetbutton");
         resetButton.addEventListener("click", function () { reset(); });
@@ -184,13 +182,12 @@ var Runner;
         Runner.OpponentsTrans = Runner.Opponents.mtxLocal.translation.get();
         Runner.Opponents.mtxLocal.translateX(-(1.0 + Runner.opponentSpeed) * ƒ.Loop.timeFrameGame / 1000);
         hitOpponent();
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
+        if (!Runner.fightCoolDown && ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
             cmpAudio.setAudio(swordAudio);
             cmpAudio.loop = false;
             cmpAudio.volume = 10;
             cmpAudio.play(true);
             Runner.avatar.act(Runner.ACTION.FIGHT);
-            Runner.fightCoolDown = true;
         }
         else if (!Runner.missedOpponnent) {
             Runner.avatar.act(Runner.ACTION.IDLE);
@@ -353,7 +350,7 @@ var Runner;
             if (resetboolean) {
                 _pet.transit(PETSTATE.IDLE);
             }
-            _pet.node.mtxLocal.translateX(3.0 * ƒ.Loop.timeFrameGame / 1000);
+            _pet.node.mtxLocal.translateX((3.0 + Runner.opponentSpeed) * ƒ.Loop.timeFrameGame / 1000);
             if (_pet.node.mtxLocal.translation.x > 4) {
                 _pet.transit(PETSTATE.SIT);
             }
@@ -425,12 +422,11 @@ var Runner;
                 case ACTION.FIGHT:
                     Runner.missedOpponnent = false;
                     Runner.fight = true;
-                    if (!Runner.fightCoolDown) {
-                        Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("fight_animation")[0];
-                        Runner.spriteNode.getComponent(ƒ.ComponentAnimator).scale = 1;
-                        let time = new ƒ.Time();
-                        new ƒ.Timer(time, 500, 1, this.enableFighting);
-                    }
+                    Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("fight_animation")[0];
+                    Runner.spriteNode.getComponent(ƒ.ComponentAnimator).scale = 1;
+                    Runner.fightCoolDown = true;
+                    let time = new ƒ.Time();
+                    new ƒ.Timer(time, 100, 1, this.enableFighting);
                     break;
                 case ACTION.IDLE:
                     Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("walk_animation")[0];
