@@ -25,6 +25,7 @@ declare namespace Runner {
     let petStateMachine: PetState;
     let playerFps: number;
     let opponentSpeed: number;
+    let fightCoolDown: boolean;
 }
 declare namespace Runner {
     import ƒ = FudgeCore;
@@ -79,6 +80,7 @@ declare namespace Runner {
     class Avatar extends ƒAid.NodeSprite {
         constructor();
         act(_action: ACTION): Promise<void>;
+        enableFighting(): void;
     }
 }
 declare namespace Runner {

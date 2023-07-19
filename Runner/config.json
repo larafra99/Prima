@@ -1,6 +1,6 @@
 {
-    "speed": 15,
-    "maxspeed": 15,
+    "speed": 10,
+    "maxspeed": 10,
     "money": 0,
     "opponentmulitplicator": 1,
     "moneymultipilcator": 1

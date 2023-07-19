@@ -41,7 +41,7 @@ var Runner;
             }
             if (Runner.fight) {
                 if (Runner.ui.speed < Runner.ui.maxspeed) {
-                    Runner.playerFps = Runner.playerFps + 1;
+                    Runner.playerFps = Runner.playerFps + 0.1;
                 }
                 Runner.Opponents.removeChild(oppoNode);
                 Runner.ui.money = parseFloat((Runner.ui.money + (Runner.ui.opponentmulitplicator * Runner.ui.moneymultipilcator)).toFixed(1));
@@ -67,6 +67,7 @@ var Runner;
     let oppoSkin;
     let oppoTimer = 0;
     let hitTimer = 0;
+    Runner.fightCoolDown = false;
     let bgMusic = new ƒ.Audio("Sound/background.mp3");
     let swordAudio = new ƒ.Audio("Sound/sword.wav");
     let changOopposkinButton;
@@ -87,7 +88,9 @@ var Runner;
         Runner.spriteNode = Runner.graph.getChildrenByName("Player")[0];
         Runner.Opponents = Runner.graph.getChildrenByName("Opponents")[0];
         Runner.petNode = Runner.graph.getChildrenByName("Pet")[0];
-        Runner.playerFps = Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps;
+        // ''########################################################################
+        Runner.playerFps = Runner.ui.speed / 10;
+        // ###########################################################
         Runner.opponentSpeed = Runner.ui.speed * 0.01;
         oppoSkin = ƒ.Project.getResourcesByName("OpponentShader")[0];
         let resetButton = document.getElementById("resetbutton");
@@ -129,7 +132,7 @@ var Runner;
         }
         oppoTimer += ƒ.Loop.timeFrameGame / 1000;
         if (oppoTimer > spawnTimer()) {
-            // if (oppoTimer> 3){
+            // if (oppoTimer> 5){
             document.getElementById("transaktion").innerText = "";
             Runner.Opponents.addChild(Runner.Opponent.createOpponents(oppoSkin));
             oppoTimer = 0;
@@ -187,6 +190,7 @@ var Runner;
             cmpAudio.volume = 10;
             cmpAudio.play(true);
             Runner.avatar.act(Runner.ACTION.FIGHT);
+            Runner.fightCoolDown = true;
         }
         else if (!Runner.missedOpponnent) {
             Runner.avatar.act(Runner.ACTION.IDLE);
@@ -203,10 +207,10 @@ var Runner;
     function reset() {
         console.log("Reset");
         Runner.ui.money = 0;
-        Runner.ui.maxspeed = 15;
+        Runner.ui.maxspeed = 10;
         Runner.ui.opponentmulitplicator = 1;
         Runner.ui.moneymultipilcator = 1;
-        Runner.playerFps = 15;
+        Runner.playerFps = 10;
         Runner.petNode.dispatchEvent(new Event("Reset", { bubbles: true }));
         Runner.missedOpponnent = false;
         Runner.avatar.act(Runner.ACTION.IDLE);
@@ -369,7 +373,7 @@ var Runner;
             currentState = PETSTATE.REST;
             _pet.node.getComponent(ƒ.ComponentAnimator).playmode = ƒ.ANIMATION_PLAYMODE.LOOP;
             _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("rest_pet")[0];
-            _pet.node.mtxLocal.translateX(-(2 + Runner.opponentSpeed) * ƒ.Loop.timeFrameGame / 1000);
+            _pet.node.mtxLocal.translateX(-(2.25 + Runner.opponentSpeed) * ƒ.Loop.timeFrameGame / 1000);
             if (_pet.node.mtxLocal.translation.x <= -4.5) {
                 _pet.transit(PETSTATE.IDLE);
             }
@@ -417,32 +421,38 @@ var Runner;
             super("AvatarInstance");
         }
         async act(_action) {
-            //     let animation: ƒAid.SpriteSheetAnimation;
             switch (_action) {
                 case ACTION.FIGHT:
-                    Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("fight_animation")[0];
                     Runner.missedOpponnent = false;
                     Runner.fight = true;
-                    Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps = 15;
+                    if (!Runner.fightCoolDown) {
+                        Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("fight_animation")[0];
+                        Runner.spriteNode.getComponent(ƒ.ComponentAnimator).scale = 1;
+                        let time = new ƒ.Time();
+                        new ƒ.Timer(time, 500, 1, this.enableFighting);
+                    }
                     break;
                 case ACTION.IDLE:
                     Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("walk_animation")[0];
                     if (Runner.missedOpponnent) {
-                        Runner.playerFps = 5;
+                        Runner.playerFps = 0.1;
                         Runner.petNode.dispatchEvent(new Event("ChangeSpeed", { bubbles: true }));
                     }
-                    Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps = Runner.playerFps;
+                    Runner.spriteNode.getComponent(ƒ.ComponentAnimator).scale = Runner.playerFps;
                     break;
                 case ACTION.MISSED:
                     Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("missed_animation")[0];
                     Runner.missedOpponnent = true;
-                    Runner.spriteNode.getComponent(ƒ.ComponentAnimator).animation.fps = 15;
+                    Runner.spriteNode.getComponent(ƒ.ComponentAnimator).scale = 1;
                     await new Promise(resolve => { setTimeout(resolve, 200); });
                     Runner.avatar.act(ACTION.IDLE);
                     break;
             }
-            Runner.ui.speed = Runner.playerFps;
-            Runner.opponentSpeed = Runner.ui.speed * 0.01;
+            Runner.ui.speed = parseInt((Runner.playerFps * 10).toFixed(0));
+            Runner.opponentSpeed = Runner.playerFps;
+        }
+        enableFighting() {
+            Runner.fightCoolDown = false;
         }
     }
     Runner.Avatar = Avatar;

@@ -91,7 +91,7 @@ namespace Runner {
         currentState= PETSTATE.REST;
         _pet.node.getComponent(ƒ.ComponentAnimator).playmode = ƒ.ANIMATION_PLAYMODE.LOOP;
         _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("rest_pet")[0] as ƒ.AnimationSprite;
-        _pet.node.mtxLocal.translateX(-(2+opponentSpeed)*ƒ.Loop.timeFrameGame/1000);
+        _pet.node.mtxLocal.translateX(-(2.25+opponentSpeed)*ƒ.Loop.timeFrameGame/1000);
         if(_pet.node.mtxLocal.translation.x<= -4.5){
             _pet.transit(PETSTATE.IDLE)
         }

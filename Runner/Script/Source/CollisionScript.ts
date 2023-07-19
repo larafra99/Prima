@@ -47,7 +47,7 @@ namespace Runner {
       }
       if (fight){
         if(ui.speed < ui.maxspeed){
-          playerFps= playerFps+1;
+          playerFps= playerFps+0.1;
         }
         Opponents.removeChild(oppoNode);
         ui.money= parseFloat((ui.money+(ui.opponentmulitplicator*ui.moneymultipilcator)).toFixed(1));
