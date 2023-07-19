@@ -31,17 +31,19 @@ namespace Runner {
             this.removeEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
             break;
           case ƒ.EVENT.NODE_DESERIALIZED:
-            console.log("I dont understand");
+            // listens after events 
             this.node.addEventListener("Reset", this.startPostion); 
             this.node.addEventListener("ChangeSpeed", this.petSpeedChange); 
         }
       }
-     
+    // reset event dog gets back in starting position
     private startPostion(_event:Event):void{
+        // sets dog back to idle
         petStateMachine.petReset();
         petNode.mtxLocal.translation.x= -4.69;
         petNode.mtxLocal.translation= new ƒ.Vector3(-4.7,-3, 12);
       }
+    //  events to change speed of the pet relativ to character speed
     private petSpeedChange(_event:Event):void{
       petStateMachine.changeSpeed();
     }

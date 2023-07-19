@@ -13,19 +13,19 @@ declare namespace Runner {
     let graph: ƒ.Node;
     let spriteNode: ƒ.Node;
     let Opponents: ƒ.Node;
-    let OpponentsTrans: Float32Array;
+    let petNode: ƒ.Node;
     let avatar: Avatar;
     let ui: UserInterface;
+    let petStateMachine: PetState;
     let fight: boolean;
     let missedOpponnent: boolean;
+    let fightCoolDown: boolean;
     let json: {
         [key: string]: number;
     };
-    let petNode: ƒ.Node;
-    let petStateMachine: PetState;
     let playerFps: number;
     let opponentSpeed: number;
-    let fightCoolDown: boolean;
+    let OpponentsTrans: Float32Array;
 }
 declare namespace Runner {
     import ƒ = FudgeCore;

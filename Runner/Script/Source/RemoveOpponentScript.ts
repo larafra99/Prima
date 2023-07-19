@@ -34,13 +34,12 @@ namespace Runner {
             case ƒ.EVENT.NODE_DESERIALIZED:
                 break;
             }   
-            
         }
+      //  delets opoonents if they are out of frame
       private update = (_event: Event): void => {
-        // TODO: Remove Zahl auch -7 setzen, werden erst removed, wenn sie aus dem Bild sind 
-        if (this.node.mtxLocal.translation.x < -6-OpponentsTrans[0]) {          
+        if (this.node.mtxLocal.translation.x < -7-OpponentsTrans[0]) {          
             Opponents.removeChild(this.node);
         }
-    }
+      }
     }
   }

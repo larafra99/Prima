@@ -20,9 +20,7 @@ namespace Runner {
             this.maxspeed = _config.maxspeed;
             this.opponentmulitplicator= _config.opponentmulitplicator;
             this.moneymultipilcator=_config.moneymultipilcator;
-            this.controller= new ƒui.Controller(this,document.querySelector("#vui"))
-            
-            //console.log(this.controller);
+            this.controller= new ƒui.Controller(this,document.querySelector("#vui"));
         }
     }
 }

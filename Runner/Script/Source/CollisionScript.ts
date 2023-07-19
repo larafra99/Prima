@@ -33,7 +33,6 @@ namespace Runner {
           this.removeEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
           break;
         case ƒ.EVENT.NODE_DESERIALIZED:
-          console.log("I dont understand");
           this.rigidbody = this.node.getComponent(ƒ.ComponentRigidbody);
           this.rigidbody.addEventListener(ƒ.EVENT_PHYSICS.COLLISION_ENTER, this.hndCollision);
    
@@ -42,20 +41,24 @@ namespace Runner {
    
     private async hndCollision(_event: ƒ.EventPhysics): Promise<void>  {
       let oppoNode: ƒ.Node = _event.cmpRigidbody.node;
+      //  allows player to hit opponent after collision happend
       if(!fight){
-        await new Promise(resolve => {setTimeout(resolve, 1000-2*ui.speed)});
+        // as long as opponent is in front of the player it can still be hit
+        await new Promise(resolve => {setTimeout(resolve, 1000-2.5*ui.speed)});
       }
+      // opponent is hit
       if (fight){
+        // increase speed of character and pet
         if(ui.speed < ui.maxspeed){
           playerFps= playerFps+0.1;
+          petNode.dispatchEvent(new Event("ChangeSpeed", {bubbles: true}));
         }
+        // removes hit opponent, adds money
         Opponents.removeChild(oppoNode);
         ui.money= parseFloat((ui.money+(ui.opponentmulitplicator*ui.moneymultipilcator)).toFixed(1));
-        petNode.dispatchEvent(new Event("ChangeSpeed", {bubbles: true}));
-      
       }
+      // opponent is missed show missed animation
       else{
-        console.log("Bumm");
         avatar.act(ACTION.MISSED);
       }
     }

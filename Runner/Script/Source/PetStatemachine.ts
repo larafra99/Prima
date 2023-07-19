@@ -2,10 +2,12 @@ namespace Runner {
     import ƒ = FudgeCore;
     import ƒAid = FudgeAid;
     ƒ.Project.registerScriptNamespace(Runner);  // Register the namespace to FUDGE for serialization
-  
+    
+    // defines pet states
     enum PETSTATE {
       IDLE, RUN, REST, SIT
     }
+    // define variable
     let petTimer:number = 0;
     let resetboolean: boolean= false;
 
@@ -16,11 +18,9 @@ namespace Runner {
       public static readonly iSubclass: number = ƒ.Component.registerSubclass(PetState);
       private static instructions: ƒAid.StateMachineInstructions<PETSTATE> = PetState.get();
 
-  
       constructor() {
         super();
-        this.instructions = PetState.instructions;
- // setup instructions with the static set
+        this.instructions = PetState.instructions; // setup instructions with the static set
   
         // Don't start when running in editor
         if (ƒ.Project.mode == ƒ.MODE.EDITOR)
@@ -51,47 +51,52 @@ namespace Runner {
         // console.log("default");
         // console.log(PETSTATE[_pet.stateCurrent]);
       }
-  
+      // sets idle state and animation
       private static async petIdle(_pet: PetState): Promise<void> {
         currentState= PETSTATE.IDLE;
         resetboolean= false;
         petTimer += ƒ.Loop.timeFrameGame/1000;
         _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("walk_pet")[0] as ƒ.AnimationSprite;
+        // change to run state 
         if (petTimer> 3){
             _pet.transit(PETSTATE.RUN);
             petTimer= 0;
         }
       }
-
+      // sets run state and animation
       private static async petRun(_pet: PetState): Promise<void> {
         currentState= PETSTATE.RUN;
         _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("run_pet")[0] as ƒ.AnimationSprite;
+        //  stops running state for reset
         if (resetboolean){
           _pet.transit(PETSTATE.IDLE);
         }
         _pet.node.mtxLocal.translateX((3.0+ opponentSpeed)*ƒ.Loop.timeFrameGame/1000);
+        // change to sit state 
         if(_pet.node.mtxLocal.translation.x> 4){
             _pet.transit(PETSTATE.SIT)
         } 
       }
-
+      // sets sit state and animation
       private static async petSit(_pet: PetState): Promise<void> {
         currentState= PETSTATE.SIT;
         petTimer += ƒ.Loop.timeFrameGame/1000;
         _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("sit_pet")[0] as ƒ.AnimationSprite;
         _pet.node.mtxLocal.translateX(-(1.0+opponentSpeed)*ƒ.Loop.timeFrameGame/1000);
         _pet.node.getComponent(ƒ.ComponentAnimator).playmode = ƒ.ANIMATION_PLAYMODE.PLAY_ONCE;
+        // change to rest state
         if (petTimer> 0.19){
             _pet.transit(PETSTATE.REST);
             petTimer= 0;
         }
       }
-
+       // sets rest state and animation
       private static async petRest(_pet: PetState): Promise<void> {
         currentState= PETSTATE.REST;
         _pet.node.getComponent(ƒ.ComponentAnimator).playmode = ƒ.ANIMATION_PLAYMODE.LOOP;
         _pet.node.getComponent(ƒ.ComponentAnimator).animation = ƒ.Project.getResourcesByName("rest_pet")[0] as ƒ.AnimationSprite;
         _pet.node.mtxLocal.translateX(-(2.25+opponentSpeed)*ƒ.Loop.timeFrameGame/1000);
+        // change to idle state
         if(_pet.node.mtxLocal.translation.x<= -4.5){
             _pet.transit(PETSTATE.IDLE)
         }
@@ -112,19 +117,18 @@ namespace Runner {
             break;
         }
       }
-
+      //  player resets the game, dog back in start position 
       public petReset():void{
         this.transit(PETSTATE.IDLE);
         resetboolean= true;
       }
+      //  changes dog speed 
       public changeSpeed():void{
         this.transit(currentState);
       }
   
       private update = (_event: Event): void => {
         this.act();
-
-      }
-      
+      } 
     }  
 }

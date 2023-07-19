@@ -1,7 +1,7 @@
 namespace Runner {
     import ƒ = FudgeCore;
     export class Opponent extends ƒ.Node {
-
+        // define attributes and components of opponent
         public constructor( ) {
             super("Opponent");
             this.addComponent(new ƒ.ComponentMesh(ƒ.Project.getResourcesByName("Player")[0] as ƒ.MeshQuad));
@@ -15,12 +15,12 @@ namespace Runner {
         }
 
         public static createOpponents(skin: ƒ.Material):ƒ.Node{
-            // console.log("Oppo");
             let OpponentNode= new ƒ.Node("OpponentNode");
+            // creates opponent
             OpponentNode= new Opponent();
+            // sets material
             OpponentNode.addComponent(new ƒ.ComponentMaterial(skin));
             OpponentNode.getComponent(ƒ.ComponentMaterial).mtxPivot.translation = new ƒ.Vector2(0.4, 0.1);
-            // 0.3935483992099762
             OpponentNode.getComponent(ƒ.ComponentMaterial).mtxPivot.scaleX(0.068);
             OpponentNode.getComponent(ƒ.ComponentMaterial).mtxPivot.scaleY(0.173);
             return OpponentNode;
