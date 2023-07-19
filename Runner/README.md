@@ -24,7 +24,7 @@ Durch den Reset-Button besteht die Möglichkeit, das Spiel von vorne zu beginnen
 ## Links
 * [Link zum Code:](https://github.com/larafra99/Prima/tree/main/Runner)
 * [Link zur Anwendung:](https://larafra99.github.io/Prima/Runner/index)
-* [Link zum Design Dokumen:]
+* [Link zum Design Dokumen:](https://github.com/larafra99/Prima/blob/main/Runner/DesignDocument/DesignDocument_Runner_LaraFranke.pdf)
 
 ## Kriterien
 
