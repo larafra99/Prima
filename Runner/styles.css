@@ -85,7 +85,7 @@ input{
   align-items: center;
   position: fixed;
   right:10px;
-  top: 25px
+  top: 25px;
 
 }
 #reset{
@@ -99,9 +99,7 @@ button{
   font-size:16px;
   margin-top: 10px;
   background-color:aliceblue;
-  
-  border:#fff solid 1px
-
+  border:#fff solid 1px;
 }
 button:hover{
   background-color:white ;
