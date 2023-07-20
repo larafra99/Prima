@@ -131,7 +131,7 @@ var Runner;
     }
     // defines random spawntime for opponents
     function spawnTimer() {
-        return (Math.random() * (12 - 0.9) + 0.9);
+        return (Math.random() * (10 - 0.9) + 0.9);
     }
     // creates opponents
     function spawnOpponents() {
