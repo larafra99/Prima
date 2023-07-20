@@ -44,7 +44,7 @@ namespace Runner {
       //  allows player to hit opponent after collision happend
       if (!fight) {
         // as long as opponent is in front of the player it can still be hit
-        await new Promise(resolve => { setTimeout(resolve, 1000 - 2.5 * ui.speed) });
+        await new Promise(resolve => { setTimeout(resolve, 800 - 10 * ui.speed) });
       }
       // opponent is hit
       if (fight) {

@@ -38,7 +38,7 @@ var Runner;
             //  allows player to hit opponent after collision happend
             if (!Runner.fight) {
                 // as long as opponent is in front of the player it can still be hit
-                await new Promise(resolve => { setTimeout(resolve, 1000 - 2.5 * Runner.ui.speed); });
+                await new Promise(resolve => { setTimeout(resolve, 800 - 10 * Runner.ui.speed); });
             }
             // opponent is hit
             if (Runner.fight) {
