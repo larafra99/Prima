@@ -237,7 +237,7 @@ var Runner;
         Runner.ui.maxspeed = 10;
         Runner.ui.opponentmulitplicator = 1;
         Runner.ui.moneymultipilcator = 1;
-        Runner.playerFps = 10;
+        Runner.playerFps = 1;
         Runner.petNode.dispatchEvent(new Event("Reset", { bubbles: true }));
         Runner.missedOpponnent = false;
         Runner.avatar.act(Runner.ACTION.IDLE);

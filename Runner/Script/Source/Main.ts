@@ -202,7 +202,7 @@ namespace Runner {
     ui.maxspeed = 10;
     ui.opponentmulitplicator = 1;
     ui.moneymultipilcator = 1;
-    playerFps = 10;
+    playerFps = 1;
 
     petNode.dispatchEvent(new Event("Reset", { bubbles: true }));
     missedOpponnent = false;
