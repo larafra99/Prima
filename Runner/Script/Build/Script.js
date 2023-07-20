@@ -165,24 +165,26 @@ var Runner;
         if (add == "oppo" && Runner.ui.money >= 50) {
             Runner.ui.opponentmulitplicator = Runner.ui.opponentmulitplicator + 1;
             Runner.ui.money = parseFloat((Runner.ui.money - 50).toFixed(1));
-            ;
+            return;
         }
         // increases money value
         else if (add == "money" && Runner.ui.money >= 20) {
             Runner.ui.moneymultipilcator = Runner.ui.moneymultipilcator + 0.1;
             Runner.ui.money = parseFloat((Runner.ui.money - 20).toFixed(1));
+            return;
         }
         // increases max speed
         else if (add == "speed" && Runner.ui.money >= 100) {
             Runner.ui.maxspeed = Runner.ui.maxspeed + 1;
             Runner.ui.money = parseFloat((Runner.ui.money - 100).toFixed(1));
-            ;
+            return;
         }
         // changes opponentskin are enables random opponents
         else if (add == "skin" && Runner.ui.money >= 500) {
             if (buttonCounter == 0) {
                 oppoSkin = ƒ.Project.getResourcesByName("OpponentShader2")[0];
                 changOopposkinButton.textContent = "Random Gegner";
+                return;
             }
             else if (buttonCounter == 1) {
                 randomOppo = true;
@@ -190,11 +192,12 @@ var Runner;
                 changOopposkinButton.hidden = true;
             }
             Runner.ui.money = parseFloat((Runner.ui.money - 500).toFixed(1));
-            ;
             buttonCounter = buttonCounter + 1;
+            return;
         }
         else {
             document.getElementById("transaktion").innerText = "Geld war nicht ausreichend für die Transaktion";
+            return;
         }
     }
     function update(_event) {

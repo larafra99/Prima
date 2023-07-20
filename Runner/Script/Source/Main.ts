@@ -131,34 +131,40 @@ namespace Runner {
     // opponents drop more money
     if (add == "oppo" && ui.money >= 50) {
       ui.opponentmulitplicator = ui.opponentmulitplicator + 1;
-      ui.money = parseFloat((ui.money - 50).toFixed(1));;
+      ui.money = parseFloat((ui.money - 50).toFixed(1));
+      return;
     }
     // increases money value
     else if (add == "money" && ui.money >= 20) {
       ui.moneymultipilcator = ui.moneymultipilcator + 0.1;
       ui.money = parseFloat((ui.money - 20).toFixed(1));
+      return;
     }
     // increases max speed
     else if (add == "speed" && ui.money >= 100) {
       ui.maxspeed = ui.maxspeed + 1;
-      ui.money = parseFloat((ui.money - 100).toFixed(1));;
+      ui.money = parseFloat((ui.money - 100).toFixed(1));
+      return;
     }
     // changes opponentskin are enables random opponents
     else if (add == "skin" && ui.money >= 500) {
       if (buttonCounter == 0) {
         oppoSkin = ƒ.Project.getResourcesByName("OpponentShader2")[0] as ƒ.Material;
         changOopposkinButton.textContent = "Random Gegner";
+        return;
       }
       else if (buttonCounter == 1) {
         randomOppo = true;
         changOopposkinButton.disabled = true;
         changOopposkinButton.hidden = true;
       }
-      ui.money = parseFloat((ui.money - 500).toFixed(1));;
+      ui.money = parseFloat((ui.money - 500).toFixed(1));
       buttonCounter = buttonCounter + 1;
+      return;
     }
     else {
       document.getElementById("transaktion").innerText = "Geld war nicht ausreichend für die Transaktion";
+      return;
     }
   }
 
