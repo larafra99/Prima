@@ -121,7 +121,7 @@ namespace Runner {
   // allows Player that earlier hits count, opponent doesn't need to be hit just before the collision
   function hitOpponent(): void {
     hitTimer += ƒ.Loop.timeFrameGame / 1000;
-    if (hitTimer > 0.3 && fight) {
+    if (hitTimer > 0.2 && fight) {
       fight = false;
       hitTimer = 0;
     }

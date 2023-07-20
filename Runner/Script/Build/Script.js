@@ -154,7 +154,7 @@ var Runner;
     // allows Player that earlier hits count, opponent doesn't need to be hit just before the collision
     function hitOpponent() {
         hitTimer += ƒ.Loop.timeFrameGame / 1000;
-        if (hitTimer > 0.3 && Runner.fight) {
+        if (hitTimer > 0.2 && Runner.fight) {
             Runner.fight = false;
             hitTimer = 0;
         }
