@@ -68,7 +68,7 @@ input{
 }
 #labelspeed{
   font-size:3em;
-  margin-left: 0  ;
+  margin-left: 0;
 
 }
 #speed{
@@ -97,7 +97,7 @@ button{
   width:200px;
   height: 50px;
   font-size:16px;
-  margin-top: 10px;;
+  margin-top: 10px;
   background-color:aliceblue;
   
   border:#fff solid 1px
